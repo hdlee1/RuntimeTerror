@@ -1,2 +1,2 @@
-# RuntimeTerror
-Second repository made/ empty repository for Group 1 CIS 440
+# ProjectTemplate
+copy this code into your own repository, and use it for your project as you see fit!
