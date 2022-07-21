@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta charset="utf-8" />
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Create Account</title>
+    <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
+    <script type="text/javascript">
+
+    </script>
+    <!--END OF YOUR OWN JAVASCRIPT-->
+    <!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
+    <style>
+
+        /*body {
+            background-color: whitesmoke;
+        }
+
+        .contentPanel {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            height: 100%;
+            width: 100%;
+            visibility: visible;
+            flex: 1;*/
+            /*border: 1px solid gray;
+			border-radius: 25px;*/
+        /*}
+
+        .newAccountPanel {
+            text-align: center;
+        }
+
+        .newAccountBox {
+            display: inline-block;
+            text-align: right;
+        }
+
+        .newAccountBox input {
+            width: 100px;
+            border: 1px inset gray;
+        }
+
+        .newAccountBox hr {
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .left {
+            text-align: left;
+        }
+
+        #link {
+            height: 25px;
+            padding-top: 15px;
+        }
+
+        #goBackLink {
+            font-size: 16px;
+            text-decoration: underline;
+            color: blue;
+        }*/
+
+        body {
+            background-color: whitesmoke;
+        }
+
+        .contentContainer {
+            flex: 2;
+            display: table;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .contentPanel {
+            height: 100%;
+            visibility: visible;
+            flex: 2;
+        }
+
+        .accountPanel {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .accountsPanel {
+            text-align: center;
+        }
+
+        .accountBox {
+            margin-left: auto;
+            margin-right: auto;
+            width: 300px;
+        }
+
+            .accountBox div {
+                padding: 0px;
+                margin: 0px;
+            }
+
+            .accountBox hr {
+                padding: 0px;
+                margin: 0px;
+            }
+
+            .accountBox input {
+                width: 30px;
+                border: 1px inset gray;
+            }
+
+        .accountLinks {
+            height: 25px;
+        }
+
+        #backLink {
+            padding-bottom: 5px;
+            font-size: 16px;
+            text-decoration: underline;
+            color: blue;
+        }
+
+        .title {
+            font-size: 22px;
+            text-align: left;
+        }
+
+        #accountIdDiv {
+            font-size: 18px;
+        }
+
+        #accountPasswordDiv {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            font-size: 18px;
+        }
+
+        #accountFNameDiv {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            font-size: 18px;
+        }
+
+        #accountLNameDiv {
+            padding-top: 10px;
+            font-size: 18px;
+        }
+
+        #accountIsManagerDiv {
+            text-align: left;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            font-size: 18px;
+        }
+
+        #createAccountButton {
+            margin-top: 15px;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        #accountId {
+            width: 200px;
+            height: 22px;
+        }
+
+        #accountPassword {
+            width: 200px;
+            height: 22px;
+        }
+
+        #accountFName {
+            width: 200px;
+            height: 22px;
+        }
+
+        #accountLName {
+            width: 200px;
+            height: 22px;
+        }
+
+        #errorMessage {
+            color: red;
+        }
+
+      
+        
+    </style>
+    <!--END OF YOUR OWN CSS-->
+</head>
+<!--<body>
+    <div id="newAccountPanel" class="contentPanel newAccountPanel">
+        <div class="newAccountBox">
+            <form onsubmit="CreateAccount($('#newLogonId').val(), $('#newLogonPassword').val(), $('#newLogonFName').val(), $('#newLogonLName').val(), $('#newLogonEmail').val()); return false;">
+                <div class="left">Create Account</div>
+                <hr />
+                <div>
+                    Email: <input type="text" id="newLogonId" />
+                </div>
+                <div>
+                    Password: <input type="password" id="newLogonPassword" />
+                </div>
+                <div>
+                    First Name: <input type="text" id="newLogonFName" />
+                </div>
+                <div>
+                    Last Name: <input type="text" id="newLogonLName" />
+                </div>
+                <hr />
+                <div>
+                    <button type="submit">Submit</button>
+                </div>
+                <div id="link"><a href="#" onclick="location.href = '../logon.html'" ; id="goBackLink">Go back to logon screen</a></div>
+            </form>
+
+        </div>
+    </div>
+
+
+</body>-->
+<body>
+    <div class="contentContainer">
+        <div id="accountPanel" class="contentPanel accountPanel">
+            <div class="accountBox">
+                <form onsubmit="CreateAccount($('#accountId').val(), $('#accountPassword').val(), $('#accountFName').val(), $('#accountLName').val()); return false;">
+                    <div class="title">Create Account</div>
+                    <hr />
+                    <br />
+                    <div id="accountIdDiv">
+                        Email:<br /> <input type="text" id="accountId" />
+                    </div>
+                    <div id="accountPasswordDiv">
+                        Password:<br /> <input type="password" id="accountPassword" />
+                    </div>
+                    <div id="accountFNameDiv">
+                        First Name:<br /> <input type="text" id="accountFName" />
+                    </div>
+                    <div id="accountLNameDiv">
+                        Last Name:<br /> <input type="text" id="accountLName" />
+                    </div>
+                    <div id="accountIsManagerDiv">
+                        <p>Are you a manager?</p>
+                        <input type="radio" id="accountManager" name="position" value="1" /><label for="accountManager">Yes</label><br />
+                        <input type="radio" id="accountEmployee" name="position" value="0" /><label>No</label>  
+                    </div>
+                    <div>
+                        <label id="errorMessage"></label>
+                    </div>
+                    <div>
+                        <button type="submit" id="createAccountButton">Create Account</button>
+                    </div>
+                    <div class="accountLinks">
+                        <a href="#" onclick="location.href = '../logon.html'" ; id="backLink">Back to logon</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
