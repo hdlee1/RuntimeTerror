@@ -91,7 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="index.html" />
+    <Content Include="logon.html" />
     <Content Include="ProjectServices.asmx" />
     <Content Include="Web.config" />
   </ItemGroup>

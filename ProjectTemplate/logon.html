@@ -12,45 +12,7 @@
 
 	<!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
 	<script type="text/javascript">
-		function TestButtonHandler() {
-			var webMethod = "ProjectServices.asmx/TestConnection";
-			var parameters = "{}";
-
-			//jQuery ajax method
-			$.ajax({
-				type: "POST",
-				url: webMethod,
-				data: parameters,
-				contentType: "application/json; charset=utf-8",
-				dataType: "json",
-				success: function (msg) {
-					var responseFromServer = msg.d;
-					alert(responseFromServer);
-				},
-				error: function (e) {
-					alert("this code will only execute if javascript is unable to access the webservice");
-				}
-			});
-		}
-
-        var contentPanels = ['logonPanel', 'newAccountPanel', 'accountsPanel', 'editAccountPanel', 'requestsPanel'];
-        //this function toggles which panel is showing, and also clears data from all panels
-        function showPanel(panelId) {
-            clearData();
-            for (var i = 0; i < contentPanels.length; i++) {
-                if (panelId == contentPanels[i]) {
-                    $("#" + contentPanels[i]).css("visibility", "visible");
-                }
-                else {
-                    $("#" + contentPanels[i]).css("visibility", "hidden");
-                }
-            }
-        }
-
-        jQuery(function () {
-            //when the app loads, show the logon panel to start with!
-           showPanel('logonPanel');
-        });
+	      
 	</script>
 	<!--END OF YOUR OWN JAVASCRIPT-->
 	<!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
@@ -61,8 +23,6 @@
 		}
         .contentContainer {
             flex: 2;
-            /* position: relative; */
-            /* margin: 5px; */
             display: table;
             position: absolute;
             top: 0;
@@ -75,14 +35,9 @@
             height: 100%;
             visibility: visible;
             flex: 2;
-            /*border: 1px solid gray;
-			border-radius: 25px;*/
         }
 
         .logonPanel {
-            /* margin: 0;
-            position: absolute;
-            top: 50%; */
             display: table-cell;
             vertical-align: middle;
         }
@@ -92,8 +47,6 @@
 		}
 
         .logonBox {
-           /* display: inline-block;
-            text-align: left;*/
             margin-left: auto;
             margin-right: auto;
             width: 300px;
@@ -165,9 +118,7 @@
 	<!--END OF YOUR OWN CSS-->
 </head>
 <body>
-
 	<div class="contentContainer">
-
 		<div id="logonPanel" class="contentPanel logonPanel">
 			<div class="logonBox">
 				<form onsubmit="LogOn($('#logonId').val(), $('#logonPassword').val()); return false;">
@@ -193,9 +144,6 @@
 
 			</div>
 		</div>
-
 	</div>
-
-	
 </body>
 </html >

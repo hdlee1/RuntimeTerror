@@ -32,37 +32,6 @@ namespace ProjectTemplate
 		}
 		////////////////////////////////////////////////////////////////////////
 
-
-
-		/////////////////////////////////////////////////////////////////////////
-		//don't forget to include this decoration above each method that you want
-		//to be exposed as a web service!
-		[WebMethod(EnableSession = true)]
-		/////////////////////////////////////////////////////////////////////////
-		public string TestConnection()
-		{
-			try
-			{
-				string testQuery = "select * from users";
-
-				////////////////////////////////////////////////////////////////////////
-				///here's an example of using the getConString method!
-				////////////////////////////////////////////////////////////////////////
-				MySqlConnection con = new MySqlConnection(getConString());
-				////////////////////////////////////////////////////////////////////////
-
-				MySqlCommand cmd = new MySqlCommand(testQuery, con);
-				MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
-				DataTable table = new DataTable();
-				adapter.Fill(table);
-				return "Success!";
-			}
-			catch (Exception e)
-			{
-				return "Something went wrong, please check your credentials and db name and try again.  Error: "+e.Message;
-			}
-		}
-
 		[WebMethod(EnableSession = true)] //NOTICE: gotta enable session on each individual method
 		public bool LogOn(string uid, string pass)
 		{
@@ -70,7 +39,8 @@ namespace ProjectTemplate
 			bool success = false;
 
 			//our connection string comes from our web.config file like we talked about earlier
-			string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+			//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+			string sqlConnectString = getConString();
 			//here's our query.  A basic select with nothing fancy.  Note the parameters that begin with @
 			//NOTICE: we added admin to what we pull, so that we can store it along with the id in the session
 			string sqlSelect = "SELECT id, ismanager FROM users WHERE email=@idValue and password=@passValue";
