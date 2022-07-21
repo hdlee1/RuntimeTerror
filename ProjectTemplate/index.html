@@ -2,7 +2,11 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<title></title>
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="-1">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<title>Employee Feedback</title>
 	<!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -28,16 +32,170 @@
 				}
 			});
 		}
+
+        var contentPanels = ['logonPanel', 'newAccountPanel', 'accountsPanel', 'editAccountPanel', 'requestsPanel'];
+        //this function toggles which panel is showing, and also clears data from all panels
+        function showPanel(panelId) {
+            clearData();
+            for (var i = 0; i < contentPanels.length; i++) {
+                if (panelId == contentPanels[i]) {
+                    $("#" + contentPanels[i]).css("visibility", "visible");
+                }
+                else {
+                    $("#" + contentPanels[i]).css("visibility", "hidden");
+                }
+            }
+        }
+
+        jQuery(function () {
+            //when the app loads, show the logon panel to start with!
+           showPanel('logonPanel');
+        });
 	</script>
 	<!--END OF YOUR OWN JAVASCRIPT-->
-
 	<!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
 	<style>
 
+		body {
+			background-color: whitesmoke;
+		}
+        .contentContainer {
+            flex: 2;
+            /* position: relative; */
+            /* margin: 5px; */
+            display: table;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .contentPanel {
+            height: 100%;
+            visibility: visible;
+            flex: 2;
+            /*border: 1px solid gray;
+			border-radius: 25px;*/
+        }
+
+        .logonPanel {
+            /* margin: 0;
+            position: absolute;
+            top: 50%; */
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+		.accountsPanel {
+			text-align: center;
+		}
+
+        .logonBox {
+           /* display: inline-block;
+            text-align: left;*/
+            margin-left: auto;
+            margin-right: auto;
+            width: 300px;
+        }
+
+		.logonBox div {
+			padding: 0px;
+			margin: 0px;
+		}
+
+		.logonBox hr {
+			padding: 0px;
+			margin: 0px;
+		}
+
+		.logonBox input {
+			width: 100px;
+			border: 1px inset gray;
+		}
+
+		.logonLinks {
+			height: 25px;
+		}
+
+        #createAccountLink {
+            padding-bottom: 5px;
+            font-size: 16px;
+            text-decoration: underline;
+            color: blue;
+        }
+
+        #signinAnonymousLink {
+            padding-bottom: 15px;
+            font-size: 16px;
+            text-decoration: underline;
+            color: blue;
+        }
+
+        .title {
+			font-size: 22px;
+            text-align: left;
+        }
+
+		#logonIdDiv {
+			font-size: 18px;
+		}
+
+        #logonPasswordDiv {
+			padding-top: 10px;
+            font-size: 18px;
+        }
+
+		#signinButton {
+			margin-top: 30px;
+			margin-bottom: 20px;
+			font-size: 18px;
+		}
+
+		#logonId {
+			width: 200px;
+			height: 22px;
+		}
+
+        #logonPassword {
+            width: 200px;
+            height: 22px;
+        }
 	</style>
 	<!--END OF YOUR OWN CSS-->
-</head >
+</head>
 <body>
-	<button onclick="javascript: TestButtonHandler();">Click here to test connection!</button>
+
+	<div class="contentContainer">
+
+		<div id="logonPanel" class="contentPanel logonPanel">
+			<div class="logonBox">
+				<form onsubmit="LogOn($('#logonId').val(), $('#logonPassword').val()); return false;">
+					<div class="title">Sign In</div>
+					<hr />
+					<br />
+					<div id="logonIdDiv">
+						Email:<br /> <input type="text" id="logonId" />
+					</div>
+					<div id="logonPasswordDiv">
+						Password:<br /> <input type="password" id="logonPassword" />
+					</div>
+					<div>
+						<button type="submit" id="signinButton">Sign In</button>
+					</div>
+					<div class="logonLinks">
+						<a href="#" onclick="showPanel('newAccountPanel')" id="createAccountLink">Create an Account</a>
+					</div>
+					<div class="logonLinks">
+						<a href="#" onclick="showPanel('homePanel')" id="signinAnonymousLink">Sign In Anonymously</a>
+					</div>
+				</form>
+
+			</div>
+		</div>
+
+	</div>
+
+	
 </body>
 </html >
