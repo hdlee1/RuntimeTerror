@@ -12,7 +12,77 @@
 
 	<!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
 	<script type="text/javascript">
-	      
+
+        //HERE'S AN EXAMPLE OF AN AJAX CALL WITH JQUERY!
+        function LogOn(uid, pass) {
+            //the url of the webservice we will be talking to
+            var webMethod = "ProjectServices.asmx/LogOn";
+            //the parameters we will pass the service (in json format because curly braces)
+            //note we encode the values for transmission over the web.  All the \'s are just
+            //because we want to wrap our keynames and values in double quotes so we have to
+            //escape the double quotes (because the overall string we're creating is in double quotes!)
+            var parameters = "{\"uid\":\"" + encodeURI(uid) + "\",\"pass\":\"" + encodeURI(pass) + "\"}";
+
+            if (sessionStorage.getItem("lockoutTime") != null) {
+                var today = new Date();
+                var lockDate = new Date(sessionStorage.getItem("lockoutTime"))
+                var minutes = parseInt(Math.abs(today.getTime() - lockDate.getTime()) / (1000 * 60) % 60);
+                if (minutes >= 5) {
+                    sessionStorage.removeItem("lockoutTime")
+                    sessionStorage.removeItem("failedLogons");
+                }
+            }
+            if (sessionStorage.getItem("lockoutTime") === null) {
+                $.ajax({
+                    //post is more secure than get, and allows
+                    //us to send big data if we want.  really just
+                    //depends on the way the service you're talking to is set up, though
+                    type: "POST",
+                    //the url is set to the string we created above
+                    url: webMethod,
+                    //same with the data
+                    data: parameters,
+                    //these next two key/value pairs say we intend to talk in JSON format
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    //jQuery sends the data and asynchronously waits for a response.  when it
+                    //gets a response, it calls the function mapped to the success key here
+                    success: function (msg) {
+                        //the server response is in the msg object passed in to the function here
+                        //since our logon web method simply returns a true/false, that value is mapped
+                        //to a generic property of the server response called d (I assume short for data
+                        //but honestly I don't know...)
+                        if (msg.d) {
+                            /*document.getElementById("signinButton").onclick = function () {*/
+                            location.href = "../userHome.html";
+                            /*};*/
+                        }
+                        else {
+                            //server replied false, so let the user know
+                            //the logon failed          
+                            if (sessionStorage.getItem("failedLogons") === null) {
+                                sessionStorage.setItem("failedLogons", 0);
+                            }
+                            var newCount = parseInt(sessionStorage.getItem("failedLogons")) + 1;
+                            sessionStorage.setItem("failedLogons", newCount);
+                            if (parseInt(sessionStorage.getItem("failedLogons")) == 3) {
+                                sessionStorage.setItem("lockoutTime", new Date())
+                                $("#errorMessage").text("Invalid Credentials Entered. After 3 failed attempts you are now locked out for 5 minutes.");
+                            }
+                            else {
+                                $("#errorMessage").text("Invalid Credentials Entered. Try Again.");
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        var errorMessage = xhr.status + ': ' + xhr.statusText;
+                        alert('Error - ' + errorMessage);
+                    }
+                });
+            }
+            //jQuery ajax method
+            
+        }    
 	</script>
 	<!--END OF YOUR OWN JAVASCRIPT-->
 	<!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
@@ -96,11 +166,12 @@
 
         #logonPasswordDiv {
 			padding-top: 10px;
+            padding-bottom: 10px;
             font-size: 18px;
         }
 
 		#signinButton {
-			margin-top: 30px;
+			margin-top: 10px;
 			margin-bottom: 20px;
 			font-size: 18px;
 		}
@@ -114,6 +185,11 @@
             width: 200px;
             height: 22px;
         }
+
+        #errorMessage {
+            color: red;
+        }
+
 	</style>
 	<!--END OF YOUR OWN CSS-->
 </head>
@@ -121,26 +197,29 @@
 	<div class="contentContainer">
 		<div id="logonPanel" class="contentPanel logonPanel">
 			<div class="logonBox">
-				<form onsubmit="LogOn($('#logonId').val(), $('#logonPassword').val()); return false;">
-					<div class="title">Sign In</div>
-					<hr />
-					<br />
-					<div id="logonIdDiv">
-						Email:<br /> <input type="text" id="logonId" />
-					</div>
-					<div id="logonPasswordDiv">
-						Password:<br /> <input type="password" id="logonPassword" />
-					</div>
-					<div>
-						<button type="submit" id="signinButton">Sign In</button>
-					</div>
-					<div class="logonLinks">
-						<a href="#" onclick="showPanel('newAccountPanel')" id="createAccountLink">Create an Account</a>
-					</div>
-					<div class="logonLinks">
-						<a href="#" onclick="showPanel('homePanel')" id="signinAnonymousLink">Sign In Anonymously</a>
-					</div>
-				</form>
+                <form onsubmit="LogOn($('#logonId').val(), $('#logonPassword').val()); return false;">
+                    <div class="title">Sign In</div>
+                    <hr />
+                    <br />
+                    <div id="logonIdDiv">
+                        Email:<br /> <input type="text" id="logonId" />
+                    </div>
+                    <div id="logonPasswordDiv">
+                        Password:<br /> <input type="password" id="logonPassword" />
+                    </div>
+                    <div>
+                        <label id="errorMessage"></label>
+                    </div>
+                    <div>
+                        <button type="submit" id="signinButton">Sign In</button>
+                    </div>
+                    <div class="logonLinks">
+                        <a href="#" onclick="showPanel('newAccountPanel')" id="createAccountLink">Create an Account</a>
+                    </div>
+                    <div class="logonLinks">
+                        <a href="#" onclick="showPanel('homePanel')" id="signinAnonymousLink">Sign In Anonymously</a>
+                    </div>
+                </form>
 
 			</div>
 		</div>
