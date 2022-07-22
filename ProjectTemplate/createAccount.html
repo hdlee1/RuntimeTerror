@@ -12,63 +12,33 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
+    <!--<a href="createAccount.html">createAccount.html</a>-->
     <script type="text/javascript">
+        //passes account info to the server, to create an account request
+        function CreateAccount(uid, pass, firstName, lastName, isManager) {
+            var webMethod = "ProjectServices.asmx/CreateAccount";
+            var parameters = "{\"uid\":\"" + encodeURI(uid) + "\",\"pass\":\"" + encodeURI(pass) + "\",\"firstName\":\"" + encodeURI(firstName) + "\",\"lastName\":\"" + encodeURI(lastName) + "\",\"isManager\":\"" + encodeURI(isManager) + "\"}";
 
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.href = "../logon.html";
+                    alert("Account Created!");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
     <style>
-
-        /*body {
-            background-color: whitesmoke;
-        }
-
-        .contentPanel {
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            height: 100%;
-            width: 100%;
-            visibility: visible;
-            flex: 1;*/
-            /*border: 1px solid gray;
-			border-radius: 25px;*/
-        /*}
-
-        .newAccountPanel {
-            text-align: center;
-        }
-
-        .newAccountBox {
-            display: inline-block;
-            text-align: right;
-        }
-
-        .newAccountBox input {
-            width: 100px;
-            border: 1px inset gray;
-        }
-
-        .newAccountBox hr {
-            padding: 0px;
-            margin: 0px;
-        }
-
-        .left {
-            text-align: left;
-        }
-
-        #link {
-            height: 25px;
-            padding-top: 15px;
-        }
-
-        #goBackLink {
-            font-size: 16px;
-            text-decoration: underline;
-            color: blue;
-        }*/
-
         body {
             background-color: whitesmoke;
         }
@@ -193,65 +163,41 @@
             color: red;
         }
 
-      
-        
+        .required {
+            font-size: 16px;
+            text-align: left;
+            font-style: italic;
+        }
     </style>
     <!--END OF YOUR OWN CSS-->
 </head>
-<!--<body>
-    <div id="newAccountPanel" class="contentPanel newAccountPanel">
-        <div class="newAccountBox">
-            <form onsubmit="CreateAccount($('#newLogonId').val(), $('#newLogonPassword').val(), $('#newLogonFName').val(), $('#newLogonLName').val(), $('#newLogonEmail').val()); return false;">
-                <div class="left">Create Account</div>
-                <hr />
-                <div>
-                    Email: <input type="text" id="newLogonId" />
-                </div>
-                <div>
-                    Password: <input type="password" id="newLogonPassword" />
-                </div>
-                <div>
-                    First Name: <input type="text" id="newLogonFName" />
-                </div>
-                <div>
-                    Last Name: <input type="text" id="newLogonLName" />
-                </div>
-                <hr />
-                <div>
-                    <button type="submit">Submit</button>
-                </div>
-                <div id="link"><a href="#" onclick="location.href = '../logon.html'" ; id="goBackLink">Go back to logon screen</a></div>
-            </form>
 
-        </div>
-    </div>
-
-
-</body>-->
 <body>
     <div class="contentContainer">
         <div id="accountPanel" class="contentPanel accountPanel">
             <div class="accountBox">
-                <form onsubmit="CreateAccount($('#accountId').val(), $('#accountPassword').val(), $('#accountFName').val(), $('#accountLName').val()); return false;">
+                <form onsubmit="CreateAccount($('#accountId').val(), $('#accountPassword').val(), $('#accountFName').val(), $('#accountLName').val(), $('input[name=position]:checked').val()); return false;">
                     <div class="title">Create Account</div>
                     <hr />
                     <br />
+                    <div class="required">(All fields are required)</div>
+                    <br />
                     <div id="accountIdDiv">
-                        Email:<br /> <input type="text" id="accountId" />
+                        Email:<br /> <input required type="text" id="accountId" />
                     </div>
                     <div id="accountPasswordDiv">
-                        Password:<br /> <input type="password" id="accountPassword" />
+                        Password:<br /> <input required type="password" id="accountPassword" />
                     </div>
                     <div id="accountFNameDiv">
-                        First Name:<br /> <input type="text" id="accountFName" />
+                        First Name:<br /> <input required type="text" id="accountFName" />
                     </div>
                     <div id="accountLNameDiv">
-                        Last Name:<br /> <input type="text" id="accountLName" />
+                        Last Name:<br /> <input required type="text" id="accountLName" />
                     </div>
                     <div id="accountIsManagerDiv">
                         <p>Are you a manager?</p>
-                        <input type="radio" id="accountManager" name="position" value="1" /><label for="accountManager">Yes</label><br />
-                        <input type="radio" id="accountEmployee" name="position" value="0" /><label>No</label>  
+                        <input type="radio" class="accountUser" name="position" value="1" /><label for="accountManager">Yes</label><br />
+                        <input checked type="radio" class="accountUser" name="position" value="0" /><label>No</label>
                     </div>
                     <div>
                         <label id="errorMessage"></label>
