@@ -22,30 +22,65 @@
             background-color: whitesmoke;
         }
 
-
-        .title {
-            font-size: 22px;
+        .header {
+            font-size: 15px;
             text-align: left;
         }
 
-        button {
-            margin-top: 30px;
-            margin-bottom: 20px;
-            font-size: 18px;
+        .subTitle {
+            font-size: 14px;
+            text-align: center;
         }
+
+        button {
+            margin: auto;
+            padding: 8px;
+            font-size: 18px;
+            background-color: dodgerblue;
+            color: white;
+            text-align: center;
+            width: 100%;
+            border-radius: 12px; 
+        }
+
+        #logOut {
+            position: absolute;
+            top: 30px; 
+            right: 10px; 
+            margin: auto;
+            width: max-content;
+        }
+
+        .taskButtons {
+            margin: 0;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
     </style>
     <!--END OF YOUR OWN CSS-->
 </head>
 <body>
-    <div class="title">Welcome <section class="outputArea"></section></div>
+    <div class="header">
+        <table>
+            <tr>
+                <td><h1>Welcome back, Manager Name!</h1></td>
+                <td><button id="logOut">Log Out</button></td>
+            </tr>
+        </table>
+    </div>
     <hr />
     <br />
-    <div class="title"> Select a button below to get started.</div>
-    <br><br><br>
-    <button>View Suggestions or Problems</button>
-    <br><br>
-    <button>View Votting Poll</button>
-    <br><br><br><br>
-    <button>Log Out</button>
+    <div class="subTitle">
+        <h2>Select one of the following options to perform a task.</h2>
+    </div>
+    <div class="taskButtons">
+        <button>View Employee Problems & Suggestions</button>
+        <br><br>
+        <button>View Voting Poll</button>
+    </div>
 </body>
 </html>
