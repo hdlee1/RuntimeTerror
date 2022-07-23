@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="createAccount.html" />
+    <Content Include="createAccount2.html" />
     <Content Include="Global.asax" />
     <Content Include="logon.html" />
     <Content Include="manageHomePage.html" />
