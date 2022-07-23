@@ -5,12 +5,40 @@
     <meta http-equiv="Expires" content="-1">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>Employee Feedback</title>
+    <title>Employee Home</title>
     <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
+        /* This in theory should work with Log Off Function once created in ProjectServices.asmx
+        //logs the user off both at the client and at the server
+        function LogOff() {
+
+            var webMethod = "ProjectServices.asmx/LogOff";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d) {
+                        //we logged off, so go back to logon page,
+                      
+                    }
+                    else {
+                    }
+                },
+                error: function (e) {
+                    alert("An error occured. Please try again");
+                }
+            });
+            */
+            //this is a temporary log off function to show functionality
+            function LogOff() {
+                location.href = "logon.html";
+                alert("Log Off Successful");
+            }
 
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
@@ -21,30 +49,66 @@
             background-color: whitesmoke;
         }
 
-
-        .title {
-            font-size: 22px;
+        .header {
+            font-size: 15px;
             text-align: left;
         }
 
+        .subTitle {
+            font-size: 14px;
+            text-align: center;
+        }
+
         button {
-            margin-top: 30px;
-            margin-bottom: 20px;
+            margin: auto;
+            padding: 8px;
             font-size: 18px;
+            background-color: dodgerblue;
+            color: white;
+            text-align: center;
+            width: 100%;
+            border-radius: 12px;
+        }
+
+        #logOut {
+            position: absolute;
+            top: 30px;
+            right: 10px;
+            margin: auto;
+            width: auto;
+        }
+
+        .taskButtons {
+            margin: 0;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
         }
     </style>
     <!--END OF YOUR OWN CSS-->
 </head>
 <body>
-    <div class="title">Welcome <section class="outputArea"></section></div>
+    <div class="header">
+        <table>
+            <tr>
+                <!--span will hold user's name pulled from session. functiuon to get name does not yet exist 7/22-->
+                <td><h1>Welcome Back, <span id="userName"></span>!</h1></td>
+                <td><button id="logOut" onclick="LogOff()">Log Out</button></td>
+            </tr>
+        </table>
+        
+     </div>
     <hr />
-    <br />
-    <div class="title"> Select a button below to get started.</div>
-    <br><br><br>
-    <button>Post Suggestion or Problem</button>
-    <br><br>
-    <button>View Votting Poll</button>
-    <br><br><br><br>
-    <button>Log Out</button>
+    <div class="subTitle">
+        <h2>Select a button below to get started.</h2>
+    </div>
+    <div class="taskButtons">
+        <!-- Pages these buttons link to do not yet exist 7/22-->
+        <button onclick="location.href='problemPage.html'">Post Suggestion or Problem</button>
+        <br /><br />
+        <button onclick="location.href='votingPoll.html'">View Votting Poll</button>
+    </div>
 </body>
 </html>
