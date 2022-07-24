@@ -73,7 +73,8 @@ namespace ProjectTemplate
 				Session["id"] = sqlDt.Rows[0]["id"];
 				Session["ismanager"] = sqlDt.Rows[0]["ismanager"];
 				success = true;
-			}
+
+            }
 			//return the result!
 			return success;
 		}

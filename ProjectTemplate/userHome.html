@@ -24,7 +24,7 @@
                 success: function (msg) {
                     if (msg.d) {
                         //we logged off, so go back to logon page,
-                      
+                        location.href = "logon.html";
                     }
                     else {
                     }
@@ -34,11 +34,17 @@
                 }
             });
             */
-            //this is a temporary log off function to show functionality
-            function LogOff() {
-                location.href = "logon.html";
-                alert("Log Off Successful");
-            }
+        //this is a temporary log off function to show functionality
+        function LogOff() {
+            location.href = "logon.html";
+            alert("Log Off Successful");
+        }
+        function getWelcome() {
+            var name = sessionStorage.getItem("SessionName");
+            //var name = new ActiveXObject("WScript.Network").UserName;
+            document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
+        }
+
 
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
@@ -89,12 +95,12 @@
     </style>
     <!--END OF YOUR OWN CSS-->
 </head>
-<body>
+<body onload="getWelcome()">
     <div class="header">
         <table>
             <tr>
                 <!--span will hold user's name pulled from session. functiuon to get name does not yet exist 7/22-->
-                <td><h1>Welcome Back, <span id="userName"></span>!</h1></td>
+                <td><h1 id="welcome">Welcome back, user!</h1></td>
                 <td><button id="logOut" onclick="LogOff()">Log Out</button></td>
             </tr>
         </table>
