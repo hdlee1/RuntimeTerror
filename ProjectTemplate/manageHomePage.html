@@ -13,6 +13,13 @@
     <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
 
+        function getWelcome() {
+            var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
+            //var name = sessionStorage.getItem(logOn.);
+            //var name = new ActiveXObject("WScript.Network").UserName;
+            document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
+        }
+
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
@@ -63,11 +70,11 @@
     </style>
     <!--END OF YOUR OWN CSS-->
 </head>
-<body>
+<body onload="getWelcome();">
     <div class="header">
         <table>
             <tr>
-                <td><h1>Welcome back, Manager Name!</h1></td>
+                <td><h1 id="welcome">Welcome back, Manager Name!</h1></td>
                 <td><button id="logOut">Log Out</button></td>
             </tr>
         </table>

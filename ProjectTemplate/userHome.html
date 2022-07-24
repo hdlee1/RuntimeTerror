@@ -40,12 +40,12 @@
             alert("Log Off Successful");
         }
         function getWelcome() {
-            var name = sessionStorage.getItem("SessionName");
+            var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
+            //var name = sessionStorage.getItem(logOn.);
             //var name = new ActiveXObject("WScript.Network").UserName;
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
-
-
+      
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--AND YOUR OWN CSS CAN GO HERE AS WELL-->

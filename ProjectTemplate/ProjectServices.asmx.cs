@@ -39,13 +39,15 @@ namespace ProjectTemplate
 			//we return this flag to tell them if they logged in or not
 			bool success = false;
 			string isManager = "false";
+			string fname = "";
+			string lname = "";
 
 			//our connection string comes from our web.config file like we talked about earlier
 			//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 			string sqlConnectString = getConString();
 			//here's our query.  A basic select with nothing fancy.  Note the parameters that begin with @
 			//NOTICE: we added admin to what we pull, so that we can store it along with the id in the session
-			string sqlSelect = "SELECT id, ismanager FROM users WHERE email=@idValue and password=@passValue";
+			string sqlSelect = "SELECT id, ismanager, fname, lname FROM users WHERE email=@idValue and password=@passValue";
 
 			//set up our connection object to be ready to use our connection string
 			MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
@@ -76,10 +78,15 @@ namespace ProjectTemplate
 				Session["ismanager"] = sqlDt.Rows[0]["ismanager"];
 				isManager = sqlDt.Rows[0]["ismanager"].ToString();
 				success = true;
+				fname = sqlDt.Rows[0]["fname"].ToString();
+				lname = sqlDt.Rows[0]["lname"].ToString();
 			}
 			var result = new logOnResult();
 			result.successful = success;
 			result.isManager = isManager;
+			result.fname = fname;
+			result.lname = lname;
+
 
 			//return the result!
 			return JsonConvert.SerializeObject(result);

@@ -55,6 +55,10 @@
                         if (msg != null && msg.d != null) {
                             var data = msg.d;
                             data = $.parseJSON(data);
+                            if (data.successful) {
+                                sessionStorage.setItem("fnameLogon", data.fname);
+                                sessionStorage.setItem("lnameLogon", data.lname);
+                            }
                             if (data.successful && data.isManager == "0") {
                                 location.href = "../userHome.html";
                             }
@@ -119,6 +123,8 @@
                         var data = msg.d;
                         data = $.parseJSON(data);
                         if (data.successful) {
+                            sessionStorage.setItem("fnameLogon", "Anonymous");
+                            sessionStorage.setItem("lnameLogon", "");
                             location.href = "../userHome.html";
                         }
                     }
