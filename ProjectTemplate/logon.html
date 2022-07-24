@@ -61,22 +61,22 @@
                             else if (data.successful && data.isManager == "1") {
                                 location.href = "../manageHomePage.html";
                             }
-                        }
-                        else {
-                            //server replied false, so let the user know
-                            //the logon failed
-                            if (sessionStorage.getItem("failedLogons") === null) {
-                                sessionStorage.setItem("failedLogons", 0);
-                            }
-                            var newCount = parseInt(sessionStorage.getItem("failedLogons")) + 1;
-                            sessionStorage.setItem("failedLogons", newCount);
-                            if (parseInt(sessionStorage.getItem("failedLogons")) == 3) {
-                                sessionStorage.setItem("lockoutTime", new Date())
-                                $("#errorMessage").text("Invalid Credentials Entered. After 3 failed attempts you are now locked out for 5 minutes.");
-                            }
-                            else {
-                                $("#errorMessage").text("Invalid Credentials Entered. Try Again.");
-                            }
+                            if (!data.successful) {
+                                //server replied false, so let the user know
+                                //the logon failed
+                                if (sessionStorage.getItem("failedLogons") === null) {
+                                    sessionStorage.setItem("failedLogons", 0);
+                                }
+                                var newCount = parseInt(sessionStorage.getItem("failedLogons")) + 1;
+                                sessionStorage.setItem("failedLogons", newCount);
+                                if (newCount == 3) {
+                                    sessionStorage.setItem("lockoutTime", new Date())
+                                    $("#errorMessage").text("Invalid Credentials Entered. After 3 failed attempts you are now locked out for 5 minutes.");
+                                }
+                                else {
+                                    $("#errorMessage").text("Invalid Credentials Entered. Try Again.");
+                                }
+                            }                           
                         }
                     },
                     error: function (xhr, status, error) {
@@ -258,10 +258,10 @@
                         <label id="errorMessage"></label>
                     </div>
                     <div>
-                        <button onclick="LogOn()" id="signinButton">Sign In</button>
+                        <button type="submit" id="signinButton">Sign In</button>
                     </div>
-                    <div class="logonLinks"id="createAccountLink">
-                        <a href="createAccount2.html"><!-- onclick="location.href = '../createAccount.html'" ;--> Create an Account </a>
+                    <div class="logonLinks" id="createAccountLink">
+                        <a href="createAccount.html"> Create an Account </a>
                     </div>
                     <div class="logonLinks">
                         <a href="#" onclick="LogOnAnonymous();" id="signinAnonymousLink">Sign In Anonymously</a>
