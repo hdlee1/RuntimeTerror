@@ -80,6 +80,7 @@ namespace ProjectTemplate
 			var result = new logOnResult();
 			result.successful = success;
 			result.isManager = isManager;
+
 			//return the result!
 			return JsonConvert.SerializeObject(result);
 		}
