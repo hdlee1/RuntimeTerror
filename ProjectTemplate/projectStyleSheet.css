@@ -1,0 +1,144 @@
+﻿/*elements used on all pages*/
+body {
+    background-color: whitesmoke;
+}
+button {
+    margin: auto;
+    padding: 8px;
+    font-size: 18px;
+    background-color: dodgerblue;
+    color: white;
+    text-align: center;
+    width: 100%;
+    border-radius: 12px;
+}
+
+/*logon page*/
+.contentContainer {
+    flex: 2;
+    display: table;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.contentPanel {
+    height: 100%;
+    visibility: visible;
+    flex: 2;
+}
+
+.logonPanel {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.accountsPanel {
+    text-align: center;
+}
+
+.logonBox {
+    margin-left: auto;
+    margin-right: auto;
+    width: 300px;
+}
+
+    .logonBox div {
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .logonBox hr {
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .logonBox input {
+        width: 100px;
+        border: 1px inset gray;
+    }
+
+.logonLinks {
+    height: 25px;
+}
+
+#createAccountLink {
+    padding-bottom: 5px;
+    font-size: 16px;
+    text-decoration: underline;
+    color: blue;
+}
+
+#signinAnonymousLink {
+    padding-bottom: 15px;
+    font-size: 16px;
+    text-decoration: underline;
+    color: blue;
+}
+
+.title {
+    font-size: 22px;
+    text-align: left;
+}
+
+#logonIdDiv {
+    font-size: 18px;
+}
+
+#logonPasswordDiv {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 18px;
+}
+
+#signinButton {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+#logonId {
+    width: 200px;
+    height: 22px;
+}
+
+#logonPassword {
+    width: 200px;
+    height: 22px;
+}
+
+#errorMessage {
+    color: red;
+}
+
+
+/* user and manager Home*/
+.header {
+    font-size: 15px;
+    text-align: left;
+}
+
+.subTitle {
+    font-size: 14px;
+    text-align: center;
+}
+
+
+#logOut {
+    position: absolute;
+    top: 30px;
+    right: 10px;
+    margin: auto;
+    width: auto;
+}
+
+.taskButtons {
+    margin: 0;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}

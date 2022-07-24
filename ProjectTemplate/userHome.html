@@ -45,55 +45,11 @@
             //var name = new ActiveXObject("WScript.Network").UserName;
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
-      
+
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
-    <!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
-    <style>
-
-        body {
-            background-color: whitesmoke;
-        }
-
-        .header {
-            font-size: 15px;
-            text-align: left;
-        }
-
-        .subTitle {
-            font-size: 14px;
-            text-align: center;
-        }
-
-        button {
-            margin: auto;
-            padding: 8px;
-            font-size: 18px;
-            background-color: dodgerblue;
-            color: white;
-            text-align: center;
-            width: 100%;
-            border-radius: 12px;
-        }
-
-        #logOut {
-            position: absolute;
-            top: 30px;
-            right: 10px;
-            margin: auto;
-            width: auto;
-        }
-
-        .taskButtons {
-            margin: 0;
-            position: absolute;
-            top: 30%;
-            left: 50%;
-            -ms-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-        }
-    </style>
-    <!--END OF YOUR OWN CSS-->
+    <!--LINK TO PROJECT STYLE SHEET-->
+    <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
 <body onload="getWelcome()">
     <div class="header">
