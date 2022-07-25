@@ -26,7 +26,7 @@
                 dataType: "json",
                 success: function (msg) {
                     location.href = "../logon.html";
-                    alert("Account Created!");
+                    alert("Post Created!");
                 },
                 error: function (xhr, status, error) {
                     var errorMessage = xhr.status + ': ' + xhr.statusText;
@@ -34,7 +34,7 @@
                 }
             });
         }
-        /* This in theory should work with Log Off Function once created in ProjectServices.asmx
+        //This in theory should work with Log Off Function once created in ProjectServices.asmx
         //logs the user off both at the client and at the server
         function LogOff() {
             var webMethod = "ProjectServices.asmx/LogOff";
@@ -51,16 +51,19 @@
                     else {
                     }
                 },
-                error: function (e) {
-                    alert("An error occured. Please try again");
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
                 }
             });
-        */
-        //this is a temporary log off function to show functionality
-        function logOff() {
-            location.href = "logon.html";
-            alert("Log Off Successful");
         }
+
+        //this is a temporary log off function to show functionality
+        //function logOff() {
+        //    location.href = "logon.html";
+        //    alert("Log Off Successful");
+        //}
+
         function getWelcome() {
             var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
             //var name = sessionStorage.getItem(logOn.);
@@ -78,7 +81,7 @@
         <a href="userHome.html">Home</a>
         <a class="active" href="postProblem.html">Post Problem/Suggestion</a>
         <a href="userFeed.html">Problems/Suggestions Feed</a>
-        <a href="logon.html">Log Off</a>
+        <a href="#" onclick="LogOff()">Log Off</a>
     </div>
     <h1 class="header">Post a Problem or Suggestion</h1></td>
 

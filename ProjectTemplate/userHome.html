@@ -11,7 +11,7 @@
 
     <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
-        /* This in theory should work with Log Off Function once created in ProjectServices.asmx
+         //This in theory should work with Log Off Function once created in ProjectServices.asmx
         //logs the user off both at the client and at the server
         function LogOff() {
 
@@ -29,16 +29,19 @@
                     else {
                     }
                 },
-                error: function (e) {
-                    alert("An error occured. Please try again");
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
                 }
             });
-            */
-        //this is a temporary log off function to show functionality
-        function LogOff() {
-            location.href = "logon.html";
-            alert("Log Off Successful");
         }
+            
+        //this is a temporary log off function to show functionality
+        //function LogOff() {
+        //    location.href = "logon.html";
+        //    alert("Log Off Successful");
+        //}
+
         function getWelcome() {
             var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
             //var name = sessionStorage.getItem(logOn.);
@@ -56,7 +59,7 @@
         <a class="active" href="userHome.html">Home</a>
         <a href="postProblem.html">Post Problem/Suggestion</a>
         <a href="userFeed.html">Problems/Suggestions Feed</a>
-        <a href="logon.html">Log Off</a>
+        <a href="#" onclick="LogOff()">Log Off</a>
     </div>
     <h1 id="welcome"><script>getWelcome()</script></h1>
     <hr />
