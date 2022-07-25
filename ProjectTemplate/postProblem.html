@@ -34,6 +34,29 @@
                 }
             });
         }
+
+        function CreatePostAnonymously() {
+            var webMethod = "ProjectServices.asmx/CreatePostAnonymously";
+            var post = document.getElementById('post').value;
+            var department = document.getElementById('departments').value;
+            var parameters = "{\"post\":\"" + encodeURI(post) + "\",\"department\":\"" + encodeURI(department) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.href = "../logon.html";
+                    alert("Post Created!");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
         //This in theory should work with Log Off Function once created in ProjectServices.asmx
         //logs the user off both at the client and at the server
         function LogOff() {
@@ -86,7 +109,7 @@
     <h1 class="header">Post a Problem or Suggestion</h1></td>
 
     <hr />
-    <div class="post" style="left-margin: auto; right-margin: auto;">
+    <div class="post" style="margin-left: auto; margin-right: auto;">
         <label><h4 style="display: inline;">Select Department:</h4></label>
         <select name="departments" id="departments">
             <option value="management">Management</option>
@@ -101,9 +124,8 @@
         <br><br>
         <textarea id="post" rows="10" cols="80">This post will be made public. Please be mindful and respectful when posting your problem or suggestion. Any inappropriate posts will removed.</textarea>
         <br> <br>
-        <button class="button" onclick="CreatePost()">Submit</button></td>
-        <button class="button">Submit Anonymously</button>
-        </table>
+        <button class="button" onclick="CreatePost()">Submit</button>
+        <button class="button" onclick="CreatePostAnonymously()">Submit Anonymously</button>
     </div>
 </body>
 </html>
