@@ -1,11 +1,12 @@
-﻿<html>
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="-1">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>Employee Home</title>
+    <title>Post Problems/Suggestions</title>
     <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -14,7 +15,6 @@
         /* This in theory should work with Log Off Function once created in ProjectServices.asmx
         //logs the user off both at the client and at the server
         function LogOff() {
-
             var webMethod = "ProjectServices.asmx/LogOff";
             $.ajax({
                 type: "POST",
@@ -33,9 +33,9 @@
                     alert("An error occured. Please try again");
                 }
             });
-            */
+        */
         //this is a temporary log off function to show functionality
-        function LogOff() {
+        function logOff() {
             location.href = "logon.html";
             alert("Log Off Successful");
         }
@@ -51,23 +51,34 @@
     <!--LINK TO PROJECT STYLE SHEET-->
     <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
-<body onload="getWelcome()">
+<body>
     <div class="topnav">
-        <a class="active" href="userHome.html">Home</a>
-        <a href="postProblem.html">Post Problem/Suggestion</a>
-        <a href="">Problems/Suggestions Feed</a>
+        <a href="userHome.html">Home</a>
+        <a class="active" href="postProblem.html">Post Problem/Suggestion</a>
+        <a href="#contact">Problems/Suggestions Feed</a>
         <a href="logon.html">Log Off</a>
     </div>
-    <h1 id="welcome"><script>getWelcome()</script></h1>
+    <h1 id="welcome">Post a Problem or Suggestion</h1></td>
+
     <hr />
-    <div class="subTitle">
-        <h2>Select a button below to get started.</h2>
-    </div>
-    <div class="taskButtons">
-        <!-- Pages these buttons link to do not yet exist 7/22-->
-        <button onclick="location.href='problemPage.html'">Post Suggestion or Problem</button>
-        <br /><br />
-        <button onclick="location.href='votingPoll.html'">View Votting Poll</button>
+    <div class="post" style="left-margin: auto; right-margin: auto;">
+        <label><h4 style="display: inline;">Select Department:</h4></label>
+        <select name="departments" id="departments">
+            <option value="management">Management</option>
+            <option value="finance">Finance</option>
+            <option value="accounting">Accounting</option>
+            <option value="hr">HR</option>
+            <option value="sales">Sales</option>
+            <option value="marketing">Marketing</option>
+            <option value="IT">IT</option>
+            <option value="general">General</option>
+        </select>
+        <br><br>
+        <textarea rows="10" cols="80">Tell us about your problem or suggestion!</textarea>
+        <br> <br>
+        <button class="button">Submit</button></td>
+        <button class="button">Submit Anonymously</button>
+        </table>
     </div>
 </body>
 </html>

@@ -1,4 +1,8 @@
 ﻿/*elements used on all pages*/
+* {
+    box-sizing: border-box;
+}
+
 body {
     background-color: whitesmoke;
 }
@@ -134,7 +138,7 @@ button {
     width: auto;
 }
 
-.taskButtons {
+.taskButtons{
     margin: 0;
     position: absolute;
     top: 30%;
@@ -142,3 +146,60 @@ button {
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
 }
+
+.button {
+    width: 200px; 
+    display: inline-block;
+}
+
+.post {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+textarea {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: medium;
+}
+
+#departments {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: medium;
+    font-weight: bold;
+}
+
+
+/* Add a black background color to the top navigation */
+.topnav {
+    background-color: black;
+    overflow: hidden;
+    width: 100%;
+  }
+  
+  /* Style the links inside the navigation bar */
+  .topnav a {
+    display: block;
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    width: 25%;
+  }
+  
+  /* Change the color of links on hover */
+  .topnav a:hover {
+    background-color: rgb(229, 240, 245);
+    color: black;
+  }
+  
+  /* Add a color to the active/current link */
+  .topnav a.active {
+    background-color: dodgerblue;
+    color: white;
+  }
+
+ 
