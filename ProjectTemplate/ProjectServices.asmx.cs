@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Services;
-using MySql.Data;
-using MySql.Data.MySqlClient;
 using System.Data;
 using Newtonsoft.Json;
+using MySqlConnector;
 
 namespace ProjectTemplate
 {
-	[WebService(Namespace = "http://tempuri.org/")]
+    [WebService(Namespace = "http://tempuri.org/")]
 	[WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 	[System.ComponentModel.ToolboxItem(false)]
 	[System.Web.Script.Services.ScriptService]
@@ -154,6 +151,44 @@ namespace ProjectTemplate
 			sqlCommand.Parameters.AddWithValue("@fnameValue", HttpUtility.UrlDecode(firstName));
 			sqlCommand.Parameters.AddWithValue("@lnameValue", HttpUtility.UrlDecode(lastName));
 			sqlCommand.Parameters.AddWithValue("@isManagerValue", HttpUtility.UrlDecode(isManager));
+
+			//this time, we're not using a data adapter to fill a data table.  We're just
+			//opening the connection, telling our command to "executescalar" which says basically
+			//execute the query and just hand me back the number the query returns (the ID, remember?).
+			//don't forget to close the connection!
+			sqlConnection.Open();
+			//we're using a try/catch so that if the query errors out we can handle it gracefully
+			//by closing the connection and moving on
+			try
+			{
+				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				//here, you could use this accountID for additional queries regarding
+				//the requested account.  Really this is just an example to show you
+				//a query where you get the primary key of the inserted row back from
+				//the database!
+			}
+			catch (Exception e)
+			{
+			}
+			sqlConnection.Close();
+		}
+
+        [WebMethod(EnableSession = true)]
+        public void CreatePost(string post, string department)
+        {
+            string sqlconnectstring = getConString();
+            //the only thing fancy about this query is select last_insert_id() at the end.  all that
+            //does is tell mysql server to return the primary key of the last inserted row.
+            string sqlselect = "insert into posts(UserID,Post,Department,Datetime)" +
+                               "values(@id,@post,@department,@datetime); select last_insert_id();";
+
+			MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
+			MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
+
+			sqlCommand.Parameters.AddWithValue("@id", HttpUtility.UrlDecode(Session["id"].ToString()));
+			sqlCommand.Parameters.AddWithValue("@post", HttpUtility.UrlDecode(post));
+			sqlCommand.Parameters.AddWithValue("@department", HttpUtility.UrlDecode(department));
+			sqlCommand.Parameters.AddWithValue("@datetime", DateTime.Now);
 
 			//this time, we're not using a data adapter to fill a data table.  We're just
 			//opening the connection, telling our command to "executescalar" which says basically

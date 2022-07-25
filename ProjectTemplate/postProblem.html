@@ -12,6 +12,28 @@
 
     <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
+        function CreatePost() {
+            var webMethod = "ProjectServices.asmx/CreatePost";
+            var post = document.getElementById('post').value;
+            var department = document.getElementById('departments').value;
+            var parameters = "{\"post\":\"" + encodeURI(post) + "\",\"department\":\"" + encodeURI(department) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.href = "../logon.html";
+                    alert("Account Created!");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
         /* This in theory should work with Log Off Function once created in ProjectServices.asmx
         //logs the user off both at the client and at the server
         function LogOff() {
@@ -74,9 +96,9 @@
             <option value="general">General</option>
         </select>
         <br><br>
-        <textarea rows="10" cols="80">This post will be made public. Please be mindful and respectful when posting your problem or suggestion. Any inappropriate posts will removed.</textarea>
+        <textarea id="post" rows="10" cols="80">This post will be made public. Please be mindful and respectful when posting your problem or suggestion. Any inappropriate posts will removed.</textarea>
         <br> <br>
-        <button class="button">Submit</button></td>
+        <button class="button" onclick="CreatePost()">Submit</button></td>
         <button class="button">Submit Anonymously</button>
         </table>
     </div>
