@@ -1,9 +1,4 @@
 ﻿/*elements used on all pages*/
-* {
-    box-sizing: border-box;
-}
-/*Just adding a comment to commit and push code again this can be deleted*/
-
 body {
     background-color: whitesmoke;
     font-family: 'Times New Roman', Times, serif;
@@ -214,4 +209,14 @@ textarea {
     color: white;
   }
 
- 
+#feed {
+    border: 2px groove black;
+    border-collapse: collapse;
+}
+
+.left, .likes {
+    float:left;
+}
+.right, .dislikes{
+    float:right;
+}

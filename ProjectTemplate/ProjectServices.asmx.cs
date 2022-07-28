@@ -270,7 +270,7 @@ namespace ProjectTemplate
 
 				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 				string sqlConnectString = getConString();
-				string sqlSelect = "Select PostID, UserID, Post, Department, DateTimes, Likes, Dislikes, Comments, Solved, Rejected from posts";
+				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Likes, p.Dislikes, p.Comments, p.Solved, p.Rejected from posts p inner join users u on u.id = p.UserID order by DateTimes DESC";
 
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -290,9 +290,10 @@ namespace ProjectTemplate
 					{ 
 						id = Convert.ToInt32(sqlDt.Rows[i]["PostId"]),
 						uid = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
+						userName = sqlDt.Rows[i]["UserName"].ToString(),
 						postText = sqlDt.Rows[i]["Post"].ToString(),
 						department = sqlDt.Rows[i]["Department"].ToString(),
-						postDate = Convert.ToDateTime(sqlDt.Rows[i]["DateTimes"]),
+						postDate = sqlDt.Rows[i]["DateTimes"].ToString(),
 						likes = Convert.ToInt32(sqlDt.Rows[i]["Likes"]),
 						dislikes = Convert.ToInt32(sqlDt.Rows[i]["Dislikes"]),
 						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),

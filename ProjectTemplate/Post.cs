@@ -9,9 +9,10 @@ namespace ProjectTemplate
     {
         public int id;
         public int uid;
+        public string userName;
         public string postText;
         public string department;
-        public DateTime postDate;
+        public string postDate;
         public int likes;
         public int dislikes;
         public bool hasComments;
