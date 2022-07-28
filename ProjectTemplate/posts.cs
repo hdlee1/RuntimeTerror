@@ -10,7 +10,7 @@ namespace ProjectTemplate
         public int postId;
         public int userId;
         public String post;
-        public DateTime date;
+        public String date;
         public String firstName;
         public String lastName;
         public String email;    

@@ -64,20 +64,22 @@
                         //so we can use them in other functions as well
                         postsArray = msg.d;
                         //this clears out the div that will hold our account info
-                        $("#accountsBox").empty();
+                        $("#feed").empty();
                         //again, we assume we're not an admin unless we see data from the server
                         //that we know only admins can see
-                        admin = false;
+                        //admin = false;
                         for (var i = 0; i < postsArray.length; i++) {
                             //we grab on to a specific html element in jQuery
                             //by using a  # followed by that element's id.
                             var posts;
+                            //let time = new Date();
+                            //postsArray[i].date = time.toLocaleString('en-US');
                             //if they have access to admin-level info (like userid and password) then
                             //create output that has an edit option
                             if (postsArray[i].userId == 6) {
                                 posts = "<div class='accountRow' id='" + postsArray[i].postId + "'>" +
-                                    postsArray[i].firstName + " " + postsArray[i].post + "</div><hr>"
-                                admin = true;
+                                    postsArray[i].firstName + " " + postsArray[i].post + " " + postsArray[i].date + "</div><hr>"
+                                //admin = true;
                             }
                             //+ "<a href='#' onclick='LoadAccount(" + postsArray[i].userId + ")' class='optionsTag'>edit</a>
                             //if not, then they're not an admin so don't include the edit option
@@ -85,9 +87,9 @@
                                 posts = "<div class='accountRow' id='" + postsArray[i].postId + "'>" +
                                     "<a class='nameTag' href='mailto:" + postsArray[i].email + "'>" +
                                     postsArray[i].firstName + " " + postsArray[i].lastName + 
-                                    "</a>" + " " + postsArray[i].post + "</div><hr>"
+                                    "</a>" + " " + postsArray[i].post + " " + postsArray[i].date + "</div><hr>"
                             }
-                            $("#accountsBox").append(
+                            $("#feed").append(
                                 //anything we throw at our panel in the form of text
                                 //will be added to the contents of that panel.  Here
                                 //we're putting together a div that holds info on the
@@ -111,7 +113,7 @@
     <!--LINK TO PROJECT STYLE SHEET-->
     <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
-<body onload="GetPosts();">
+<body onload="GetPost();">
     <div class="topnav">
         <a href="userHome.html">Home</a>
         <a href="postProblem.html">Post Problem/Suggestion</a>
@@ -120,12 +122,52 @@
     </div>
     <h1 class="header">Problems & Suggestions Feed</h1>
     <hr />
-    <div id="accountsPanel" class="contentPanel">
+    <!--<div id="accountsPanel" class="contentPanel">
         <hr />
         <div class="accountsBox" id="accountsBox">
 
 
         </div>
-    </div>
+    </div>-->
+    <table id="feed">
+        <tr>
+            <td colspan="6"></td>
+            <td>
+                <label for="filter">Filter By:</label>
+                <select id="filter" name="filter">
+                    <option id="newest">Newest to Oldest</option>
+                    <option id="popularity">Popularity</option>
+                    <optgroup label="Department">
+                        <option value="management">Management</option>
+                        <option value="finance">Finance</option>
+                        <option value="accounting">Accounting</option>
+                        <option value="hr">HR</option>
+                        <option value="sales">Sales</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="IT">IT</option>
+                        <option value="general">General</option>
+                    </optgroup>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Post Number</td>
+            <td>User ID</td>
+            <td>Post</td>
+            <td>Department</td>
+            <td>Date</td>
+            <td>Likes</td>
+            <td>Dislikes</td>
+        </tr>
+        <tr id = "feed">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
 </body>
 </html>

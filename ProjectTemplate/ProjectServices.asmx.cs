@@ -67,10 +67,10 @@ namespace ProjectTemplate
 			//here we go filling it!
 			sqlDa.Fill(sqlDt);
 			//check to see if any rows were returned.  If they were, it means it's 
-			//a legit account
+			//a legit post
 			if (sqlDt.Rows.Count > 0)
 			{
-				//if we found an account, store the id and admin status in the session
+				//if we found an posts, store the id and admin status in the session
 				//so we can check those values later on other method calls to see if they 
 				//are 1) logged in at all, and 2) and admin or not
 				Session["id"] = sqlDt.Rows[0]["id"];
@@ -261,7 +261,7 @@ namespace ProjectTemplate
 			return true;
 		}
 
-        EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
+        //EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
         [WebMethod(EnableSession = true)]
         public posts[] GetPost()
         {
@@ -275,10 +275,11 @@ namespace ProjectTemplate
             {
                 DataTable sqlDt = new DataTable("posts");
 
-                string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-                string sqlSelect = "select Post, DateTime from posts order by DateTime";
+				string sqlConnectString = getConString();
+                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, users.fname, users.lname, users.email from posts inner join users on posts.UserID = users.id order by posts.DateTimes";
+				;
 
-                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
                 MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
                 //gonna use this to fill a data table
@@ -289,40 +290,27 @@ namespace ProjectTemplate
                 //loop through each row in the dataset, creating instances
                 //of our container class Account.  Fill each acciount with
                 //data from the rows, then dump them in a list.
-                List<Account> accounts = new List<Account>();
+                List<posts> posts2 = new List<posts>();
                 for (int i = 0; i < sqlDt.Rows.Count; i++)
                 {
-                    //only share user id and pass info with admins!
-                    if (Convert.ToInt32(Session["admin"]) == 1)
+                    posts2.Add(new posts
                     {
-                        accounts.Add(new Account
-                        {
-                            id = Convert.ToInt32(sqlDt.Rows[i]["id"]),
-                            userId = sqlDt.Rows[i]["userid"].ToString(),
-                            password = sqlDt.Rows[i]["pass"].ToString(),
-                            firstName = sqlDt.Rows[i]["firstname"].ToString(),
-                            lastName = sqlDt.Rows[i]["lastname"].ToString(),
-                            email = sqlDt.Rows[i]["email"].ToString()
-                        });
-                    }
-                    else
-                    {
-                        accounts.Add(new Account
-                        {
-                            id = Convert.ToInt32(sqlDt.Rows[i]["id"]),
-                            firstName = sqlDt.Rows[i]["firstname"].ToString(),
-                            lastName = sqlDt.Rows[i]["lastname"].ToString(),
-                            email = sqlDt.Rows[i]["email"].ToString()
-                        });
-                    }
+                        postId = Convert.ToInt32(sqlDt.Rows[i]["postId"]),
+                        userId = Convert.ToInt32(sqlDt.Rows[i]["userId"]),
+                        post = sqlDt.Rows[i]["Post"].ToString(),
+                        date = Convert.ToDateTime(sqlDt.Rows[i]["DateTimes"]).ToString("MM/dd/yyyy hh:mm tt"),
+                        firstName = sqlDt.Rows[i]["fname"].ToString(),
+						lastName = sqlDt.Rows[i]["lname"].ToString(),
+						email = sqlDt.Rows[i]["email"].ToString()
+                    });
                 }
-                //convert the list of accounts to an array and return!
-                return accounts.ToArray();
+                //convert the list of postss to an array and return!
+                return posts2.ToArray();
             }
             else
             {
                 //if they're not logged in, return an empty array
-                return new Account[0];
+                return new posts[0];
             }
         }
 
