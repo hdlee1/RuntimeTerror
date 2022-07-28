@@ -12,7 +12,6 @@
 
     <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
-        // This in theory should work with Log Off Function once created in ProjectServices.asmx
         function LogOff() {
             var webMethod = "ProjectServices.asmx/LogOff";
             $.ajax({
@@ -35,32 +34,95 @@
             });
         }
 
-        //this is a temporary log off function to show functionality
-        //function logOff() {
-        //    location.href = "logon.html";
-        //    alert("Log Off Successful");
-        //}
-
         function getWelcome() {
             var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
-            //var name = sessionStorage.getItem(logOn.);
-            //var name = new ActiveXObject("WScript.Network").UserName;
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
+        
+        function GetPosts() {
+            var webMethod = "ProjectServices.asmx/GetPosts";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d.length > 0) {
+                        //put posts from server in postsArray varibale for use in other functions
+                        postsArray = msg.d;
+                        
+                        var feed = document.getElementById("feed");
+                        var rowNum = 2;
+                        for (var i = 0; i < postsArray.length; i++) {
+                            
+                            var row = feed.insertRow(rowNum);
+                            var cell0 = row.insertCell(0);
+                            var cell1 = row.insertCell(1);
+                            var cell2 = row.insertCell(2);
+                            var cell3 = row.insertCell(3);
+                            var cell4 = row.insertCell(4);
+                            var cell5 = row.insertCell(5);
+                            var cell6 = row.insertCell(6);
 
+                            cell0.innerHTML = postsArray[i].id;
+                            cell1.innerHTML = postsArray[i].uid;
+                            cell2.innerHTML = postsArray[i].postText;
+                            cell3.innerHTML = postsArray[i].department;
+                            cell4.innerHTML = postsArray[i].postDate;
+                            cell5.innerHTML = postsArray[i].likes;
+                            cell6.innerHTML = postsArray[i].dislikes;
+                        }
+                    }
+                },
+                erorr: function (e) {
+                    alert("failed to get posts from server");
+                }
+            })
+        }
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--LINK TO PROJECT STYLE SHEET-->
     <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
-<body>
+<body onload="GetPosts()">
     <div class="topnav">
         <a href="manageHomePage.html">Home</a>
         <a class="active" href="managerFeed.html">Problems/Suggestions Feed</a>
         <a href="solutions.html">Solutions</a>
         <a href="#" onclick="LogOff()">Log Off</a>
     </div>
-    <h1 class="header">Problems & Suggestions Feed</h1></td>
+    <h1 class="header">Problems & Suggestions Feed</h1>
     <hr />
+    <table id="feed">
+        <tr>
+            <td colspan="6"></td>
+            <td>
+                <label for="filter">Filter By:</label>
+                <select id="filter" name="filter">
+                    <option id="newest">Newest to Oldest</option>
+                    <option id="popularity">Popularity</option>
+                    <optgroup label="Department">
+                        <option value="management">Management</option>
+                        <option value="finance">Finance</option>
+                        <option value="accounting">Accounting</option>
+                        <option value="hr">HR</option>
+                        <option value="sales">Sales</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="IT">IT</option>
+                        <option value="general">General</option>
+                    </optgroup>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Post Number</td>
+            <td>User ID</td>
+            <td>Post</td>
+            <td>Department</td>
+            <td>Date</td>
+            <td>Likes</td>
+            <td>Dislikes</td>
+        </tr>
+    </table>
 </body>
 </html>

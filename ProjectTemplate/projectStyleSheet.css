@@ -6,6 +6,8 @@
 
 body {
     background-color: whitesmoke;
+    font-family: 'Times New Roman', Times, serif;
+    
 }
 button {
     margin: auto;
@@ -16,6 +18,15 @@ button {
     text-align: center;
     width: 100%;
     border-radius: 12px;
+}
+
+select {
+    font-size: medium;
+    font-weight: bold;
+}
+label{
+    font-weight: bold;
+    display: inline;
 }
 
 /*logon page*/
@@ -164,13 +175,13 @@ textarea {
     font-family: 'Times New Roman', Times, serif;
     font-size: medium;
 }
-
+/*
 #departments {
     font-family: 'Times New Roman', Times, serif;
     font-size: medium;
     font-weight: bold;
 }
-
+*/
 
 /* Add a black background color to the top navigation */
 .topnav {
