@@ -4,6 +4,8 @@ using System.Web.Services;
 using System.Data;
 using Newtonsoft.Json;
 using MySqlConnector;
+//needed to get List objects
+using System.Collections.Generic;
 
 namespace ProjectTemplate
 {
@@ -257,6 +259,54 @@ namespace ProjectTemplate
 			//in the session!
 			Session.Abandon();
 			return true;
+		}
+
+        [WebMethod(EnableSession =true)]
+		public Post[] GetPosts()
+        {
+            if (Session["id"] != null)
+            {
+				DataTable sqlDt = new DataTable("posts");
+
+				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+				string sqlConnectString = getConString();
+				string sqlSelect = "Select PostID, UserID, Post, Department, DateTimes, Likes, Dislikes, Comments, Solved, Rejected from posts";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				//gonna use this to fill a data table
+				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+				//filling the data table
+				sqlDa.Fill(sqlDt);
+
+				//loop through each row in the dataset, creating instances
+				//of our container class Post.  Fill each post with
+				//data from the rows, then dump them in a list.
+				List<Post> posts = new List<Post>();
+				for (int i = 0; i < sqlDt.Rows.Count; i++)
+                {
+					posts.Add(new Post
+					{ 
+						id = Convert.ToInt32(sqlDt.Rows[i]["PostId"]),
+						uid = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
+						postText = sqlDt.Rows[i]["Post"].ToString(),
+						department = sqlDt.Rows[i]["Department"].ToString(),
+						postDate = Convert.ToDateTime(sqlDt.Rows[i]["DateTimes"]),
+						likes = Convert.ToInt32(sqlDt.Rows[i]["Likes"]),
+						dislikes = Convert.ToInt32(sqlDt.Rows[i]["Dislikes"]),
+						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
+						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
+						isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
+					});
+				}
+				//convert the list of posts to an array and return!
+				return posts.ToArray();
+            }
+            else
+            {
+				return new Post[0];
+            }
 		}
 	}
 }
