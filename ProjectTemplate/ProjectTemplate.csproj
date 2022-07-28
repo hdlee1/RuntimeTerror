@@ -114,6 +114,8 @@
   <ItemGroup>
     <Content Include="createAccount.html" />
     <Content Include="Global.asax" />
+    <Content Include="images\ThumbsDown.png" />
+    <Content Include="images\ThumbsUp.png" />
     <Content Include="logon.html" />
     <Content Include="manageHomePage.html" />
     <Content Include="managerFeed.html" />
@@ -130,7 +132,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="posts.cs" />
-	<Compile Include="Post.cs" />
+    <Compile Include="Post.cs" />
     <Compile Include="ProjectServices.asmx.cs">
       <DependentUpon>ProjectServices.asmx</DependentUpon>
       <SubType>Component</SubType>

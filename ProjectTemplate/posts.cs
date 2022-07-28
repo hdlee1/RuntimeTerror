@@ -9,10 +9,13 @@ namespace ProjectTemplate
     {
         public int postId;
         public int userId;
-        public String post;
-        public String date;
-        public String firstName;
-        public String lastName;
-        public String email;    
+        public string post;
+        public string date;
+        public string firstName;
+        public string lastName;
+        public string email;
+        public int likes;
+        public int dislikes;
+        public bool hasComments;
     }
 }

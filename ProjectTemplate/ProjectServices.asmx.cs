@@ -276,7 +276,7 @@ namespace ProjectTemplate
                 DataTable sqlDt = new DataTable("posts");
 
 				string sqlConnectString = getConString();
-                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, users.fname, users.lname, users.email from posts inner join users on posts.UserID = users.id order by posts.DateTimes";
+                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, users.fname, users.lname, users.email, posts.Likes, posts.Dislikes, posts.Comments from posts inner join users on posts.UserID = users.id order by posts.DateTimes";
 				;
 
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
@@ -301,8 +301,11 @@ namespace ProjectTemplate
                         date = Convert.ToDateTime(sqlDt.Rows[i]["DateTimes"]).ToString("MM/dd/yyyy hh:mm tt"),
                         firstName = sqlDt.Rows[i]["fname"].ToString(),
 						lastName = sqlDt.Rows[i]["lname"].ToString(),
-						email = sqlDt.Rows[i]["email"].ToString()
-                    });
+						email = sqlDt.Rows[i]["email"].ToString(),
+						likes = Convert.ToInt32(sqlDt.Rows[i]["Likes"]),
+						dislikes = Convert.ToInt32(sqlDt.Rows[i]["Dislikes"]),
+						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"])
+					});
                 }
                 //convert the list of postss to an array and return!
                 return posts2.ToArray();
