@@ -89,50 +89,50 @@ namespace ProjectTemplate
 			return JsonConvert.SerializeObject(result);
 		}
 
-		[WebMethod(EnableSession = true)] //NOTICE: gotta enable session on each individual method
-		public string LogOnAnonymous()
-		{
-			//we return this flag to tell them if they logged in or not
-			bool success = false;
-			string isManager = "false";
+		//[WebMethod(EnableSession = true)] //NOTICE: gotta enable session on each individual method
+		//public string LogOnAnonymous()
+		//{
+		//	//we return this flag to tell them if they logged in or not
+		//	bool success = false;
+		//	string isManager = "false";
 
-			//our connection string comes from our web.config file like we talked about earlier
-			//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-			string sqlConnectString = getConString();
-			//here's our query.  A basic select with nothing fancy.  Note the parameters that begin with @
-			//NOTICE: we added admin to what we pull, so that we can store it along with the id in the session
-			string sqlSelect = "SELECT id, ismanager FROM users WHERE id=6";
+		//	//our connection string comes from our web.config file like we talked about earlier
+		//	//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+		//	string sqlConnectString = getConString();
+		//	//here's our query.  A basic select with nothing fancy.  Note the parameters that begin with @
+		//	//NOTICE: we added admin to what we pull, so that we can store it along with the id in the session
+		//	string sqlSelect = "SELECT id, ismanager FROM users WHERE id=6";
 
-			//set up our connection object to be ready to use our connection string
-			MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-			//set up our command object to use our connection, and our query
-			MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+		//	//set up our connection object to be ready to use our connection string
+		//	MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+		//	//set up our command object to use our connection, and our query
+		//	MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-			//a data adapter acts like a bridge between our command object and 
-			//the data we are trying to get back and put in a table object
-			MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-			//here's the table we want to fill with the results from our query
-			DataTable sqlDt = new DataTable();
-			//here we go filling it!
-			sqlDa.Fill(sqlDt);
-			//check to see if any rows were returned.  If they were, it means it's 
-			//a legit account
-			if (sqlDt.Rows.Count > 0)
-			{
-				//if we found an account, store the id and admin status in the session
-				//so we can check those values later on other method calls to see if they 
-				//are 1) logged in at all, and 2) and admin or not
-				Session["id"] = sqlDt.Rows[0]["id"];
-				Session["ismanager"] = sqlDt.Rows[0]["ismanager"];
-				isManager = sqlDt.Rows[0]["ismanager"].ToString();
-				success = true;
-			}
-			var result = new logOnResult();
-			result.successful = success;
-			result.isManager = isManager;
-			//return the result!
-			return JsonConvert.SerializeObject(result);
-		}
+		//	//a data adapter acts like a bridge between our command object and 
+		//	//the data we are trying to get back and put in a table object
+		//	MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+		//	//here's the table we want to fill with the results from our query
+		//	DataTable sqlDt = new DataTable();
+		//	//here we go filling it!
+		//	sqlDa.Fill(sqlDt);
+		//	//check to see if any rows were returned.  If they were, it means it's 
+		//	//a legit account
+		//	if (sqlDt.Rows.Count > 0)
+		//	{
+		//		//if we found an account, store the id and admin status in the session
+		//		//so we can check those values later on other method calls to see if they 
+		//		//are 1) logged in at all, and 2) and admin or not
+		//		Session["id"] = sqlDt.Rows[0]["id"];
+		//		Session["ismanager"] = sqlDt.Rows[0]["ismanager"];
+		//		isManager = sqlDt.Rows[0]["ismanager"].ToString();
+		//		success = true;
+		//	}
+		//	var result = new logOnResult();
+		//	result.successful = success;
+		//	result.isManager = isManager;
+		//	//return the result!
+		//	return JsonConvert.SerializeObject(result);
+		//}
 
 		[WebMethod(EnableSession = true)]
 		public void CreateAccount(string uid, string pass, string firstName, string lastName, string isManager)
@@ -258,5 +258,70 @@ namespace ProjectTemplate
 			Session.Abandon();
 			return true;
 		}
-	}
+
+        //EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
+        //[WebMethod(EnableSession = true)]
+        //public posts[] GetPosts()
+        //{
+        //    //check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
+        //    //just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
+        //    //sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
+        //    //Keeps everything simple.
+
+        //    //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+        //    if (Session["id"] != null)
+        //    {
+        //        DataTable sqlDt = new DataTable("posts");
+
+        //        string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+        //        string sqlSelect = "select Post, DateTime from posts order by DateTime";
+
+        //        MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+        //        MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+        //        //gonna use this to fill a data table
+        //        MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+        //        //filling the data table
+        //        sqlDa.Fill(sqlDt);
+
+        //        //loop through each row in the dataset, creating instances
+        //        //of our container class Account.  Fill each acciount with
+        //        //data from the rows, then dump them in a list.
+        //        List<Account> accounts = new List<Account>();
+        //        for (int i = 0; i < sqlDt.Rows.Count; i++)
+        //        {
+        //            //only share user id and pass info with admins!
+        //            if (Convert.ToInt32(Session["admin"]) == 1)
+        //            {
+        //                accounts.Add(new Account
+        //                {
+        //                    id = Convert.ToInt32(sqlDt.Rows[i]["id"]),
+        //                    userId = sqlDt.Rows[i]["userid"].ToString(),
+        //                    password = sqlDt.Rows[i]["pass"].ToString(),
+        //                    firstName = sqlDt.Rows[i]["firstname"].ToString(),
+        //                    lastName = sqlDt.Rows[i]["lastname"].ToString(),
+        //                    email = sqlDt.Rows[i]["email"].ToString()
+        //                });
+        //            }
+        //            else
+        //            {
+        //                accounts.Add(new Account
+        //                {
+        //                    id = Convert.ToInt32(sqlDt.Rows[i]["id"]),
+        //                    firstName = sqlDt.Rows[i]["firstname"].ToString(),
+        //                    lastName = sqlDt.Rows[i]["lastname"].ToString(),
+        //                    email = sqlDt.Rows[i]["email"].ToString()
+        //                });
+        //            }
+        //        }
+        //        //convert the list of accounts to an array and return!
+        //        return accounts.ToArray();
+        //    }
+        //    else
+        //    {
+        //        //if they're not logged in, return an empty array
+        //        return new Account[0];
+        //    }
+        //}
+    }
 }
