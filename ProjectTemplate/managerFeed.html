@@ -54,7 +54,7 @@
                         var feed = document.getElementById("feed");
                         var rowNum = 2;
                         for (var i = 0; i < postsArray.length; i++) {
-                            
+                            /*
                             var row = feed.insertRow(rowNum);
                             var cell0 = row.insertCell(0);
                             var cell1 = row.insertCell(1);
@@ -65,12 +65,22 @@
                             var cell6 = row.insertCell(6);
 
                             cell0.innerHTML = postsArray[i].id;
-                            cell1.innerHTML = postsArray[i].uid;
+                            cell1.innerHTML = postsArray[i].userName;
                             cell2.innerHTML = postsArray[i].postText;
                             cell3.innerHTML = postsArray[i].department;
                             cell4.innerHTML = postsArray[i].postDate;
                             cell5.innerHTML = postsArray[i].likes;
                             cell6.innerHTML = postsArray[i].dislikes;
+                            rowNum++;*/
+
+                            var row = feed.insertRow(rowNum);
+                            var cell0 = row.insertCell(0);
+                            var cell1 = row.insertCell(1);
+
+                            cell0.innerHTML = "<span class='left'>" + postsArray[i].userName + "</span><span class='right'>" + postsArray[i].postDate +
+                                            "</span>\n\n<span class='postText'>" + postsArray[i].postText + "</span><br><br><span class='likes'>Likes: " + postsArray[i].likes + "</span><span class='dislikes'>Dislikes: " + postsArray[i].dislikes + "</span>";
+                            cell1.innerHTML = "Button placeholder cell";
+                            rowNum++
                         }
                     }
                 },
@@ -95,8 +105,8 @@
     <hr />
     <table id="feed">
         <tr>
-            <td colspan="6"></td>
-            <td>
+            <th></th>
+            <th>
                 <label for="filter">Filter By:</label>
                 <select id="filter" name="filter">
                     <option id="newest">Newest to Oldest</option>
@@ -112,17 +122,20 @@
                         <option value="general">General</option>
                     </optgroup>
                 </select>
-            </td>
+            </th>
         </tr>
-        <tr>
-            <td>Post Number</td>
-            <td>User ID</td>
-            <td>Post</td>
-            <td>Department</td>
-            <td>Date</td>
-            <td>Likes</td>
-            <td>Dislikes</td>
-        </tr>
+        <!--
+    <tr>
+        <th>Post Number</th>
+        <th>User ID</th>
+        <th>Post</th>
+        <th>Department</th>
+        <th>Date</th>
+        <th>Likes</th>
+        <th>Dislikes</th>
+    </tr>
+        -->
+        <tr></tr>
     </table>
 </body>
 </html>
