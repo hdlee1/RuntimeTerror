@@ -49,12 +49,69 @@
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
 
+        //this function grabs accounts and loads our account window
+        function GetPosts() {
+            var webMethod = "ProjectServices.asmx/GetPosts";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d.length > 0) {
+                        //let's put our accounts that we get from the
+                        //server into our postsArray variable
+                        //so we can use them in other functions as well
+                        postsArray = msg.d;
+                        //this clears out the div that will hold our account info
+                        $("#accountsBox").empty();
+                        //again, we assume we're not an admin unless we see data from the server
+                        //that we know only admins can see
+                        admin = false;
+                        for (var i = 0; i < postsArray.length; i++) {
+                            //we grab on to a specific html element in jQuery
+                            //by using a  # followed by that element's id.
+                            var posts;
+                            //if they have access to admin-level info (like userid and password) then
+                            //create output that has an edit option
+                            if (postsArray[i].userId == 6) {
+                                posts = "<div class='accountRow' id='" + postsArray[i].postId + "'>" +
+                                    postsArray[i].firstName + " " + postsArray[i].post + "</div><hr>"
+                                admin = true;
+                            }
+                            //+ "<a href='#' onclick='LoadAccount(" + postsArray[i].userId + ")' class='optionsTag'>edit</a>
+                            //if not, then they're not an admin so don't include the edit option
+                            else {
+                                posts = "<div class='accountRow' id='" + postsArray[i].postId + "'>" +
+                                    "<a class='nameTag' href='mailto:" + postsArray[i].email + "'>" +
+                                    postsArray[i].firstName + " " + postsArray[i].lastName + 
+                                    "</a>" + " " + postsArray[i].post + "</div><hr>"
+                            }
+                            $("#accountsBox").append(
+                                //anything we throw at our panel in the form of text
+                                //will be added to the contents of that panel.  Here
+                                //we're putting together a div that holds info on the
+                                //account as well as an edit link if the user is an admin
+                                posts
+                            );
+                        }
+                    }
+                    //we're showing the account window, so let's track that...
+                    accountWindowShowing = true;
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
+
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--LINK TO PROJECT STYLE SHEET-->
     <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
-<body>
+<body onload="GetPosts();">
     <div class="topnav">
         <a href="userHome.html">Home</a>
         <a href="postProblem.html">Post Problem/Suggestion</a>
@@ -63,5 +120,12 @@
     </div>
     <h1 class="header">Problems & Suggestions Feed</h1>
     <hr />
+    <div id="accountsPanel" class="contentPanel">
+        <hr />
+        <div class="accountsBox" id="accountsBox">
+
+
+        </div>
+    </div>
 </body>
 </html>

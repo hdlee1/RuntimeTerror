@@ -4,6 +4,7 @@ using System.Web.Services;
 using System.Data;
 using Newtonsoft.Json;
 using MySqlConnector;
+using System.Collections.Generic;
 
 namespace ProjectTemplate
 {
@@ -260,68 +261,73 @@ namespace ProjectTemplate
 		}
 
         //EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
-        //[WebMethod(EnableSession = true)]
-        //public posts[] GetPosts()
-        //{
-        //    //check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
-        //    //just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
-        //    //sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
-        //    //Keeps everything simple.
+        [WebMethod(EnableSession = true)]
+        public posts[] GetPosts()
+        {
+            //check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
+            //just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
+            //sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
+            //Keeps everything simple.
 
-        //    //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
-        //    if (Session["id"] != null)
-        //    {
-        //        DataTable sqlDt = new DataTable("posts");
+            //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+            if (Session["id"] != null)
+            {
+                DataTable sqlDt = new DataTable("posts");
 
-        //        string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-        //        string sqlSelect = "select Post, DateTime from posts order by DateTime";
+				string sqlConnectString = getConString();
+                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, users.fname, users.lname, users.email from posts inner join users on posts.UserID = users.id order by posts.DateTimes";
 
-        //        MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-        //        MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-        //        //gonna use this to fill a data table
-        //        MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-        //        //filling the data table
-        //        sqlDa.Fill(sqlDt);
+                //gonna use this to fill a data table
+                MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+                //filling the data table
+                sqlDa.Fill(sqlDt);
 
-        //        //loop through each row in the dataset, creating instances
-        //        //of our container class Account.  Fill each acciount with
-        //        //data from the rows, then dump them in a list.
-        //        List<Account> accounts = new List<Account>();
-        //        for (int i = 0; i < sqlDt.Rows.Count; i++)
-        //        {
-        //            //only share user id and pass info with admins!
-        //            if (Convert.ToInt32(Session["admin"]) == 1)
-        //            {
-        //                accounts.Add(new Account
-        //                {
-        //                    id = Convert.ToInt32(sqlDt.Rows[i]["id"]),
-        //                    userId = sqlDt.Rows[i]["userid"].ToString(),
-        //                    password = sqlDt.Rows[i]["pass"].ToString(),
-        //                    firstName = sqlDt.Rows[i]["firstname"].ToString(),
-        //                    lastName = sqlDt.Rows[i]["lastname"].ToString(),
-        //                    email = sqlDt.Rows[i]["email"].ToString()
-        //                });
-        //            }
-        //            else
-        //            {
-        //                accounts.Add(new Account
-        //                {
-        //                    id = Convert.ToInt32(sqlDt.Rows[i]["id"]),
-        //                    firstName = sqlDt.Rows[i]["firstname"].ToString(),
-        //                    lastName = sqlDt.Rows[i]["lastname"].ToString(),
-        //                    email = sqlDt.Rows[i]["email"].ToString()
-        //                });
-        //            }
-        //        }
-        //        //convert the list of accounts to an array and return!
-        //        return accounts.ToArray();
-        //    }
-        //    else
-        //    {
-        //        //if they're not logged in, return an empty array
-        //        return new Account[0];
-        //    }
-        //}
+                //loop through each row in the dataset, creating instances
+                //of our container class Account.  Fill each acciount with
+                //data from the rows, then dump them in a list.
+                List<posts> posts = new List<posts>();
+                for (int i = 0; i < sqlDt.Rows.Count; i++)
+                {
+      //              //only share user id and pass info with managers!
+      //              if (Convert.ToInt32(Session["ismanager"]) == 1)
+      //              {
+      //                  posts.Add(new posts
+      //                  {
+						//	postId = Convert.ToInt32(sqlDt.Rows[i]["PostID"]),
+						//	userId = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
+      //                      firstName = sqlDt.Rows[i]["fname"].ToString(),
+      //                      lastName = sqlDt.Rows[i]["lname"].ToString(),
+      //                      email = sqlDt.Rows[i]["email"].ToString(),
+						//	post = sqlDt.Rows[i]["Post"].ToString(),
+						//	date = Convert.ToDateTime(sqlDt.Rows[i]["DateTimes"])
+
+						//});
+      //              }
+      //              else
+      //              {
+                        posts.Add(new posts
+                        {
+							postId = Convert.ToInt32(sqlDt.Rows[i]["PostID"]),
+							userId = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
+							firstName = sqlDt.Rows[i]["fname"].ToString(),
+							lastName = sqlDt.Rows[i]["lname"].ToString(),
+							post = sqlDt.Rows[i]["Post"].ToString(),
+							email = sqlDt.Rows[i]["email"].ToString(),
+							date = Convert.ToDateTime(sqlDt.Rows[i]["DateTimes"])
+						});
+                    //}
+                }
+                //convert the list of accounts to an array and return!
+                return posts.ToArray();
+            }
+            else
+            {
+                //if they're not logged in, return an empty array
+                return new posts[0];
+            }
+        }
     }
 }
