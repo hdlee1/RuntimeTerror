@@ -365,5 +365,43 @@ namespace ProjectTemplate
 				return new Post[0];
 			}
 		}
+		[WebMethod(EnableSession = true)]
+		public void CreateComment(string comment)
+		{
+			string sqlconnectstring = getConString();
+			//the only thing fancy about this query is select last_insert_id() at the end.  all that
+			//does is tell mysql server to return the primary key of the last inserted row.
+			string sqlselect = "insert into comments(UserID,PostID,Comment,Datetime)" +
+							   "values(@id,@posts.PostID,@comment,@datetime); select last_insert_id();";
+
+			MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
+			MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
+
+			sqlCommand.Parameters.AddWithValue("@id", HttpUtility.UrlDecode(Session["id"].ToString()));
+			//sqlCommand.Parameters.AddWithValue("@uid", HttpUtility.UrlDecode(Session["uid"].ToString()));
+			sqlCommand.Parameters.AddWithValue("@posts.PostID","posts.PostID".ToString());
+			sqlCommand.Parameters.AddWithValue("@comment", HttpUtility.UrlDecode(comment));
+			sqlCommand.Parameters.AddWithValue("@datetime", DateTime.Now);
+
+			//this time, we're not using a data adapter to fill a data table.  We're just
+			//opening the connection, telling our command to "executescalar" which says basically
+			//execute the query and just hand me back the number the query returns (the ID, remember?).
+			//don't forget to close the connection!
+			sqlConnection.Open();
+			//we're using a try/catch so that if the query errors out we can handle it gracefully
+			//by closing the connection and moving on
+			try
+			{
+				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				//here, you could use this commentID for additional queries regarding
+				//the requested comment.  Really this is just an example to show you
+				//a query where you get the primary key of the inserted row back from
+				//the database!
+			}
+			catch (Exception e)
+			{
+			}
+			sqlConnection.Close();
+		}
 	}
 }

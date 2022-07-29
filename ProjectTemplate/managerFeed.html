@@ -38,6 +38,29 @@
             var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
+        function CreateComment() {
+            var webMethod = "ProjectServices.asmx/CreateComment";
+            var comment = document.getElementById('comment').value;
+            //var post = document.getElementById('datetime').value;
+            var parameters = "{\"comment\":\"" + encodeURI(comment) + "\"}";
+            //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    //location.href = "../logon.html";
+                    alert("Comment Created!");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
         
         function GetPosts() {
             var webMethod = "ProjectServices.asmx/GetPosts";
@@ -63,6 +86,7 @@
                             var cell4 = row.insertCell(4);
                             var cell5 = row.insertCell(5);
                             var cell6 = row.insertCell(6);
+                            
 
                             cell0.innerHTML = postsArray[i].id;
                             cell1.innerHTML = postsArray[i].userName;
@@ -71,6 +95,7 @@
                             cell4.innerHTML = postsArray[i].postDate;
                             cell5.innerHTML = postsArray[i].likes;
                             cell6.innerHTML = postsArray[i].dislikes;
+                           
                             rowNum++;*/
 
                             var row = feed.insertRow(rowNum);
@@ -78,8 +103,8 @@
                             var cell1 = row.insertCell(1);
 
                             cell0.innerHTML = "<span class='left'>" + postsArray[i].userName + "</span><span class='right'>" + postsArray[i].postDate +
-                                            "</span>\n\n<span class='postText'>" + postsArray[i].postText + "</span><br><br><span class='likes'>Likes: " + postsArray[i].likes + "</span><span class='dislikes'>Dislikes: " + postsArray[i].dislikes + "</span>";
-                            cell1.innerHTML = "<button class='commentButton'>Comment</button>";
+                                "</span>\n\n<span class='postText'>" + postsArray[i].postText + "</span><br><br><span class='likes'>Likes: " + postsArray[i].likes + "</span><span class='dislikes'>Dislikes: " + postsArray[i].dislikes + "</span>";
+                            cell1.innerHTML = "<button class='commentButton' onClick='CreateComment()'>Comment</button><br><textarea id='comment' rows='5' cols='20'></textarea>";
                             rowNum++
                         }
                     }
