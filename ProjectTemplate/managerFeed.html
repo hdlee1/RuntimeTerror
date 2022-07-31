@@ -9,9 +9,16 @@
     <title>Manager Feed</title>
     <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        #comment{
+            border: 3px solid lightgray;
+            border-radius: 15px;
+        }
+    </style>
 
     <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
+        var comments;
         function LogOff() {
             var webMethod = "ProjectServices.asmx/LogOff";
             $.ajax({
@@ -38,11 +45,11 @@
             var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
-        function CreateComment() {
+        function CreateComment(postID) {
             var webMethod = "ProjectServices.asmx/CreateComment";
             var comment = document.getElementById('comment').value;
             //var post = document.getElementById('datetime').value;
-            var parameters = "{\"comment\":\"" + encodeURI(comment) + "\"}";
+            var parameters = "{\"comment\":\"" + encodeURI(comment) + "\",\"postID\":\"" + postID + "\"}";
             //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
 
             $.ajax({
@@ -54,65 +61,107 @@
                 success: function (msg) {
                     //location.href = "../logon.html";
                     alert("Comment Created!");
+                    location.reload();
                 },
                 error: function (xhr, status, error) {
                     var errorMessage = xhr.status + ': ' + xhr.statusText;
                     alert('Error - ' + errorMessage);
+                    return errorMessage;
                 }
             });
         }
+
+        function GetComments(postID) {
+            var webMethod = "ProjectServices.asmx/GetComments";
+            var parameters = "{\"postID\":\"" + postID + "\"}";
+        }
         
         function GetPosts() {
+            var postsArray;
             var webMethod = "ProjectServices.asmx/GetPosts";
             $.ajax({
                 type: "POST",
                 url: webMethod,
+                cache: false,
+                async: false,
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
                     if (msg.d.length > 0) {
                         //put posts from server in postsArray varibale for use in other functions
                         postsArray = msg.d;
-                        
-                        var feed = document.getElementById("feed");
-                        var rowNum = 2;
-                        for (var i = 0; i < postsArray.length; i++) {
-                            /*
-                            var row = feed.insertRow(rowNum);
-                            var cell0 = row.insertCell(0);
-                            var cell1 = row.insertCell(1);
-                            var cell2 = row.insertCell(2);
-                            var cell3 = row.insertCell(3);
-                            var cell4 = row.insertCell(4);
-                            var cell5 = row.insertCell(5);
-                            var cell6 = row.insertCell(6);
-                            
-
-                            cell0.innerHTML = postsArray[i].id;
-                            cell1.innerHTML = postsArray[i].userName;
-                            cell2.innerHTML = postsArray[i].postText;
-                            cell3.innerHTML = postsArray[i].department;
-                            cell4.innerHTML = postsArray[i].postDate;
-                            cell5.innerHTML = postsArray[i].likes;
-                            cell6.innerHTML = postsArray[i].dislikes;
-                           
-                            rowNum++;*/
-
-                            var row = feed.insertRow(rowNum);
-                            var cell0 = row.insertCell(0);
-                            var cell1 = row.insertCell(1);
-
-                            cell0.innerHTML = "<span class='left'>" + postsArray[i].userName + "</span><span class='right'>" + postsArray[i].postDate +
-                                "</span>\n\n<span class='postText'>" + postsArray[i].postText + "</span><br><br><span class='likes'>Likes: " + postsArray[i].likes + "</span><span class='dislikes'>Dislikes: " + postsArray[i].dislikes + "</span>";
-                            cell1.innerHTML = "<button class='commentButton' onClick='CreateComment()'>Comment</button><br><textarea id='comment' rows='5' cols='20'></textarea>";
-                            rowNum++
-                        }
                     }
                 },
                 error: function (e) {
                     alert("failed to get posts from server");
                 }
-            })
+            });
+            var feed = document.getElementById("feed");
+            var rowNum = 2;
+            for (var i = 0; i < postsArray.length; i++) {
+                var row = feed.insertRow(rowNum);
+                var cell0 = row.insertCell(0);
+                var cell1 = row.insertCell(1);
+                var cell2 = row.insertCell(2);
+                var cell3 = row.insertCell(3);
+                var cell4 = row.insertCell(4);
+                var cell5 = row.insertCell(5);
+                var cell6 = row.insertCell(6);
+
+                cell0.innerHTML = "<span class='left'>" + postsArray[i].userName + "</span>";
+                cell1.innerHTML = "<span class='postText'>" + postsArray[i].postText + "</span>";
+                cell2.innerHTML = "<span class='right'> " + postsArray[i].postDate + "</span>";
+                cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
+                cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
+                cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
+                cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].id + ");'>Add Comment</button>"
+                rowNum++;
+
+                $.ajax({
+                    type: "POST",
+                    url: "ProjectServices.asmx/GetComments",
+                    data: "{\"postID\":\"" + postsArray[i].id + "\"}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        comments = msg.d;
+                        if (comments != undefined) {
+                            for (var i = 0; i < comments.length; i++) {
+                                var row2 = feed.insertRow(rowNum);
+                                var cell0 = row2.insertCell(0);
+                                var cell1 = row2.insertCell(1);
+
+                                cell0.innerHTML = "<span class='left'>" + comments[i].FirstName + comments[i].LastName + "</span>";
+                                cell1.innerHTML = "<span class='postText'>" + comments[i].Comment + "</span>";
+                                cell2.innerHTML = "<span class='right'> " + comments[i].DateTime + "</span>";
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        var errorMessage = xhr.status + ': ' + xhr.statusText;
+                        alert('Error - ' + errorMessage);
+                    }
+                });
+
+                var row3 = feed.insertRow(rowNum);
+                var cell0 = row3.insertCell(0);
+                var cell1 = row3.insertCell(1);
+                cell1.innerHTML = "<div id='comment" + postsArray[i].id + "' style='display:none;'>" +
+                    "<textarea id='comment' style='border-radius: 15px; padding:5px;' rows = '3' cols = '50' ></textarea>" +
+                    "<div style='display: inline-block;width:20%;vertical-align:top;margin-left:10px;'>" +
+                    "<button class='commentButton' style ='margin-bottom: 5px;' onclick='CreateComment(" + postsArray[i].id + ")'> Submit</button>" +
+                    "<button class='commentButton' onclick='CloseComment(" + postsArray[i].id + ");'> Cancel</button>" +
+                    "</div>" +
+                    "</div>";
+                rowNum++
+            }
+        }
+
+        function DisplayTextbox(postID) {
+            $("#comment" + postID).show();
+        }
+        function CloseComment(postID) {
+            $("#comment" + postID).hide();
         }
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
@@ -128,10 +177,11 @@
     </div>
     <h1 class="header">Problems & Suggestions Feed</h1>
     <hr />
-    <table id="feed">
+    <table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">
         <tr>
-            <th></th>
-            <th>
+            <td colspan="5"></td>
+            <td colspan="3">
+                <br />
                 <label for="filter">Filter By:</label>
                 <select id="filter" name="filter">
                     <option id="newest">Newest to Oldest</option>
@@ -147,20 +197,16 @@
                         <option value="general">General</option>
                     </optgroup>
                 </select>
-            </th>
         </tr>
-        <!--
-    <tr>
-        <th>Post Number</th>
-        <th>User ID</th>
-        <th>Post</th>
-        <th>Department</th>
-        <th>Date</th>
-        <th>Likes</th>
-        <th>Dislikes</th>
-    </tr>
-        -->
-        <tr></tr>
+        <tr>
+            <td width="170" class="heading">Name</td>
+            <td width="550" class="heading">Post</td>
+            <td width="170" class="heading">Date</td>
+            <td width="80" class="heading">Likes</td>
+            <td width="80" class="heading">Dislikes</td>
+            <td width="80" class="heading">Rating</td>
+            <td width="80" class="heading"></td>
+        </tr>
     </table>
 </body>
 </html>
