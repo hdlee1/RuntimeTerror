@@ -271,14 +271,14 @@ namespace ProjectTemplate
 			//sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
 			//Keeps everything simple.
 
-			//WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
-			if (Session["id"] != null)
-			{
-				DataTable sqlDt = new DataTable("posts");
+            //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+            if (Session["id"] != null)
+            {
+				var id = Session["id"].ToString();
+                DataTable sqlDt = new DataTable("posts");
 
 				string sqlConnectString = getConString();
-				string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, users.fname, users.lname, users.email, posts.Likes, posts.Dislikes, posts.Comments from posts inner join users on posts.UserID = users.id order by posts.DateTimes";
-				;
+                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, users.fname, users.lname, users.email, posts.Comments,(select ifnull(sum(IsLike), 0) from votes where PostID = posts.postid) as isliketotal, (select ifnull(sum(IsDislike),0) from votes where PostID = posts.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = posts.postid and userid = " + id + ") as yourvote from posts inner join users on posts.UserID = users.id order by posts.DateTimes"; 
 
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -303,9 +303,10 @@ namespace ProjectTemplate
 						firstName = sqlDt.Rows[i]["fname"].ToString(),
 						lastName = sqlDt.Rows[i]["lname"].ToString(),
 						email = sqlDt.Rows[i]["email"].ToString(),
-						likes = Convert.ToInt32(sqlDt.Rows[i]["Likes"]),
-						dislikes = Convert.ToInt32(sqlDt.Rows[i]["Dislikes"]),
-						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"])
+						likes = Convert.ToInt32(sqlDt.Rows[i]["isliketotal"]),
+						dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
+						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
+						yourvote = sqlDt.Rows[i]["yourvote"].ToString()
 					});
 				}
 				//convert the list of postss to an array and return!
@@ -364,6 +365,52 @@ namespace ProjectTemplate
 				return new Post[0];
 			}
 		}
+
+		[WebMethod(EnableSession = true)]
+		public Comments[] GetComments(int postID)
+		{
+			if (Session["id"] != null)
+			{
+				DataTable sqlDt = new DataTable("posts");
+
+				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+				string sqlConnectString = getConString();
+				string sqlSelect = "SELECT c.`CommentID`,c.`UserID`,c.`PostID`,c.`Comment`,c.`DateTime`,u.fname,u.lname FROM `440sum20221`.`comments` c INNER JOIN users u on u.id = c.UserID  WHERE c.PostID = " + postID + ";";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				//gonna use this to fill a data table
+				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+				//filling the data table
+				sqlDa.Fill(sqlDt);
+
+				//loop through each row in the dataset, creating instances
+				//of our container class Post.  Fill each post with
+				//data from the rows, then dump them in a list.
+				List<Comments> comments = new List<Comments>();
+				for (int i = 0; i < sqlDt.Rows.Count; i++)
+				{
+					comments.Add(new Comments
+					{
+						UserID = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
+						FirstName = sqlDt.Rows[i]["fName"].ToString(),
+						LastName = sqlDt.Rows[i]["lName"].ToString(),
+						CommentID = Convert.ToInt32(sqlDt.Rows[i]["CommentID"]),
+						Comment = sqlDt.Rows[i]["Comment"].ToString(),
+						PostID = Convert.ToInt32(sqlDt.Rows[i]["PostID"]),
+						DateTime = sqlDt.Rows[i]["DateTime"].ToString()
+					}); ;
+				}
+				//convert the list of posts to an array and return!
+				return comments.ToArray();
+			}
+			else
+			{
+				return new Comments[0];
+			}
+		}
+
 		[WebMethod(EnableSession = true)]
 		public void CreateComment(string comment, int postID)
 		{
@@ -403,9 +450,10 @@ namespace ProjectTemplate
 			sqlConnection.Close();
 		}
 
-		[WebMethod(EnableSession = true)]
-		public void CreateVote(string postid, string uid, string like, string dislike)
-		{
+        [WebMethod(EnableSession = true)]
+        public void CreateVote(string postid, string like, string dislike)
+        {
+			var id = Session["id"].ToString();
 			string sqlconnectstring = getConString();
 			//the only thing fancy about this query is select last_insert_id() at the end.  all that
 			//does is tell mysql server to return the primary key of the last inserted row.
@@ -416,9 +464,9 @@ namespace ProjectTemplate
 			sqlCommand.CommandType = CommandType.StoredProcedure;
 
 			sqlCommand.Parameters.Add("postidnum", MySqlDbType.Int32).Value = postid;
-			sqlCommand.Parameters.Add("useridnum", MySqlDbType.Int32).Value = uid;
-			sqlCommand.Parameters.Add("upvote", MySqlDbType.Bool).Value = like;
-			sqlCommand.Parameters.Add("downvote", MySqlDbType.Bool).Value = dislike;
+            sqlCommand.Parameters.Add("useridnum", MySqlDbType.Int32).Value = id;
+            sqlCommand.Parameters.Add("upvote", MySqlDbType.Bool).Value = like;
+            sqlCommand.Parameters.Add("downvote", MySqlDbType.Bool).Value = dislike;
 			//this time, we're not using a data adapter to fill a data table.  We're just
 			//opening the connection, telling our command to "executescalar" which says basically
 			//execute the query and just hand me back the number the query returns (the ID, remember?).
@@ -429,16 +477,17 @@ namespace ProjectTemplate
 			try
 			{
 				sqlCommand.ExecuteScalar();
-				//here, you could use this accountID for additional queries regarding
-				//the requested account.  Really this is just an example to show you
-				//a query where you get the primary key of the inserted row back from
-				//the database!
-			}
-			catch (Exception e)
-			{
-			}
-			sqlConnection.Close();
-		}
+                //here, you could use this accountID for additional queries regarding
+                //the requested account.  Really this is just an example to show you
+                //a query where you get the primary key of the inserted row back from
+                //the database!
+            }
+            catch (Exception e)
+            {
+            }
+            sqlConnection.Close();
+        }
+    }
 
 		[WebMethod(EnableSession = true)]
 		public Comments[] GetComments(int postID)
@@ -449,7 +498,7 @@ namespace ProjectTemplate
 
 				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 				string sqlConnectString = getConString();
-				string sqlSelect = "SELECT c.`CommentID`,c.`UserID`,c.`PostID`,c.`Comment`,c.`DateTime`,u.fname,u.lname FROM `440sum20221`.`comments` c INNER JOIN users u on u.id = c.UserID  WHERE c.PostID = " + postID + ";";
+				string sqlSelect = "SELECT c.`CommentID`,c.`UserID`,c.`PostID`,c.`Comment`,c.`DateTime`,u.fname,u.lname FROM `440sum20221`.`comments` c INNER JOIN users u on u.id = c.UserID  WHERE c.PostID = "+postID+";";
 
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);

@@ -17,5 +17,6 @@ namespace ProjectTemplate
         public int likes;
         public int dislikes;
         public bool hasComments;
+        public string yourvote;
     }
 }

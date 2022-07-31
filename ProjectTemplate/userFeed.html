@@ -108,11 +108,11 @@
         //    });
         //}
 
-        function CreateVote(postid, uid, like, dislike) {
+        function CreateVote(postid, like, dislike) {
             var webMethod = "ProjectServices.asmx/CreateVote";
             //var like = document.getElementById('thumbUp').value;
             //var dislike = document.getElementById('thumbsDown').value;
-            var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"uid\":\"" + encodeURI(uid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
+            var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
 
             $.ajax({
                 type: "POST",
@@ -121,7 +121,15 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
-                    alert("You voted!");
+                    $(".likes").remove();
+                    $(".dislikes").remove();
+                    $(".left").remove();
+                    $(".right").remove();
+                    $(".postText").remove();
+                    $(".buttons").remove();
+                    $(".yourvote").remove();
+                    GetPost();
+                    //alert("You voted!");
                 },
                 error: function (xhr, status, error) {
                     var errorMessage = xhr.status + ': ' + xhr.statusText;
@@ -171,6 +179,7 @@
                             var cell3 = row.insertCell(3);
                             var cell4 = row.insertCell(4);
                             var cell5 = row.insertCell(5);
+                            var cell6 = row.insertCell(6);
 
 
                             if (postsArray[i].userId == 6) {
@@ -183,7 +192,8 @@
                             cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
                             cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
                             cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                            cell5.innerHTML = "<input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + "," + postsArray[i].userId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + "," + postsArray[i].userId + ",0,1);' src='ThumbsDown.png' />";
+                            cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
+                            cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
                             rowNum++;
                         }
                     }
@@ -239,12 +249,13 @@
             </td>
         </tr>
         <tr>
-            <td width="170" class="heading">Name</td>
-            <td width="550" class="heading">Post</td>
+            <td width="160" class="heading">Name</td>
+            <td width="480" class="heading">Post</td>
             <td width="170" class="heading">Date</td>
-            <td width="80" class="heading">Likes</td>
-            <td width="80" class="heading">Dislikes</td>
-            <td width="80"></td>
+            <td width="70" class="heading">Likes</td>
+            <td width="70" class="heading">Dislikes</td>
+            <td width="100" class="heading">Your Vote</td>
+            <td width="70"></td>
         </tr>
         <tr></tr>
     </table>
