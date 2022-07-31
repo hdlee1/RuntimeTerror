@@ -366,22 +366,22 @@ namespace ProjectTemplate
 			}
 		}
 		[WebMethod(EnableSession = true)]
-		public void CreateComment(string comment)
+		public void CreateComment(string comment, int postID)
 		{
 			string sqlconnectstring = getConString();
 			//the only thing fancy about this query is select last_insert_id() at the end.  all that
 			//does is tell mysql server to return the primary key of the last inserted row.
 			string sqlselect = "insert into comments(UserID,PostID,Comment,Datetime)" +
-							   "values(@id,@posts.PostID,@comment,@datetime); select last_insert_id();";
+							   "values(@UserID,@PostID,@Comment,@DateTime); select last_insert_id();";
 
 			MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
 			MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
 
-			sqlCommand.Parameters.AddWithValue("@id", HttpUtility.UrlDecode(Session["id"].ToString()));
-            //sqlCommand.Parameters.AddWithValue("@uid", HttpUtility.UrlDecode(Session["uid"].ToString()));
-            sqlCommand.Parameters.AddWithValue("@posts.PostID", "posts.PostID".ToString());
-            sqlCommand.Parameters.AddWithValue("@comment", HttpUtility.UrlDecode(comment));
-			sqlCommand.Parameters.AddWithValue("@datetime", DateTime.Now);
+			sqlCommand.Parameters.AddWithValue("@UserID", HttpUtility.UrlDecode(Session["id"].ToString()));
+			//sqlCommand.Parameters.AddWithValue("@uid", HttpUtility.UrlDecode(Session["uid"].ToString()));
+			sqlCommand.Parameters.AddWithValue("@PostID", postID);
+			sqlCommand.Parameters.AddWithValue("@Comment", HttpUtility.UrlDecode(comment));
+			sqlCommand.Parameters.AddWithValue("@DateTime", DateTime.Now);
 
 			//this time, we're not using a data adapter to fill a data table.  We're just
 			//opening the connection, telling our command to "executescalar" which says basically
@@ -441,4 +441,50 @@ namespace ProjectTemplate
             sqlConnection.Close();
         }
     }
+
+		[WebMethod(EnableSession = true)]
+		public Comments[] GetComments(int postID)
+		{
+			if (Session["id"] != null)
+			{
+				DataTable sqlDt = new DataTable("posts");
+
+				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+				string sqlConnectString = getConString();
+				string sqlSelect = "SELECT c.`CommentID`,c.`UserID`,c.`PostID`,c.`Comment`,c.`DateTime`,u.fname,u.lname FROM `440sum20221`.`comments` c INNER JOIN users u on u.id = c.UserID  WHERE c.PostID = "+postID+";";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				//gonna use this to fill a data table
+				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+				//filling the data table
+				sqlDa.Fill(sqlDt);
+
+				//loop through each row in the dataset, creating instances
+				//of our container class Post.  Fill each post with
+				//data from the rows, then dump them in a list.
+				List<Comments> comments = new List<Comments>();
+				for (int i = 0; i < sqlDt.Rows.Count; i++)
+				{
+					comments.Add(new Comments
+					{
+						UserID = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
+						FirstName = sqlDt.Rows[i]["fName"].ToString(),
+						LastName = sqlDt.Rows[i]["lName"].ToString(),
+						CommentID = Convert.ToInt32(sqlDt.Rows[i]["CommentID"]),
+						Comment = sqlDt.Rows[i]["Comment"].ToString(),
+						PostID = Convert.ToInt32(sqlDt.Rows[i]["PostID"]),
+						DateTime = sqlDt.Rows[i]["DateTime"].ToString()
+					}); ;
+				}
+				//convert the list of posts to an array and return!
+				return comments.ToArray();
+			}
+			else
+			{
+				return new Comments[0];
+			}
+		}
+	}
 }
