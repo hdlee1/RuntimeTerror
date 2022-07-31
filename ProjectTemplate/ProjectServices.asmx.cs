@@ -327,7 +327,7 @@ namespace ProjectTemplate
 
 				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 				string sqlConnectString = getConString();
-				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Likes, p.Dislikes, p.Comments, p.Solved, p.Rejected from posts p inner join users u on u.id = p.UserID order by DateTimes DESC";
+				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected from posts p inner join users u on u.id = p.UserID order by DateTimes DESC";
 
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -351,8 +351,6 @@ namespace ProjectTemplate
 						postText = sqlDt.Rows[i]["Post"].ToString(),
 						department = sqlDt.Rows[i]["Department"].ToString(),
 						postDate = sqlDt.Rows[i]["DateTimes"].ToString(),
-						likes = Convert.ToInt32(sqlDt.Rows[i]["Likes"]),
-						dislikes = Convert.ToInt32(sqlDt.Rows[i]["Dislikes"]),
 						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
 						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
 						isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
@@ -366,6 +364,52 @@ namespace ProjectTemplate
 				return new Post[0];
 			}
 		}
+
+		[WebMethod(EnableSession = true)]
+		public Comments[] GetComments(int postID)
+		{
+			if (Session["id"] != null)
+			{
+				DataTable sqlDt = new DataTable("posts");
+
+				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+				string sqlConnectString = getConString();
+				string sqlSelect = "SELECT c.`CommentID`,c.`UserID`,c.`PostID`,c.`Comment`,c.`DateTime`,u.fname,u.lname FROM `440sum20221`.`comments` c INNER JOIN users u on u.id = c.UserID  WHERE c.PostID = " + postID + ";";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				//gonna use this to fill a data table
+				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+				//filling the data table
+				sqlDa.Fill(sqlDt);
+
+				//loop through each row in the dataset, creating instances
+				//of our container class Post.  Fill each post with
+				//data from the rows, then dump them in a list.
+				List<Comments> comments = new List<Comments>();
+				for (int i = 0; i < sqlDt.Rows.Count; i++)
+				{
+					comments.Add(new Comments
+					{
+						UserID = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
+						FirstName = sqlDt.Rows[i]["fName"].ToString(),
+						LastName = sqlDt.Rows[i]["lName"].ToString(),
+						CommentID = Convert.ToInt32(sqlDt.Rows[i]["CommentID"]),
+						Comment = sqlDt.Rows[i]["Comment"].ToString(),
+						PostID = Convert.ToInt32(sqlDt.Rows[i]["PostID"]),
+						DateTime = sqlDt.Rows[i]["DateTime"].ToString()
+					}); ;
+				}
+				//convert the list of posts to an array and return!
+				return comments.ToArray();
+			}
+			else
+			{
+				return new Comments[0];
+			}
+		}
+
 		[WebMethod(EnableSession = true)]
 		public void CreateComment(string comment, int postID)
 		{
@@ -443,50 +487,4 @@ namespace ProjectTemplate
             sqlConnection.Close();
         }
     }
-
-		[WebMethod(EnableSession = true)]
-		public Comments[] GetComments(int postID)
-		{
-			if (Session["id"] != null)
-			{
-				DataTable sqlDt = new DataTable("posts");
-
-				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-				string sqlConnectString = getConString();
-				string sqlSelect = "SELECT c.`CommentID`,c.`UserID`,c.`PostID`,c.`Comment`,c.`DateTime`,u.fname,u.lname FROM `440sum20221`.`comments` c INNER JOIN users u on u.id = c.UserID  WHERE c.PostID = "+postID+";";
-
-				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-				//gonna use this to fill a data table
-				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-				//filling the data table
-				sqlDa.Fill(sqlDt);
-
-				//loop through each row in the dataset, creating instances
-				//of our container class Post.  Fill each post with
-				//data from the rows, then dump them in a list.
-				List<Comments> comments = new List<Comments>();
-				for (int i = 0; i < sqlDt.Rows.Count; i++)
-				{
-					comments.Add(new Comments
-					{
-						UserID = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
-						FirstName = sqlDt.Rows[i]["fName"].ToString(),
-						LastName = sqlDt.Rows[i]["lName"].ToString(),
-						CommentID = Convert.ToInt32(sqlDt.Rows[i]["CommentID"]),
-						Comment = sqlDt.Rows[i]["Comment"].ToString(),
-						PostID = Convert.ToInt32(sqlDt.Rows[i]["PostID"]),
-						DateTime = sqlDt.Rows[i]["DateTime"].ToString()
-					}); ;
-				}
-				//convert the list of posts to an array and return!
-				return comments.ToArray();
-			}
-			else
-			{
-				return new Comments[0];
-			}
-		}
-	}
 }
