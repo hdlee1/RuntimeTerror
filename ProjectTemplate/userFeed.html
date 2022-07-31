@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="Pragma" content="no-cache">
@@ -86,7 +86,7 @@
         //                    else {
         //                        posts = "<div class='accountRow' id='" + postsArray[i].postId + "'>" +
         //                            "<a class='nameTag' href='mailto:" + postsArray[i].email + "'>" +
-        //                            postsArray[i].firstName + " " + postsArray[i].lastName + 
+        //                            postsArray[i].firstName + " " + postsArray[i].lastName +
         //                            "</a>" + " " + postsArray[i].post + " " + postsArray[i].date + "</div><hr>"
         //                    }
         //                    $("#feed").append(
@@ -107,6 +107,28 @@
         //        }
         //    });
         //}
+
+        function CreateVote(postid, uid, like, dislike) {
+            var webMethod = "ProjectServices.asmx/CreateVote";
+            //var like = document.getElementById('thumbUp').value;
+            //var dislike = document.getElementById('thumbsDown').value;
+            var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"uid\":\"" + encodeURI(uid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    alert("You voted!");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
 
         function GetPost() {
             var webMethod = "ProjectServices.asmx/GetPost";
@@ -153,20 +175,15 @@
 
                             if (postsArray[i].userId == 6) {
                                 cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
-                                cell1.innerHTML = "<span class='postText'>" + postsArray[i].post + "</span>";
-                                cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
-                                cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
-                                cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                                cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
                             }
                             else {
                                 cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</span>";
-                                cell1.innerHTML = "<span class='postText'>" + postsArray[i].post + "</span>";
-                                cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
-                                cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
-                                cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                                cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
-                            }
+                            }        
+                            cell1.innerHTML = "<span class='postText'>" + postsArray[i].post + "</span>";
+                            cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
+                            cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
+                            cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
+                            cell5.innerHTML = "<input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + "," + postsArray[i].userId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + "," + postsArray[i].userId + ",0,1);' src='ThumbsDown.png' />";
                             rowNum++;
                         }
                     }
