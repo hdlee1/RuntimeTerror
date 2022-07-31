@@ -273,11 +273,11 @@ namespace ProjectTemplate
             //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
             if (Session["id"] != null)
             {
+				var id = Session["id"].ToString();
                 DataTable sqlDt = new DataTable("posts");
 
 				string sqlConnectString = getConString();
-                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, users.fname, users.lname, users.email, posts.Likes, posts.Dislikes, posts.Comments from posts inner join users on posts.UserID = users.id order by posts.DateTimes";
-				;
+                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, users.fname, users.lname, users.email, posts.Comments,(select ifnull(sum(IsLike), 0) from votes where PostID = posts.postid) as isliketotal, (select ifnull(sum(IsDislike),0) from votes where PostID = posts.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = posts.postid and userid = " + id + ") as yourvote from posts inner join users on posts.UserID = users.id order by posts.DateTimes"; 
 
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
                 MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -302,9 +302,10 @@ namespace ProjectTemplate
                         firstName = sqlDt.Rows[i]["fname"].ToString(),
 						lastName = sqlDt.Rows[i]["lname"].ToString(),
 						email = sqlDt.Rows[i]["email"].ToString(),
-						likes = Convert.ToInt32(sqlDt.Rows[i]["Likes"]),
-						dislikes = Convert.ToInt32(sqlDt.Rows[i]["Dislikes"]),
-						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"])
+						likes = Convert.ToInt32(sqlDt.Rows[i]["isliketotal"]),
+						dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
+						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
+						yourvote = sqlDt.Rows[i]["yourvote"].ToString()
 					});
                 }
                 //convert the list of postss to an array and return!
@@ -405,9 +406,10 @@ namespace ProjectTemplate
 		}
 
         [WebMethod(EnableSession = true)]
-        public void CreateVote(string postid, string uid, string like, string dislike)
+        public void CreateVote(string postid, string like, string dislike)
         {
-            string sqlconnectstring = getConString();
+			var id = Session["id"].ToString();
+			string sqlconnectstring = getConString();
 			//the only thing fancy about this query is select last_insert_id() at the end.  all that
 			//does is tell mysql server to return the primary key of the last inserted row.
 			string sqlselect = "create_vote";
@@ -417,7 +419,7 @@ namespace ProjectTemplate
 			sqlCommand.CommandType = CommandType.StoredProcedure;
 
 			sqlCommand.Parameters.Add("postidnum", MySqlDbType.Int32).Value = postid;
-            sqlCommand.Parameters.Add("useridnum", MySqlDbType.Int32).Value = uid;
+            sqlCommand.Parameters.Add("useridnum", MySqlDbType.Int32).Value = id;
             sqlCommand.Parameters.Add("upvote", MySqlDbType.Bool).Value = like;
             sqlCommand.Parameters.Add("downvote", MySqlDbType.Bool).Value = dislike;
 			//this time, we're not using a data adapter to fill a data table.  We're just
