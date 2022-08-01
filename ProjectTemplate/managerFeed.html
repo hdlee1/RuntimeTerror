@@ -10,9 +10,10 @@
     <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <style>
-        #comment{
-            border: 3px solid lightgray;
-            border-radius: 15px;
+        .comment{
+            background-color: lightblue;
+            border: inset;
+            border-color: dodgerblue;
         }
     </style>
 
@@ -47,7 +48,7 @@
         }
         function CreateComment(postID) {
             var webMethod = "ProjectServices.asmx/CreateComment";
-            var comment = document.getElementById('comment').value;
+            var comment = document.getElementById('postCommentSection'+postID).value;
             //var post = document.getElementById('datetime').value;
             var parameters = "{\"comment\":\"" + encodeURI(comment) + "\",\"postID\":\"" + postID + "\"}";
             //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
@@ -59,8 +60,6 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
-                    //location.href = "../logon.html";
-                    alert("Comment Created!");
                     location.reload();
                 },
                 error: function (xhr, status, error) {
@@ -83,27 +82,32 @@
                 dataType: "json",
                 success: function (msg) {
                     comments = msg.d;
-                    var id = "postID" + postID
+                    var id = "#postID" + postID
                     if (comments != undefined) {
-                        var body = document.getElementById(id);
-                        var tbl = document.createElement('table');
-                        var tbdy = document.createElement('tbody');
-                        var tr;
+                        //var tableRow = document.getElementById(id);
+                        //var tbl = document.createElement('table');
+                        //var tbdy = document.createElement('tbody');
+                        //var tr;
                         for (var i = 0; i < comments.length; i++) {
-                            var tr = document.createElement('tr');
-                            var td = document.createElement('td');
-                            td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
-                            tr.appendChild(td)
-                            var td1 = document.createElement('td');
-                            td1.appendChild(document.createTextNode(comments[i].Comment));
-                            tr.appendChild(td1)
-                            var td2 = document.createElement('td');
-                            td2.appendChild(document.createTextNode(comments[i].DateTime));
-                            tr.appendChild(td2)
+                            $(id).after("<tr class='comment'>" +
+                                "<td>" + comments[i].FirstName + comments[i].LastName + "</td>" +
+                                "<td>" + comments[i].Comment + "</td>" +
+                                "<td>" + comments[i].DateTime + "</td>" +
+                                "</tr>");
+                            //tr = document.createElement('tr');
+                            //var td = document.createElement('td');
+                            //td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
+                            //tr.appendChild(td)
+                            //var td1 = document.createElement('td');
+                            //td1.appendChild(document.createTextNode(comments[i].Comment));
+                            //tr.appendChild(td1)
+                            //var td2 = document.createElement('td');
+                            //td2.appendChild(document.createTextNode(comments[i].DateTime));
+                            //tr.appendChild(td2)
+                            //tbdy.appendChild(tr);
                         }
-                        tbdy.appendChild(tr);
-                        tbl.appendChild(tbdy);
-                        body.appendChild(tbl)
+                        //tbl.appendChild(tbdy);
+                        //tableRow.appendChild(tbl)
                     }
                 },
                 error: function (xhr, status, error) {
@@ -134,6 +138,7 @@
                     $(".buttons").remove();
                     $(".yourvote").remove();
                     $(".commentButton").remove();
+                    $(".comment").remove();
                     GetPost();
                     //alert("You voted!");
                 },
@@ -176,6 +181,7 @@
                 var cell5 = row.insertCell(5);
                 var cell6 = row.insertCell(6);
                 var cell7 = row.insertCell(7);
+    
 
 
                 if (postsArray[i].userId == 6) {
@@ -190,7 +196,8 @@
                 cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
                 cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
                 cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
-                cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
+                cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>" + "<button class='commentButton'>Solved</button >" + "<button class='commentButton'>Archive</button>"
+              
                 rowNum++;
                 //var row = feed.insertRow(rowNum);
                 //var cell0 = row.insertCell(0);
@@ -211,17 +218,16 @@
                 //rowNum++;
 
                 var row2 = feed.insertRow(rowNum);
-                var cell0 = row2.insertCell(0);
                 row2.id = "postID" + postsArray[i].postId;
-                cell0.innerHTML = "<div id='postID" + postsArray[i].postId + "'></div>"
                 GetComments(postsArray[i].postId);
                 rowNum++
 
                 var row3 = feed.insertRow(rowNum);
+                row3.classList.add("comment");
                 var cell0 = row3.insertCell(0);
                 var cell1 = row3.insertCell(1);
                 cell1.innerHTML = "<div id='comment" + postsArray[i].postId + "' style='display:none;'>" +
-                    "<textarea id='comment' style='border-radius: 15px; padding:5px;' rows = '3' cols = '50' ></textarea>" +
+                    "<textarea id='postCommentSection"+ postsArray[i].postId +"' style='border-radius: 15px; padding:5px;' rows = '3' cols = '40' ></textarea>" +
                     "<div style='display: inline-block;width:20%;vertical-align:top;margin-left:10px;'>" +
                     "<button class='commentButton' style ='margin-bottom: 5px;' onclick='CreateComment(" + postsArray[i].postId + ")'> Submit</button>" +
                     "<button class='commentButton' onclick='CloseComment(" + postsArray[i].postId + ");'> Cancel</button>" +
