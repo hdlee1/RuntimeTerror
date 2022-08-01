@@ -262,17 +262,17 @@ namespace ProjectTemplate
 			return true;
 		}
 
-        /* This function has an error around line 288 with sqlDA
+        // This function has an error around line 288 with sqlDA
 		//EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
 		[WebMethod(EnableSession = true)]
 		public posts[] GetPost()
 		{
-			check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
-			just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
-			sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
-			Keeps everything simple.
+			//check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
+			//just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
+			//sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
+			//Keeps everything simple.
 
-            WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+            //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
             if (Session["id"] != null)
             {
 				var id = Session["id"].ToString();
@@ -284,15 +284,15 @@ namespace ProjectTemplate
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-				gonna use this to fill a data table
-				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-				filling the data table
-				sqlDa.Fill(sqlDt);
+                //gonna use this to fill a data table
+                MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+                //filling the data table
+                sqlDa.Fill(sqlDt);
 
-				loop through each row in the dataset, creating instances
-				of our container class Account.  Fill each acciount with
-				data from the rows, then dump them in a list.
-				List<posts> posts2 = new List<posts>();
+                //loop through each row in the dataset, creating instances
+                //of our container class Account.  Fill each acciount with
+                //data from the rows, then dump them in a list.
+                List<posts> posts2 = new List<posts>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
 				{
 					posts2.Add(new posts
@@ -310,8 +310,7 @@ namespace ProjectTemplate
 						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
 						yourvote = sqlDt.Rows[i]["yourvote"].ToString(),
 						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
-						isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"]),
-						department = sqlDt.Rows[i]["Department"].ToString()
+						isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
 					});
                 }
                 //convert the list of postss to an array and return!
@@ -346,19 +345,19 @@ namespace ProjectTemplate
 				//loop through each row in the dataset, creating instances
 				//of our container class Post.  Fill each post with
 				//data from the rows, then dump them in a list.
-				List<Post> posts = new List<Post>();
-				for (int i = 0; i < sqlDt.Rows.Count; i++)
-				{
-					posts.Add(new Post
-					{
-						id = Convert.ToInt32(sqlDt.Rows[i]["PostId"]),
-						uid = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
-						userName = sqlDt.Rows[i]["UserName"].ToString(),
-						postText = sqlDt.Rows[i]["Post"].ToString(),
-						department = sqlDt.Rows[i]["Department"].ToString(),
-						postDate = sqlDt.Rows[i]["DateTimes"].ToString(),
-						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
-						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
+				//List<Post> posts = new List<Post>();
+				//for (int i = 0; i < sqlDt.Rows.Count; i++)
+				//{
+				//	posts.Add(new Post
+				//	{
+				//		id = Convert.ToInt32(sqlDt.Rows[i]["PostId"]),
+				//		uid = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
+				//		userName = sqlDt.Rows[i]["UserName"].ToString(),
+				//		postText = sqlDt.Rows[i]["Post"].ToString(),
+				//		department = sqlDt.Rows[i]["Department"].ToString(),
+				//		postDate = sqlDt.Rows[i]["DateTimes"].ToString(),
+				//		hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
+				//		isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
 		//				isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
 		//			});
 		//		}
