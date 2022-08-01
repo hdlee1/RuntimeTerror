@@ -19,6 +19,8 @@ namespace ProjectTemplate
         public int dislikes;
         public bool hasComments;
         public string yourvote;
-
+        public bool isSolved;
+        public bool isRejected;
+        public string department;
     }
 }

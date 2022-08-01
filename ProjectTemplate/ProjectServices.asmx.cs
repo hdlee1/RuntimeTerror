@@ -261,37 +261,37 @@ namespace ProjectTemplate
 			Session.Abandon();
 			return true;
 		}
-		
-		/* This function has an error around line 288 with sqlDA
+
+        /* This function has an error around line 288 with sqlDA
 		//EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
 		[WebMethod(EnableSession = true)]
 		public posts[] GetPost()
 		{
-			//check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
-			//just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
-			//sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
-			//Keeps everything simple.
+			check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
+			just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
+			sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
+			Keeps everything simple.
 
-            //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+            WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
             if (Session["id"] != null)
             {
 				var id = Session["id"].ToString();
                 DataTable sqlDt = new DataTable("posts");
 
 				string sqlConnectString = getConString();
-                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post,  posts.DateTimes, users.fname, users.lname, users.email, posts.Comments,(select ifnull(sum(IsLike), 0) from votes where PostID = posts.postid) as isliketotal, (select ifnull(sum(IsDislike),0),  from votes where PostID = posts.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = posts.postid and userid = " + id + ") as yourvote from posts inner join users on posts.UserID = users.id order by posts.DateTimes"; 
+                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, posts.Solved, posts.Rejected, posts.Department, users.fname, users.lname, users.email, posts.Comments,(select ifnull(sum(IsLike), 0) from votes where PostID = posts.postid) as isliketotal, (select ifnull(sum(IsDislike),0) from votes where PostID = posts.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = posts.postid and userid = " + id + ") as yourvote from posts inner join users on posts.UserID = users.id order by posts.DateTimes"; 
 
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-				//gonna use this to fill a data table
+				gonna use this to fill a data table
 				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-				//filling the data table
+				filling the data table
 				sqlDa.Fill(sqlDt);
 
-				//loop through each row in the dataset, creating instances
-				//of our container class Account.  Fill each acciount with
-				//data from the rows, then dump them in a list.
+				loop through each row in the dataset, creating instances
+				of our container class Account.  Fill each acciount with
+				data from the rows, then dump them in a list.
 				List<posts> posts2 = new List<posts>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
 				{
@@ -300,7 +300,7 @@ namespace ProjectTemplate
 						postId = Convert.ToInt32(sqlDt.Rows[i]["postId"]),
 						userId = Convert.ToInt32(sqlDt.Rows[i]["userId"]),
 						post = sqlDt.Rows[i]["Post"].ToString(),
-						//department = sqlDt.Rows[i]["Department"].ToString(),
+						department = sqlDt.Rows[i]["Department"].ToString(),
 						date = Convert.ToDateTime(sqlDt.Rows[i]["DateTimes"]).ToString("MM/dd/yyyy hh:mm tt"),
 						firstName = sqlDt.Rows[i]["fname"].ToString(),
 						lastName = sqlDt.Rows[i]["lname"].ToString(),
@@ -309,39 +309,39 @@ namespace ProjectTemplate
 						dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
 						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
 						yourvote = sqlDt.Rows[i]["yourvote"].ToString(),
-						//isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
-						//isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
+						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
+						isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"]),
+						department = sqlDt.Rows[i]["Department"].ToString()
 					});
-				}
-				//convert the list of postss to an array and return!
-				return posts2.ToArray();
-			}
-			else
-			{
-				//if they're not logged in, return an empty array
-				return new posts[0];
-			}
-		}
-		*/
-		//This function works
-		[WebMethod(EnableSession = true)]
-		public Post[] GetPosts()
-		{
-			if (Session["id"] != null)
-			{
-				DataTable sqlDt = new DataTable("posts");
+                }
+                //convert the list of postss to an array and return!
+                return posts2.ToArray();
+            }
+            else
+            {
+                //if they're not logged in, return an empty array
+                return new posts[0];
+            }
+        }
 
-				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-				string sqlConnectString = getConString();
-				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected from posts p inner join users u on u.id = p.UserID order by DateTimes DESC";
+  //      [WebMethod(EnableSession = true)]
+		//public Post[] GetPosts()
+		//{
+		//	if (Session["id"] != null)
+		//	{
+		//		DataTable sqlDt = new DataTable("posts");
 
-				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+		//		//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+		//		string sqlConnectString = getConString();
+		//		string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected from posts p inner join users u on u.id = p.UserID order by DateTimes DESC";
 
-				//gonna use this to fill a data table
-				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-				//filling the data table
-				sqlDa.Fill(sqlDt);
+		//		MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+		//		MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+		//		//gonna use this to fill a data table
+		//		MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+		//		//filling the data table
+		//		sqlDa.Fill(sqlDt);
 
 				//loop through each row in the dataset, creating instances
 				//of our container class Post.  Fill each post with
@@ -359,18 +359,18 @@ namespace ProjectTemplate
 						postDate = sqlDt.Rows[i]["DateTimes"].ToString(),
 						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
 						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
-						isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
-					});
-				}
-				//convert the list of posts to an array and return!
-				return posts.ToArray();
-			}
-			else
-			{
-				return new Post[0];
-			}
-		}
-		
+		//				isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
+		//			});
+		//		}
+		//		//convert the list of posts to an array and return!
+		//		return posts.ToArray();
+		//	}
+		//	else
+		//	{
+		//		return new Post[0];
+		//	}
+		//}
+
 		[WebMethod(EnableSession = true)]
 		public Comments[] GetComments(int postID)
 		{

@@ -211,7 +211,7 @@ textarea {
   }
 
 #feed {
-    border: 2px groove black;
+    /*border: 2px groove black;*/
     border-collapse: collapse;
 }
 
