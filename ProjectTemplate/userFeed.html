@@ -195,7 +195,8 @@
                     $(".postText").remove();
                     $(".buttons").remove();
                     $(".yourvote").remove();
-                    GetPosts();
+                    $(".commentButton").remove();
+                    GetPost();
                     //alert("You voted!");
                 },
                 error: function (xhr, status, error) {
@@ -271,9 +272,9 @@
             })
         }*/
 
-        function GetPosts() {
+        function GetPost() {
             var postsArray;
-            var webMethod = "ProjectServices.asmx/GetPosts";
+            var webMethod = "ProjectServices.asmx/GetPost";
             $.ajax({
                 type: "POST",
                 url: webMethod,
@@ -302,33 +303,58 @@
                 var cell4 = row.insertCell(4);
                 var cell5 = row.insertCell(5);
                 var cell6 = row.insertCell(6);
+                var cell7 = row.insertCell(7);
 
-                cell0.innerHTML = "<span class='left'>" + postsArray[i].userName + "</span>";
-                cell1.innerHTML = "<span class='postText'>" + postsArray[i].postText + "</span>";
-                cell2.innerHTML = "<span class='right'> " + postsArray[i].postDate + "</span>";
+
+                if (postsArray[i].userId == 6) {
+                    cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
+                }
+                else {
+                    cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</span>";
+                }
+                cell1.innerHTML = "<span class='postText'>" + postsArray[i].post + "</span>";
+                cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
                 cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
                 cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                //cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
-                cell5.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
-                //cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
-                cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].id + ");'>Add Comment</button>"
+                cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
+                cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
+                cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
                 rowNum++;
+                //var row = feed.insertRow(rowNum);
+                //var cell0 = row.insertCell(0);
+                //var cell1 = row.insertCell(1);
+                //var cell2 = row.insertCell(2);
+                //var cell3 = row.insertCell(3);
+                //var cell4 = row.insertCell(4);
+                //var cell5 = row.insertCell(5);
+                //var cell6 = row.insertCell(6);
+
+                //cell0.innerHTML = "<span class='left'>" + postsArray[i].userName + "</span>";
+                //cell1.innerHTML = "<span class='postText'>" + postsArray[i].postText + "</span>";
+                //cell2.innerHTML = "<span class='right'> " + postsArray[i].postDate + "</span>";
+                //cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
+                //cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
+                ////cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
+                //cell5.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
+                ////cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
+                //cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
+                //rowNum++;
 
                 var row2 = feed.insertRow(rowNum);
                 var cell0 = row2.insertCell(0);
-                row2.id = "postID" + postsArray[i].id;
-                cell0.innerHTML = "<div id='postID" + postsArray[i].id + "'></div>"
-                GetComments(postsArray[i].id);
+                row2.id = "postID" + postsArray[i].postId;
+                cell0.innerHTML = "<div id='postID" + postsArray[i].postId + "'></div>"
+                GetComments(postsArray[i].postId);
                 rowNum++
 
                 var row3 = feed.insertRow(rowNum);
                 var cell0 = row3.insertCell(0);
                 var cell1 = row3.insertCell(1);
-                cell1.innerHTML = "<div id='comment" + postsArray[i].id + "' style='display:none;'>" +
+                cell1.innerHTML = "<div id='comment" + postsArray[i].postId + "' style='display:none;'>" +
                     "<textarea id='comment' style='border-radius: 15px; padding:5px;' rows = '3' cols = '50' ></textarea>" +
                     "<div style='display: inline-block;width:20%;vertical-align:top;margin-left:10px;'>" +
-                    "<button class='commentButton' style ='margin-bottom: 5px;' onclick='CreateComment(" + postsArray[i].id + ")'> Submit</button>" +
-                    "<button class='commentButton' onclick='CloseComment(" + postsArray[i].id + ");'> Cancel</button>" +
+                    "<button class='commentButton' style ='margin-bottom: 5px;' onclick='CreateComment(" + postsArray[i].postId + ")'> Submit</button>" +
+                    "<button class='commentButton' onclick='CloseComment(" + postsArray[i].postId + ");'> Cancel</button>" +
                     "</div>" +
                     "</div>";
                 rowNum++
@@ -347,7 +373,7 @@
     <!--LINK TO PROJECT STYLE SHEET-->
     <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
-<body onload="GetPosts();">
+<body onload="GetPost();">
     <div class="topnav">
         <a href="userHome.html">Home</a>
         <a href="postProblem.html">Post Problem/Suggestion</a>
@@ -393,6 +419,7 @@
             <td width="70" class="heading">Likes</td>
             <td width="70" class="heading">Dislikes</td>
             <td width="100" class="heading">Your Vote</td>
+            <td width="70"></td>
             <td width="70"></td>
         </tr>
         <tr></tr>
