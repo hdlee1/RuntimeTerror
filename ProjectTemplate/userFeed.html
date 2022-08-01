@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html lang="en-us">
 <head>
     <meta charset="utf-8" />
@@ -6,14 +6,448 @@
     <meta http-equiv="Expires" content="-1">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>User Feed</title>
+    <title>User Feed</title>-->
+<!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+<!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
+<!--<script type="text/javascript">
+    //This in theory should work with Log Off Function once created in ProjectServices.asmx
+    //logs the user off both at the client and at the server
+    function LogOff() {
+        var webMethod = "ProjectServices.asmx/LogOff";
+        $.ajax({
+            type: "POST",
+            url: webMethod,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (msg) {
+                if (msg.d) {
+                    //we logged off, so go back to logon page,
+                    location.href = "logon.html";
+                }
+                else {
+                }
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.status + ': ' + xhr.statusText;
+                alert('Error - ' + errorMessage);
+            }
+        });
+    }
+
+    //this is a temporary log off function to show functionality
+    //function logOff() {
+    //    location.href = "logon.html";
+    //    alert("Log Off Successful");
+    //}
+
+    function getWelcome() {
+        var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
+        //var name = sessionStorage.getItem(logOn.);
+        //var name = new ActiveXObject("WScript.Network").UserName;
+        document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
+    }
+
+    //this function grabs accounts and loads our account window
+    //function GetPost() {
+    //    var webMethod = "ProjectServices.asmx/GetPost";
+    //    $.ajax({
+    //        type: "POST",
+    //        url: webMethod,
+    //        contentType: "application/json; charset=utf-8",
+    //        dataType: "json",
+    //        success: function (msg) {
+    //            if (msg.d.length > 0) {
+    //                //let's put our accounts that we get from the
+    //                //server into our postsArray variable
+    //                //so we can use them in other functions as well
+    //                postsArray = msg.d;
+    //                //this clears out the div that will hold our account info
+    //                $("#feed").empty();
+    //                //again, we assume we're not an admin unless we see data from the server
+    //                //that we know only admins can see
+    //                //admin = false;
+    //                for (var i = 0; i < postsArray.length; i++) {
+    //                    //we grab on to a specific html element in jQuery
+    //                    //by using a  # followed by that element's id.
+    //                    var posts;
+    //                    //let time = new Date();
+    //                    //postsArray[i].date = time.toLocaleString('en-US');
+    //                    //if they have access to admin-level info (like userid and password) then
+    //                    //create output that has an edit option
+    //                    if (postsArray[i].userId == 6) {
+    //                        posts = "<div class='accountRow' id='" + postsArray[i].postId + "'>" +
+    //                            postsArray[i].firstName + " " + postsArray[i].post + " " + postsArray[i].date + "</div><hr>"
+    //                        //admin = true;
+    //                    }
+    //                    //+ "<a href='#' onclick='LoadAccount(" + postsArray[i].userId + ")' class='optionsTag'>edit</a>
+    //                    //if not, then they're not an admin so don't include the edit option
+    //                    else {
+    //                        posts = "<div class='accountRow' id='" + postsArray[i].postId + "'>" +
+    //                            "<a class='nameTag' href='mailto:" + postsArray[i].email + "'>" +
+    //                            postsArray[i].firstName + " " + postsArray[i].lastName +
+    //                            "</a>" + " " + postsArray[i].post + " " + postsArray[i].date + "</div><hr>"
+    //                    }
+    //                    $("#feed").append(
+    //                        //anything we throw at our panel in the form of text
+    //                        //will be added to the contents of that panel.  Here
+    //                        //we're putting together a div that holds info on the
+    //                        //account as well as an edit link if the user is an admin
+    //                        posts
+    //                    );
+    //                }
+    //            }
+    //            //we're showing the account window, so let's track that...
+    //            accountWindowShowing = true;
+    //        },
+    //        error: function (xhr, status, error) {
+    //            var errorMessage = xhr.status + ': ' + xhr.statusText;
+    //            alert('Error - ' + errorMessage);
+    //        }
+    //    });
+    //}
+    function CreateComment(postID) {
+        var webMethod = "ProjectServices.asmx/CreateComment";
+        var comment = document.getElementById('comment').value;
+        //var post = document.getElementById('datetime').value;
+        var parameters = "{\"comment\":\"" + encodeURI(comment) + "\",\"postID\":\"" + postID + "\"}";
+        //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
+
+        $.ajax({
+            type: "POST",
+            url: webMethod,
+            data: parameters,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (msg) {
+                //location.href = "../logon.html";
+                alert("Comment Created!");
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.status + ': ' + xhr.statusText;
+                alert('Error - ' + errorMessage);
+                return errorMessage;
+            }
+        });
+    }
+
+    function GetComments(postID) {
+        var webMethod = "ProjectServices.asmx/GetComments";
+        var parameters = "{\"postID\":\"" + postID + "\"}";
+
+        $.ajax({
+            type: "POST",
+            url: "ProjectServices.asmx/GetComments",
+            data: "{\"postID\":\"" + postID + "\"}",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (msg) {
+                comments = msg.d;
+                var id = "postID" + postID
+                if (comments != undefined) {
+                    var body = document.getElementById(id);
+                    var tbl = document.createElement('table');
+                    var tbdy = document.createElement('tbody');
+                    var tr;
+                    for (var i = 0; i < comments.length; i++) {
+                        var tr = document.createElement('tr');
+                        var td = document.createElement('td');
+                        td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
+                        tr.appendChild(td)
+                        var td1 = document.createElement('td');
+                        td1.appendChild(document.createTextNode(comments[i].Comment));
+                        tr.appendChild(td1)
+                        var td2 = document.createElement('td');
+                        td2.appendChild(document.createTextNode(comments[i].DateTime));
+                        tr.appendChild(td2)
+                    }
+                    tbdy.appendChild(tr);
+                    tbl.appendChild(tbdy);
+                    body.appendChild(tbl)
+                }
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.status + ': ' + xhr.statusText;
+                alert('Error - ' + errorMessage);
+            }
+        });
+    }
+
+    function CreateVote(postid, like, dislike) {
+        var webMethod = "ProjectServices.asmx/CreateVote";
+        //var like = document.getElementById('thumbUp').value;
+        //var dislike = document.getElementById('thumbsDown').value;
+        var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
+
+        $.ajax({
+            type: "POST",
+            url: webMethod,
+            data: parameters,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (msg) {
+                $(".likes").remove();
+                $(".dislikes").remove();
+                $(".left").remove();
+                $(".right").remove();
+                $(".postText").remove();
+                $(".buttons").remove();
+                $(".yourvote").remove();
+                $(".commentButton").remove();
+                GetPost();
+                //alert("You voted!");
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.status + ': ' + xhr.statusText;
+                alert('Error - ' + errorMessage);
+            }
+        });
+    }
+
+    /*function GetPosts() {
+        var webMethod = "ProjectServices.asmx/GetPost";
+        $.ajax({
+            type: "POST",
+            url: webMethod,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (msg) {
+                if (msg.d.length > 0) {
+                    //put posts from server in postsArray varibale for use in other functions
+                    postsArray = msg.d;
+
+                    var feed = document.getElementById("posts");
+                    var rowNum = 2;
+                    for (var i = 0; i < postsArray.length; i++) {
+                        /*
+                        var row = feed.insertRow(rowNum);
+                        var cell0 = row.insertCell(0);
+                        var cell1 = row.insertCell(1);
+                        var cell2 = row.insertCell(2);
+                        var cell3 = row.insertCell(3);
+                        var cell4 = row.insertCell(4);
+                        var cell5 = row.insertCell(5);
+                        var cell6 = row.insertCell(6);
+
+                        cell0.innerHTML = postsArray[i].id;
+                        cell1.innerHTML = postsArray[i].userName;
+                        cell2.innerHTML = postsArray[i].postText;
+                        cell3.innerHTML = postsArray[i].department;
+                        cell4.innerHTML = postsArray[i].postDate;
+                        cell5.innerHTML = postsArray[i].likes;
+                        cell6.innerHTML = postsArray[i].dislikes;
+                        rowNum++;*//*
+
+                        var row = feed.insertRow(rowNum);
+                        var cell0 = row.insertCell(0);
+                        var cell1 = row.insertCell(1);
+                        var cell2 = row.insertCell(2);
+                        var cell3 = row.insertCell(3);
+                        var cell4 = row.insertCell(4);
+                        var cell5 = row.insertCell(5);
+                        var cell6 = row.insertCell(6);
+
+
+                        if (postsArray[i].userId == 6) {
+                            cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
+                        }
+                        else {
+                            cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</span>";
+                        }
+                        cell1.innerHTML = "<span class='postText'>" + postsArray[i].post + "</span>";
+                        cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
+                        cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
+                        cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
+                        cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
+                        cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
+                        rowNum++;
+                    }
+                }
+            },
+            error: function (e) {
+                alert("Failed to get posts from server");
+            }
+        })
+    }*/
+
+    function GetPost() {
+        var postsArray;
+        var webMethod = "ProjectServices.asmx/GetPost";
+        $.ajax({
+            type: "POST",
+            url: webMethod,
+            cache: false,
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (msg) {
+                if (msg.d.length > 0) {
+                    //put posts from server in postsArray varibale for use in other functions
+                    postsArray = msg.d;
+                }
+            },
+            error: function (e) {
+                alert("failed to get posts from server");
+            }
+        });
+        var feed = document.getElementById("feed");
+        var rowNum = 2;
+        for (var i = 0; i < postsArray.length; i++) {
+            var row = feed.insertRow(rowNum);
+            var cell0 = row.insertCell(0);
+            var cell1 = row.insertCell(1);
+            var cell2 = row.insertCell(2);
+            var cell3 = row.insertCell(3);
+            var cell4 = row.insertCell(4);
+            var cell5 = row.insertCell(5);
+            var cell6 = row.insertCell(6);
+            var cell7 = row.insertCell(7);
+
+
+            if (postsArray[i].userId == 6) {
+                cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
+            }
+            else {
+                cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</span>";
+            }
+            cell1.innerHTML = "<span class='postText'>" + postsArray[i].post + "</span>";
+            cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
+            cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
+            cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
+            cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
+            cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
+            cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
+            rowNum++;
+            //var row = feed.insertRow(rowNum);
+            //var cell0 = row.insertCell(0);
+            //var cell1 = row.insertCell(1);
+            //var cell2 = row.insertCell(2);
+            //var cell3 = row.insertCell(3);
+            //var cell4 = row.insertCell(4);
+            //var cell5 = row.insertCell(5);
+            //var cell6 = row.insertCell(6);
+
+            //cell0.innerHTML = "<span class='left'>" + postsArray[i].userName + "</span>";
+            //cell1.innerHTML = "<span class='postText'>" + postsArray[i].postText + "</span>";
+            //cell2.innerHTML = "<span class='right'> " + postsArray[i].postDate + "</span>";
+            //cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
+            //cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
+            ////cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
+            //cell5.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
+            ////cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
+            //cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
+            //rowNum++;
+
+            var row2 = feed.insertRow(rowNum);
+            var cell0 = row2.insertCell(0);
+            row2.id = "postID" + postsArray[i].postId;
+            cell0.innerHTML = "<div id='postID" + postsArray[i].postId + "'></div>"
+            GetComments(postsArray[i].postId);
+            rowNum++
+
+            var row3 = feed.insertRow(rowNum);
+            var cell0 = row3.insertCell(0);
+            var cell1 = row3.insertCell(1);
+            cell1.innerHTML = "<div id='comment" + postsArray[i].postId + "' style='display:none;'>" +
+                "<textarea id='comment' style='border-radius: 15px; padding:5px;' rows = '3' cols = '50' ></textarea>" +
+                "<div style='display: inline-block;width:20%;vertical-align:top;margin-left:10px;'>" +
+                "<button class='commentButton' style ='margin-bottom: 5px;' onclick='CreateComment(" + postsArray[i].postId + ")'> Submit</button>" +
+                "<button class='commentButton' onclick='CloseComment(" + postsArray[i].postId + ");'> Cancel</button>" +
+                "</div>" +
+                "</div>";
+            rowNum++
+        }
+    }
+
+    function DisplayTextbox(postID) {
+        $("#comment" + postID).show();
+    }
+    function CloseComment(postID) {
+        $("#comment" + postID).hide();
+    }
+
+</script>-->
+<!--END OF YOUR OWN JAVASCRIPT-->
+<!--LINK TO PROJECT STYLE SHEET-->
+<!--<link rel="stylesheet" href="projectStyleSheet.css" />
+</head>
+<body onload="GetPost();">
+    <div class="topnav">
+        <a href="userHome.html">Home</a>
+        <a href="postProblem.html">Post Problem/Suggestion</a>
+        <a class="active" href="userFeed.html">Problems/Suggestions Feed</a>
+        <a href="#" onclick="LogOff()">Log Off</a>
+    </div>
+    <h1 class="header">Problems & Suggestions Feed</h1>
+    <hr />-->
+<!--<div id="accountsPanel" class="contentPanel">
+    <hr />
+    <div class="accountsBox" id="accountsBox">
+
+
+    </div>
+</div>-->
+<!--<table id="feed">
+        <tr>
+            <td colspan="3"></td>
+            <td colspan="3">
+                <br />
+                <label for="filter">Filter By:</label>
+                <select id="filter" name="filter">
+                    <option id="newest">Newest to Oldest</option>
+                    <option id="popularity">Popularity</option>
+                    <optgroup label="Department">
+                        <option value="management">Management</option>
+                        <option value="finance">Finance</option>
+                        <option value="accounting">Accounting</option>
+                        <option value="hr">HR</option>
+                        <option value="sales">Sales</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="IT">IT</option>
+                        <option value="general">General</option>
+                    </optgroup>
+                </select>
+                <br /><br />
+            </td>
+        </tr>
+        <tr>
+            <td width="160" class="heading">Name</td>
+            <td width="480" class="heading">Post</td>
+            <td width="170" class="heading">Date</td>
+            <td width="70" class="heading">Likes</td>
+            <td width="70" class="heading">Dislikes</td>
+            <td width="100" class="heading">Your Vote</td>
+            <td width="70"></td>
+            <td width="70"></td>
+        </tr>
+        <tr></tr>
+    </table>
+</body>
+</html>-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Manager Feed</title>
     <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        .comment {
+            background-color: lightblue;
+            border: inset;
+            border-color: dodgerblue;
+        }
+    </style>
 
     <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
-        //This in theory should work with Log Off Function once created in ProjectServices.asmx
-        //logs the user off both at the client and at the server
+        var comments;
         function LogOff() {
             var webMethod = "ProjectServices.asmx/LogOff";
             $.ajax({
@@ -36,80 +470,13 @@
             });
         }
 
-        //this is a temporary log off function to show functionality
-        //function logOff() {
-        //    location.href = "logon.html";
-        //    alert("Log Off Successful");
-        //}
-
         function getWelcome() {
             var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
-            //var name = sessionStorage.getItem(logOn.);
-            //var name = new ActiveXObject("WScript.Network").UserName;
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
-
-        //this function grabs accounts and loads our account window
-        //function GetPost() {
-        //    var webMethod = "ProjectServices.asmx/GetPost";
-        //    $.ajax({
-        //        type: "POST",
-        //        url: webMethod,
-        //        contentType: "application/json; charset=utf-8",
-        //        dataType: "json",
-        //        success: function (msg) {
-        //            if (msg.d.length > 0) {
-        //                //let's put our accounts that we get from the
-        //                //server into our postsArray variable
-        //                //so we can use them in other functions as well
-        //                postsArray = msg.d;
-        //                //this clears out the div that will hold our account info
-        //                $("#feed").empty();
-        //                //again, we assume we're not an admin unless we see data from the server
-        //                //that we know only admins can see
-        //                //admin = false;
-        //                for (var i = 0; i < postsArray.length; i++) {
-        //                    //we grab on to a specific html element in jQuery
-        //                    //by using a  # followed by that element's id.
-        //                    var posts;
-        //                    //let time = new Date();
-        //                    //postsArray[i].date = time.toLocaleString('en-US');
-        //                    //if they have access to admin-level info (like userid and password) then
-        //                    //create output that has an edit option
-        //                    if (postsArray[i].userId == 6) {
-        //                        posts = "<div class='accountRow' id='" + postsArray[i].postId + "'>" +
-        //                            postsArray[i].firstName + " " + postsArray[i].post + " " + postsArray[i].date + "</div><hr>"
-        //                        //admin = true;
-        //                    }
-        //                    //+ "<a href='#' onclick='LoadAccount(" + postsArray[i].userId + ")' class='optionsTag'>edit</a>
-        //                    //if not, then they're not an admin so don't include the edit option
-        //                    else {
-        //                        posts = "<div class='accountRow' id='" + postsArray[i].postId + "'>" +
-        //                            "<a class='nameTag' href='mailto:" + postsArray[i].email + "'>" +
-        //                            postsArray[i].firstName + " " + postsArray[i].lastName +
-        //                            "</a>" + " " + postsArray[i].post + " " + postsArray[i].date + "</div><hr>"
-        //                    }
-        //                    $("#feed").append(
-        //                        //anything we throw at our panel in the form of text
-        //                        //will be added to the contents of that panel.  Here
-        //                        //we're putting together a div that holds info on the
-        //                        //account as well as an edit link if the user is an admin
-        //                        posts
-        //                    );
-        //                }
-        //            }
-        //            //we're showing the account window, so let's track that...
-        //            accountWindowShowing = true;
-        //        },
-        //        error: function (xhr, status, error) {
-        //            var errorMessage = xhr.status + ': ' + xhr.statusText;
-        //            alert('Error - ' + errorMessage);
-        //        }
-        //    });
-        //}
         function CreateComment(postID) {
             var webMethod = "ProjectServices.asmx/CreateComment";
-            var comment = document.getElementById('comment').value;
+            var comment = document.getElementById('postCommentSection' + postID).value;
             //var post = document.getElementById('datetime').value;
             var parameters = "{\"comment\":\"" + encodeURI(comment) + "\",\"postID\":\"" + postID + "\"}";
             //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
@@ -121,8 +488,6 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
-                    //location.href = "../logon.html";
-                    alert("Comment Created!");
                     location.reload();
                 },
                 error: function (xhr, status, error) {
@@ -145,27 +510,32 @@
                 dataType: "json",
                 success: function (msg) {
                     comments = msg.d;
-                    var id = "postID" + postID
+                    var id = "#postID" + postID
                     if (comments != undefined) {
-                        var body = document.getElementById(id);
-                        var tbl = document.createElement('table');
-                        var tbdy = document.createElement('tbody');
-                        var tr;
+                        //var tableRow = document.getElementById(id);
+                        //var tbl = document.createElement('table');
+                        //var tbdy = document.createElement('tbody');
+                        //var tr;
                         for (var i = 0; i < comments.length; i++) {
-                            var tr = document.createElement('tr');
-                            var td = document.createElement('td');
-                            td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
-                            tr.appendChild(td)
-                            var td1 = document.createElement('td');
-                            td1.appendChild(document.createTextNode(comments[i].Comment));
-                            tr.appendChild(td1)
-                            var td2 = document.createElement('td');
-                            td2.appendChild(document.createTextNode(comments[i].DateTime));
-                            tr.appendChild(td2)
+                            $(id).after("<tr class='comment'>" +
+                                "<td>" + comments[i].FirstName + comments[i].LastName + "</td>" +
+                                "<td>" + comments[i].Comment + "</td>" +
+                                "<td>" + comments[i].DateTime + "</td>" +
+                                "</tr>");
+                            //tr = document.createElement('tr');
+                            //var td = document.createElement('td');
+                            //td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
+                            //tr.appendChild(td)
+                            //var td1 = document.createElement('td');
+                            //td1.appendChild(document.createTextNode(comments[i].Comment));
+                            //tr.appendChild(td1)
+                            //var td2 = document.createElement('td');
+                            //td2.appendChild(document.createTextNode(comments[i].DateTime));
+                            //tr.appendChild(td2)
+                            //tbdy.appendChild(tr);
                         }
-                        tbdy.appendChild(tr);
-                        tbl.appendChild(tbdy);
-                        body.appendChild(tbl)
+                        //tbl.appendChild(tbdy);
+                        //tableRow.appendChild(tbl)
                     }
                 },
                 error: function (xhr, status, error) {
@@ -196,6 +566,7 @@
                     $(".buttons").remove();
                     $(".yourvote").remove();
                     $(".commentButton").remove();
+                    $(".comment").remove();
                     GetPost();
                     //alert("You voted!");
                 },
@@ -205,72 +576,6 @@
                 }
             });
         }
-
-        /*function GetPosts() {
-            var webMethod = "ProjectServices.asmx/GetPost";
-            $.ajax({
-                type: "POST",
-                url: webMethod,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (msg) {
-                    if (msg.d.length > 0) {
-                        //put posts from server in postsArray varibale for use in other functions
-                        postsArray = msg.d;
-
-                        var feed = document.getElementById("posts");
-                        var rowNum = 2;
-                        for (var i = 0; i < postsArray.length; i++) {
-                            /*
-                            var row = feed.insertRow(rowNum);
-                            var cell0 = row.insertCell(0);
-                            var cell1 = row.insertCell(1);
-                            var cell2 = row.insertCell(2);
-                            var cell3 = row.insertCell(3);
-                            var cell4 = row.insertCell(4);
-                            var cell5 = row.insertCell(5);
-                            var cell6 = row.insertCell(6);
-
-                            cell0.innerHTML = postsArray[i].id;
-                            cell1.innerHTML = postsArray[i].userName;
-                            cell2.innerHTML = postsArray[i].postText;
-                            cell3.innerHTML = postsArray[i].department;
-                            cell4.innerHTML = postsArray[i].postDate;
-                            cell5.innerHTML = postsArray[i].likes;
-                            cell6.innerHTML = postsArray[i].dislikes;
-                            rowNum++;*//*
-
-                            var row = feed.insertRow(rowNum);
-                            var cell0 = row.insertCell(0);
-                            var cell1 = row.insertCell(1);
-                            var cell2 = row.insertCell(2);
-                            var cell3 = row.insertCell(3);
-                            var cell4 = row.insertCell(4);
-                            var cell5 = row.insertCell(5);
-                            var cell6 = row.insertCell(6);
-
-
-                            if (postsArray[i].userId == 6) {
-                                cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
-                            }
-                            else {
-                                cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</span>";
-                            }        
-                            cell1.innerHTML = "<span class='postText'>" + postsArray[i].post + "</span>";
-                            cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
-                            cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
-                            cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                            cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
-                            cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
-                            rowNum++;
-                        }
-                    }
-                },
-                error: function (e) {
-                    alert("Failed to get posts from server");
-                }
-            })
-        }*/
 
         function GetPost() {
             var postsArray;
@@ -306,6 +611,7 @@
                 var cell7 = row.insertCell(7);
 
 
+
                 if (postsArray[i].userId == 6) {
                     cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
                 }
@@ -319,6 +625,7 @@
                 cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
                 cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
                 cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
+
                 rowNum++;
                 //var row = feed.insertRow(rowNum);
                 //var cell0 = row.insertCell(0);
@@ -334,24 +641,21 @@
                 //cell2.innerHTML = "<span class='right'> " + postsArray[i].postDate + "</span>";
                 //cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
                 //cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                ////cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
-                //cell5.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
-                ////cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
-                //cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
+                //cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
+                //cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].id + ");'>Add Comment</button>"
                 //rowNum++;
 
                 var row2 = feed.insertRow(rowNum);
-                var cell0 = row2.insertCell(0);
                 row2.id = "postID" + postsArray[i].postId;
-                cell0.innerHTML = "<div id='postID" + postsArray[i].postId + "'></div>"
                 GetComments(postsArray[i].postId);
                 rowNum++
 
                 var row3 = feed.insertRow(rowNum);
+                row3.classList.add("comment");
                 var cell0 = row3.insertCell(0);
                 var cell1 = row3.insertCell(1);
                 cell1.innerHTML = "<div id='comment" + postsArray[i].postId + "' style='display:none;'>" +
-                    "<textarea id='comment' style='border-radius: 15px; padding:5px;' rows = '3' cols = '50' ></textarea>" +
+                    "<textarea id='postCommentSection" + postsArray[i].postId + "' style='border-radius: 15px; padding:5px;' rows = '3' cols = '40' ></textarea>" +
                     "<div style='display: inline-block;width:20%;vertical-align:top;margin-left:10px;'>" +
                     "<button class='commentButton' style ='margin-bottom: 5px;' onclick='CreateComment(" + postsArray[i].postId + ")'> Submit</button>" +
                     "<button class='commentButton' onclick='CloseComment(" + postsArray[i].postId + ");'> Cancel</button>" +
@@ -367,13 +671,12 @@
         function CloseComment(postID) {
             $("#comment" + postID).hide();
         }
-
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--LINK TO PROJECT STYLE SHEET-->
     <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
-<body onload="GetPost();">
+<body onload="GetPost()">
     <div class="topnav">
         <a href="userHome.html">Home</a>
         <a href="postProblem.html">Post Problem/Suggestion</a>
@@ -382,13 +685,7 @@
     </div>
     <h1 class="header">Problems & Suggestions Feed</h1>
     <hr />
-    <!--<div id="accountsPanel" class="contentPanel">
-        <hr />
-        <div class="accountsBox" id="accountsBox">
-
-
-        </div>
-    </div>-->
+    <!--<table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">-->
     <table id="feed">
         <tr>
             <td colspan="3"></td>
@@ -410,7 +707,6 @@
                     </optgroup>
                 </select>
                 <br /><br />
-            </td>
         </tr>
         <tr>
             <td width="160" class="heading">Name</td>
@@ -419,10 +715,9 @@
             <td width="70" class="heading">Likes</td>
             <td width="70" class="heading">Dislikes</td>
             <td width="100" class="heading">Your Vote</td>
-            <td width="70"></td>
-            <td width="70"></td>
+            <td width="100" class="heading"></td>
+            <td width="90" class="heading"></td>
         </tr>
-        <tr></tr>
     </table>
 </body>
 </html>
