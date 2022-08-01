@@ -261,7 +261,7 @@ namespace ProjectTemplate
 			Session.Abandon();
 			return true;
 		}
-		/
+		
 		/* This function has an error around line 288 with sqlDA
 		//EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
 		[WebMethod(EnableSession = true)]
