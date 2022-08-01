@@ -10,6 +10,7 @@ namespace ProjectTemplate
         public int postId;
         public int userId;
         public string post;
+
         public string date;
         public string firstName;
         public string lastName;
@@ -18,5 +19,6 @@ namespace ProjectTemplate
         public int dislikes;
         public bool hasComments;
         public string yourvote;
+
     }
 }

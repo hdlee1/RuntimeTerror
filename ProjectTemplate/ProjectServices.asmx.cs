@@ -261,7 +261,8 @@ namespace ProjectTemplate
 			Session.Abandon();
 			return true;
 		}
-
+		/
+		/* This function has an error around line 288 with sqlDA
 		//EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
 		[WebMethod(EnableSession = true)]
 		public posts[] GetPost()
@@ -278,7 +279,7 @@ namespace ProjectTemplate
                 DataTable sqlDt = new DataTable("posts");
 
 				string sqlConnectString = getConString();
-                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, users.fname, users.lname, users.email, posts.Comments,(select ifnull(sum(IsLike), 0) from votes where PostID = posts.postid) as isliketotal, (select ifnull(sum(IsDislike),0) from votes where PostID = posts.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = posts.postid and userid = " + id + ") as yourvote from posts inner join users on posts.UserID = users.id order by posts.DateTimes"; 
+                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post,  posts.DateTimes, users.fname, users.lname, users.email, posts.Comments,(select ifnull(sum(IsLike), 0) from votes where PostID = posts.postid) as isliketotal, (select ifnull(sum(IsDislike),0),  from votes where PostID = posts.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = posts.postid and userid = " + id + ") as yourvote from posts inner join users on posts.UserID = users.id order by posts.DateTimes"; 
 
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -299,6 +300,7 @@ namespace ProjectTemplate
 						postId = Convert.ToInt32(sqlDt.Rows[i]["postId"]),
 						userId = Convert.ToInt32(sqlDt.Rows[i]["userId"]),
 						post = sqlDt.Rows[i]["Post"].ToString(),
+						//department = sqlDt.Rows[i]["Department"].ToString(),
 						date = Convert.ToDateTime(sqlDt.Rows[i]["DateTimes"]).ToString("MM/dd/yyyy hh:mm tt"),
 						firstName = sqlDt.Rows[i]["fname"].ToString(),
 						lastName = sqlDt.Rows[i]["lname"].ToString(),
@@ -306,7 +308,9 @@ namespace ProjectTemplate
 						likes = Convert.ToInt32(sqlDt.Rows[i]["isliketotal"]),
 						dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
 						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
-						yourvote = sqlDt.Rows[i]["yourvote"].ToString()
+						yourvote = sqlDt.Rows[i]["yourvote"].ToString(),
+						//isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
+						//isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
 					});
 				}
 				//convert the list of postss to an array and return!
@@ -318,7 +322,8 @@ namespace ProjectTemplate
 				return new posts[0];
 			}
 		}
-
+		*/
+		//This function works
 		[WebMethod(EnableSession = true)]
 		public Post[] GetPosts()
 		{
@@ -365,7 +370,7 @@ namespace ProjectTemplate
 				return new Post[0];
 			}
 		}
-
+		
 		[WebMethod(EnableSession = true)]
 		public Comments[] GetComments(int postID)
 		{
