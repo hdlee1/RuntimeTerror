@@ -245,6 +245,65 @@
             //var name = new ActiveXObject("WScript.Network").UserName;
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
+
+        function clearFeed() {
+            var feed = document.getElementById("feed");
+            // this clears the feed table from the onload or other filtered search
+            for (var i = feed.rows.length; i > 2; i--) {
+                feed.deleteRow(i - 1);
+            }
+        }
+        // this should be called from a switch statement to get functionailty for all options in list but since it doesn't work as it should there is no switch
+        //does not get query and does not throw error.
+        //if select is changed table is cleared but no new posts loaded
+        function FilterPosts() {
+            console.log("In FilterPost");
+            clearFeed();
+            var filter = filterSelect.value;
+            var webMethod = "ProjectServices.asmx/FilterPostsDepartment";
+            var parameters = "{\"filter\":\"" + encodeURI(filter) + "\"}";
+            console.log("Parameter in function: " + parameters);
+            console.log(typeof parameters);
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.length > 0) {
+                        fpostsArray = msg.d;
+                        console.log("i hit sucsess");
+                        //clearFeed();
+                        // repopulates table based on new querry
+                        var rowNum = 2;
+                        for (var i = 0; i < fpostsArray.length; i++) {
+                            var row = feed.insertRow(rowNum);
+                            var cell0 = row.insertCell(0);
+                            var cell1 = row.insertCell(1);
+                            var cell2 = row.insertCell(2);
+                            var cell3 = row.insertCell(3);
+                            var cell4 = row.insertCell(4);
+                            var cell5 = row.insertCell(5);
+                            var cell6 = row.insertCell(6);
+
+                            cell0.innerHTML = "<span class='left'>" + fpostsArray[i].userName + "</span>";
+                            cell1.innerHTML = "<span class='postText'>" + fpostsArray[i].postText + "</span>";
+                            cell2.innerHTML = "<span class='right'> " + fpostsArray[i].postDate + "</span>";
+                            cell3.innerHTML = "<span class='likes'>" + fpostsArray[i].likes + "</span>";
+                            cell4.innerHTML = "<span class='dislikes'>" + fpostsArray[i].dislikes + "</span>";
+                            cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
+                            cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + fpostsArray[i].id + ");'>Add Comment</button>"
+                            rowNum++;
+
+                        }
+                    }
+                },
+                error: function (e) {
+                    alert("failed to filter");
+                }
+            });
+        }
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--LINK TO PROJECT STYLE SHEET-->
@@ -266,10 +325,10 @@
             <td colspan="3"></td>
             <td colspan="3">
                 <br />
-                <label for="filter">Filter By:</label>
-                <select id="filter" name="filter">
-                    <option id="newest">Newest to Oldest</option>
-                    <option id="popularity">Popularity</option>
+                <label for="filterSelect">Filter By:</label>
+                <select id="filterSelect" name="filterSelect" onchange="FilterPosts()">
+                    <option value="newest">Newest to Oldest</option>
+                    <option value="popularity">Popularity</option>
                     <optgroup label="Department">
                         <option value="management">Management</option>
                         <option value="finance">Finance</option>
