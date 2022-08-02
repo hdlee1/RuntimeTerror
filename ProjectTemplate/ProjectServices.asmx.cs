@@ -527,10 +527,8 @@ namespace ProjectTemplate
             }
             sqlConnection.Close();
         }
-<<<<<<< HEAD
-    }
-}
-=======
+  
+
 
 		//does not work as intended
 		[WebMethod(EnableSession = true)]
@@ -632,4 +630,4 @@ namespace ProjectTemplate
 		}
 	}
 }
->>>>>>> 11aac397d6fe70025235a7ab04de8ac00e66d3a3
+
