@@ -595,82 +595,84 @@
                     if (msg.d.length > 0) {
                         //put posts from server in postsArray varibale for use in other functions
                         postsArray = msg.d;
+
+                        var feed = document.getElementById("feed");
+                        var rowNum = 2;
+                        for (var i = 0; i < postsArray.length; i++) {
+                            var row = feed.insertRow(rowNum);
+                            var cell0 = row.insertCell(0);
+                            var cell1 = row.insertCell(1);
+                            var cell2 = row.insertCell(2);
+                            var cell3 = row.insertCell(3);
+                            var cell4 = row.insertCell(4);
+                            var cell5 = row.insertCell(5);
+                            var cell6 = row.insertCell(6);
+                            var cell7 = row.insertCell(7);
+                            var cell8 = row.insertCell(8);
+                            var cell9 = row.insertCell(9);
+
+
+
+                            if (postsArray[i].userId == 6) {
+                                cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
+                            }
+                            else {
+                                cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</span>";
+                            }
+                            cell1.innerHTML = "<span class='postText'>" + postsArray[i].post + "</span>";
+                            cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
+                            cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
+                            cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
+                            cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
+                            cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
+                            cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
+                            cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Edit</button>"
+                            cell9.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Delete</button>"
+
+                            rowNum++;
+                            //var row = feed.insertRow(rowNum);
+                            //var cell0 = row.insertCell(0);
+                            //var cell1 = row.insertCell(1);
+                            //var cell2 = row.insertCell(2);
+                            //var cell3 = row.insertCell(3);
+                            //var cell4 = row.insertCell(4);
+                            //var cell5 = row.insertCell(5);
+                            //var cell6 = row.insertCell(6);
+
+                            //cell0.innerHTML = "<span class='left'>" + postsArray[i].userName + "</span>";
+                            //cell1.innerHTML = "<span class='postText'>" + postsArray[i].postText + "</span>";
+                            //cell2.innerHTML = "<span class='right'> " + postsArray[i].postDate + "</span>";
+                            //cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
+                            //cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
+                            //cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
+                            //cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].id + ");'>Add Comment</button>"
+                            //rowNum++;
+
+                            var row2 = feed.insertRow(rowNum);
+                            row2.id = "postID" + postsArray[i].postId;
+                            GetComments(postsArray[i].postId);
+                            rowNum++;
+
+                            var row3 = feed.insertRow(rowNum);
+                            row3.classList.add("comment");
+                            var cell0 = row3.insertCell(0);
+                            var cell1 = row3.insertCell(1);
+                            cell1.innerHTML = "<div id='comment" + postsArray[i].postId + "' style='display: none;'>" +
+                                "<textarea id='postCommentSection" + postsArray[i].postId + "' style='border-radius: 15px; padding:5px;' rows = '3' cols = '40' ></textarea>" +
+                                "<div style='display: inline-block;width:20%;vertical-align:top;margin-left:10px;'>" +
+                                "<button class='commentButton' style ='margin-bottom: 5px;' onclick='CreateComment(" + postsArray[i].postId + ")'> Submit</button>" +
+                                "<button class='commentButton' onclick='CloseComment(" + postsArray[i].postId + ");'> Cancel</button>" +
+                                "</div>" +
+                                "</div>";
+                            rowNum++;
+                        }
                     }
                 },
                 error: function (e) {
                     alert("failed to get posts from server");
                 }
             });
-            var feed = document.getElementById("feed");
-            var rowNum = 2;
-            for (var i = 0; i < postsArray.length; i++) {
-                var row = feed.insertRow(rowNum);
-                var cell0 = row.insertCell(0);
-                var cell1 = row.insertCell(1);
-                var cell2 = row.insertCell(2);
-                var cell3 = row.insertCell(3);
-                var cell4 = row.insertCell(4);
-                var cell5 = row.insertCell(5);
-                var cell6 = row.insertCell(6);
-                var cell7 = row.insertCell(7);
-                var cell8 = row.insertCell(8);
-                var cell9 = row.insertCell(9);
-
-
-
-                if (postsArray[i].userId == 6) {
-                    cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
-                }
-                else {
-                    cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</span>";
-                }
-                cell1.innerHTML = "<span class='postText'>" + postsArray[i].post + "</span>";
-                cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
-                cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
-                cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
-                cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
-                cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
-                cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Edit</button>"
-                cell9.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Delete</button>"
-
-                rowNum++;
-                //var row = feed.insertRow(rowNum);
-                //var cell0 = row.insertCell(0);
-                //var cell1 = row.insertCell(1);
-                //var cell2 = row.insertCell(2);
-                //var cell3 = row.insertCell(3);
-                //var cell4 = row.insertCell(4);
-                //var cell5 = row.insertCell(5);
-                //var cell6 = row.insertCell(6);
-
-                //cell0.innerHTML = "<span class='left'>" + postsArray[i].userName + "</span>";
-                //cell1.innerHTML = "<span class='postText'>" + postsArray[i].postText + "</span>";
-                //cell2.innerHTML = "<span class='right'> " + postsArray[i].postDate + "</span>";
-                //cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
-                //cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                //cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
-                //cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].id + ");'>Add Comment</button>"
-                //rowNum++;
-
-                var row2 = feed.insertRow(rowNum);
-                row2.id = "postID" + postsArray[i].postId;
-                GetComments(postsArray[i].postId);
-                rowNum++;
-
-                var row3 = feed.insertRow(rowNum);
-                row3.classList.add("comment");
-                var cell0 = row3.insertCell(0);
-                var cell1 = row3.insertCell(1);
-                cell1.innerHTML = "<div id='comment" + postsArray[i].postId + "' style='display: none;'>" +
-                    "<textarea id='postCommentSection" + postsArray[i].postId + "' style='border-radius: 15px; padding:5px;' rows = '3' cols = '40' ></textarea>" +
-                    "<div style='display: inline-block;width:20%;vertical-align:top;margin-left:10px;'>" +
-                    "<button class='commentButton' style ='margin-bottom: 5px;' onclick='CreateComment(" + postsArray[i].postId + ")'> Submit</button>" +
-                    "<button class='commentButton' onclick='CloseComment(" + postsArray[i].postId + ");'> Cancel</button>" +
-                    "</div>" +
-                    "</div>";
-                rowNum++;
-            }
+            
         }
 
         function DisplayTextbox(postID) {
@@ -742,6 +744,9 @@
                             var cell4 = row.insertCell(4);
                             var cell5 = row.insertCell(5);
                             var cell6 = row.insertCell(6);
+                            var cell7 = row.insertCell(7);
+                            var cell8 = row.insertCell(8);
+                            var cell9 = row.insertCell(9);
 
                             cell0.innerHTML = "<span class='left'>" + fpostsArray[i].userName + "</span>";
                             cell1.innerHTML = "<span class='postText'>" + fpostsArray[i].postText + "</span>";
@@ -750,6 +755,9 @@
                             cell4.innerHTML = "<span class='dislikes'>" + fpostsArray[i].dislikes + "</span>";
                             cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
                             cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + fpostsArray[i].id + ");'>Add Comment</button>"
+                            cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
+                            cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Edit</button>"
+                            cell9.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Delete</button>"
                             rowNum++;
                         }
                     } else if (msg.d.length == 0) {
