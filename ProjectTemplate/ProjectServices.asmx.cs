@@ -527,5 +527,109 @@ namespace ProjectTemplate
             }
             sqlConnection.Close();
         }
+<<<<<<< HEAD
     }
 }
+=======
+
+		//does not work as intended
+		[WebMethod(EnableSession = true)]
+		public Post[] FilterPostsDepartment(string filter)
+		{
+			if (Session["id"] != null)
+			{
+				DataTable sqlDt = new DataTable("posts");
+
+				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+				string sqlConnectString = getConString();
+				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected from posts p inner join users u on u.id = p.UserID Where p.Department='@depValue' order by DateTimes DESC";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@depValue", HttpUtility.UrlDecode(filter));
+
+				//gonna use this to fill a data table
+				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+				//filling the data table
+				sqlDa.Fill(sqlDt);
+
+				//loop through each row in the dataset, creating instances
+				//of our container class Post.  Fill each post with
+				//data from the rows, then dump them in a list.
+				List<Post> fposts = new List<Post>();
+				for (int i = 0; i < sqlDt.Rows.Count; i++)
+				{
+					fposts.Add(new Post
+					{
+						id = Convert.ToInt32(sqlDt.Rows[i]["PostId"]),
+						uid = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
+						userName = sqlDt.Rows[i]["UserName"].ToString(),
+						postText = sqlDt.Rows[i]["Post"].ToString(),
+						department = sqlDt.Rows[i]["Department"].ToString(),
+						postDate = sqlDt.Rows[i]["DateTimes"].ToString(),
+						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
+						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
+						isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
+					});
+				}
+				//convert the list of posts to an array and return!
+				return fposts.ToArray();
+			}
+			else
+			{
+				return new Post[0];
+			}
+		}
+		// does not work need to figure out votes table and code for it
+		[WebMethod(EnableSession = true)]
+		public Post[] FilterPostsPopular(string filter)
+		{
+			if (Session["id"] != null)
+			{
+				DataTable sqlDt = new DataTable("posts");
+
+				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+				string sqlConnectString = getConString();
+				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected from posts p inner join users u on u.id = p.UserID order by DateTimes DESC";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@Department", HttpUtility.UrlDecode(filter));
+
+				//gonna use this to fill a data table
+				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+				//filling the data table
+				sqlDa.Fill(sqlDt);
+
+				//loop through each row in the dataset, creating instances
+				//of our container class Post.  Fill each post with
+				//data from the rows, then dump them in a list.
+				List<Post> fposts = new List<Post>();
+				for (int i = 0; i < sqlDt.Rows.Count; i++)
+				{
+					fposts.Add(new Post
+					{
+						id = Convert.ToInt32(sqlDt.Rows[i]["PostId"]),
+						uid = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
+						userName = sqlDt.Rows[i]["UserName"].ToString(),
+						postText = sqlDt.Rows[i]["Post"].ToString(),
+						department = sqlDt.Rows[i]["Department"].ToString(),
+						postDate = sqlDt.Rows[i]["DateTimes"].ToString(),
+						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
+						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
+						isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
+					});
+				}
+				//convert the list of posts to an array and return!
+				return fposts.ToArray();
+			}
+			else
+			{
+				return new Post[0];
+			}
+		}
+	}
+}
+>>>>>>> 11aac397d6fe70025235a7ab04de8ac00e66d3a3
