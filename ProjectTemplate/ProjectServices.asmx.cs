@@ -265,7 +265,7 @@ namespace ProjectTemplate
         // This function has an error around line 288 with sqlDA
 		//EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
 		[WebMethod(EnableSession = true)]
-		public posts[] GetPost()
+		public posts[] GetPost(bool GetSolved)
 		{
 			//check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
 			//just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
@@ -279,7 +279,10 @@ namespace ProjectTemplate
                 DataTable sqlDt = new DataTable("posts");
 
 				string sqlConnectString = getConString();
-                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, posts.Solved, posts.Rejected, posts.Department, users.fname, users.lname, users.email, posts.Comments,(select ifnull(sum(IsLike), 0) from votes where PostID = posts.postid) as isliketotal, (select ifnull(sum(IsDislike),0) from votes where PostID = posts.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = posts.postid and userid = " + id + ") as yourvote from posts inner join users on posts.UserID = users.id order by posts.DateTimes desc"; 
+                string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, posts.Solved, posts.Rejected, posts.Department, users.fname, users.lname, users.email, " +
+								   "posts.Comments,(select ifnull(sum(IsLike), 0) " +
+                                   "from votes where PostID = posts.postid) as isliketotal, (select ifnull(sum(IsDislike),0) " +
+                                   "from votes where PostID = posts.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = posts.postid and userid = " + id + ") as yourvote from posts inner join users on posts.UserID = users.id order by posts.DateTimes desc"; 
 
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -454,7 +457,40 @@ namespace ProjectTemplate
 			sqlConnection.Close();
 		}
 
-        [WebMethod(EnableSession = true)]
+		[WebMethod(EnableSession = true)]
+		public void CreateSolvedPost(int postID)
+		{
+			string sqlconnectstring = getConString();
+			//the only thing fancy about this query is select last_insert_id() at the end.  all that
+			//does is tell mysql server to return the primary key of the last inserted row.
+			string sqlselect = "UPDATE `440sum20221`.`posts` SET `Solved` = true WHERE `PostID` = " + postID + ";";
+
+			MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
+			MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
+
+
+			//this time, we're not using a data adapter to fill a data table.  We're just
+			//opening the connection, telling our command to "executescalar" which says basically
+			//execute the query and just hand me back the number the query returns (the ID, remember?).
+			//don't forget to close the connection!
+			sqlConnection.Open();
+			//we're using a try/catch so that if the query errors out we can handle it gracefully
+			//by closing the connection and moving on
+			try
+			{
+				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				//here, you could use this commentID for additional queries regarding
+				//the requested comment.  Really this is just an example to show you
+				//a query where you get the primary key of the inserted row back from
+				//the database!
+			}
+			catch (Exception e)
+			{
+			}
+			sqlConnection.Close();
+		}
+
+		[WebMethod(EnableSession = true)]
         public void CreateVote(string postid, string like, string dislike)
         {
 			var id = Session["id"].ToString();

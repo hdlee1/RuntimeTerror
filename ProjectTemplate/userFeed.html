@@ -438,10 +438,10 @@
     <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <style>
-        .comment {
-            background-color: lightblue;
+        .comment td {
+            background-color: gainsboro;
             border: inset;
-            border-color: dodgerblue;
+            border-color: black;
         }
     </style>
 
@@ -517,10 +517,13 @@
                         //var tbdy = document.createElement('tbody');
                         //var tr;
                         for (var i = 0; i < comments.length; i++) {
+                            $(id).html("<td class='heading'>Comments:</td>");
                             $(id).after("<tr class='comment'>" +
-                                "<td>" + comments[i].FirstName + comments[i].LastName + "</td>" +
+                                "<td>" + comments[i].FirstName + " " + comments[i].LastName + "</td>" +
                                 "<td>" + comments[i].Comment + "</td>" +
                                 "<td>" + comments[i].DateTime + "</td>" +
+                                "<td>" + "<button class='commentButton'>Edit</button>" + "</td>" +
+                                "<td>" + "<button class='commentButton'>Delete</button>" + "</td>" +
                                 "</tr>");
                             //tr = document.createElement('tr');
                             //var td = document.createElement('td');
@@ -609,6 +612,8 @@
                 var cell5 = row.insertCell(5);
                 var cell6 = row.insertCell(6);
                 var cell7 = row.insertCell(7);
+                var cell8 = row.insertCell(8);
+                var cell9 = row.insertCell(9);
 
 
 
@@ -625,6 +630,8 @@
                 cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
                 cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
                 cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
+                cell8.innerHTML = "<button class='commentButton'>Edit</button>"
+                cell9.innerHTML = "<button class='commentButton'>Delete</button>"
 
                 rowNum++;
                 //var row = feed.insertRow(rowNum);
@@ -654,7 +661,7 @@
                 row3.classList.add("comment");
                 var cell0 = row3.insertCell(0);
                 var cell1 = row3.insertCell(1);
-                cell1.innerHTML = "<div id='comment" + postsArray[i].postId + "' style='display:none;'>" +
+                cell1.innerHTML = "<div id='comment" + postsArray[i].postId + "' style='display: none;'>" +
                     "<textarea id='postCommentSection" + postsArray[i].postId + "' style='border-radius: 15px; padding:5px;' rows = '3' cols = '40' ></textarea>" +
                     "<div style='display: inline-block;width:20%;vertical-align:top;margin-left:10px;'>" +
                     "<button class='commentButton' style ='margin-bottom: 5px;' onclick='CreateComment(" + postsArray[i].postId + ")'> Submit</button>" +

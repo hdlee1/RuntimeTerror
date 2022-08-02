@@ -10,16 +10,18 @@
     <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <style>
-        .comment{
-            background-color: lightblue;
+        .comment td {
+            background-color: gainsboro;
             border: inset;
-            border-color: dodgerblue;
+            border-color: black;
         }
+      
     </style>
 
     <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
         var comments;
+        var posts;
         function LogOff() {
             var webMethod = "ProjectServices.asmx/LogOff";
             $.ajax({
@@ -70,6 +72,29 @@
             });
         }
 
+        function CreateSolvedPost(postID) {
+            var webMethod = "ProjectServices.asmx/CreateSolvedPost";
+            //var post = document.getElementById('datetime').value;
+            var parameters = "{\"postID\":\"" + postID + "\"}";
+            //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                    return errorMessage;
+                }
+            });
+        }
+
         function GetComments(postID) {
             var webMethod = "ProjectServices.asmx/GetComments";
             var parameters = "{\"postID\":\"" + postID + "\"}";
@@ -89,10 +114,11 @@
                         //var tbdy = document.createElement('tbody');
                         //var tr;
                         for (var i = 0; i < comments.length; i++) {
+                            $(id).html( "<td class='heading'>Comments:</td>");
                             $(id).after("<tr class='comment'>" +
-                                "<td>" + comments[i].FirstName + comments[i].LastName + "</td>" +
+                                "<td>" + comments[i].FirstName + " " + comments[i].LastName + "</td>" +
                                 "<td>" + comments[i].Comment + "</td>" +
-                                "<td>" + comments[i].DateTime + "</td>" +
+                                "<td>" + comments[i].DateTime + "</td>" + 
                                 "</tr>");
                             //tr = document.createElement('tr');
                             //var td = document.createElement('td');
@@ -157,6 +183,7 @@
                 url: webMethod,
                 cache: false,
                 async: false,
+                data: "{\"GetSolved\":\"true\"}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
@@ -178,7 +205,8 @@
                 var cell2 = row.insertCell(2);
                 var cell3 = row.insertCell(3);
                 var cell4 = row.insertCell(4);
-                var cell5 = row.insertCell(5);   
+                var cell5 = row.insertCell(5);
+                var cell6 = row.insertCell(6); 
 
 
                 if (postsArray[i].userId == 6) {
@@ -191,52 +219,16 @@
                 cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
                 cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
                 cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                cell5.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>" + "<button class='commentButton'>Solved</button >" + "<button class='commentButton'>Archive</button>"
+                cell5.innerHTML = "<button class='commentButton' onclick='CreateSolvedPost(" + postsArray[i].postId +")'>Solved</button >" 
+                cell6.innerHTML = "<button class='commentButton'>Archive</button>"
               
                 rowNum++;
-                //var row = feed.insertRow(rowNum);
-                //var cell0 = row.insertCell(0);
-                //var cell1 = row.insertCell(1);
-                //var cell2 = row.insertCell(2);
-                //var cell3 = row.insertCell(3);
-                //var cell4 = row.insertCell(4);
-                //var cell5 = row.insertCell(5);
-                //var cell6 = row.insertCell(6);
-
-                //cell0.innerHTML = "<span class='left'>" + postsArray[i].userName + "</span>";
-                //cell1.innerHTML = "<span class='postText'>" + postsArray[i].postText + "</span>";
-                //cell2.innerHTML = "<span class='right'> " + postsArray[i].postDate + "</span>";
-                //cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
-                //cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                //cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
-                //cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].id + ");'>Add Comment</button>"
-                //rowNum++;
-
+              
                 var row2 = feed.insertRow(rowNum);
                 row2.id = "postID" + postsArray[i].postId;
                 GetComments(postsArray[i].postId);
                 rowNum++
-
-                var row3 = feed.insertRow(rowNum);
-                row3.classList.add("comment");
-                var cell0 = row3.insertCell(0);
-                var cell1 = row3.insertCell(1);
-                cell1.innerHTML = "<div id='comment" + postsArray[i].postId + "' style='display:none;'>" +
-                    "<textarea id='postCommentSection"+ postsArray[i].postId +"' style='border-radius: 15px; padding:5px;' rows = '3' cols = '40' ></textarea>" +
-                    "<div style='display: inline-block;width:20%;vertical-align:top;margin-left:10px;'>" +
-                    "<button class='commentButton' style ='margin-bottom: 5px;' onclick='CreateComment(" + postsArray[i].postId + ")'> Submit</button>" +
-                    "<button class='commentButton' onclick='CloseComment(" + postsArray[i].postId + ");'> Cancel</button>" +
-                    "</div>" +
-                    "</div>";
-                rowNum++
             }
-        }
-
-        function DisplayTextbox(postID) {
-            $("#comment" + postID).show();
-        }
-        function CloseComment(postID) {
-            $("#comment" + postID).hide();
         }
 
         function getWelcome() {
@@ -287,8 +279,9 @@
             <td width="160" class="heading">Name</td>
             <td width="480" class="heading">Post</td>
             <td width="170" class="heading">Date</td>
-            <td width="70" class="heading">Likes</td>
+            <td width="85" class="heading">Likes</td>
             <td width="85" class="heading">Dislikes</td>
+            <td width="120" class="heading"></td>
             <td width="120" class="heading"></td>
         </tr>
     </table>

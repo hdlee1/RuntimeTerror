@@ -6,14 +6,21 @@
     <meta http-equiv="Expires" content="-1">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>Post Problems/Suggestions</title>
+    <title>Manager Solutions</title>
     <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        .comment td {
+            background-color: gainsboro;
+            border: inset;
+            border-color: black;
+        }
+    </style>
 
     <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
-        // This in theory should work with Log Off Function once created in ProjectServices.asmx
-        //logs the user off both at the client and at the server
+        var comments;
+        var posts;
         function LogOff() {
             var webMethod = "ProjectServices.asmx/LogOff";
             $.ajax({
@@ -36,12 +43,177 @@
             });
         }
 
-        //this is a temporary log off function to show functionality
-        //function logOff() {
-        //    location.href = "logon.html";
-        //    alert("Log Off Successful");
-        //}
+        function getWelcome() {
+            var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
+            document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
+        }
+        function CreateComment(postID) {
+            var webMethod = "ProjectServices.asmx/CreateComment";
+            var comment = document.getElementById('postCommentSection' + postID).value;
+            //var post = document.getElementById('datetime').value;
+            var parameters = "{\"comment\":\"" + encodeURI(comment) + "\",\"postID\":\"" + postID + "\"}";
+            //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
 
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                    return errorMessage;
+                }
+            });
+        }
+
+        function GetComments(postID) {
+            var webMethod = "ProjectServices.asmx/GetComments";
+            var parameters = "{\"postID\":\"" + postID + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: "ProjectServices.asmx/GetComments",
+                data: "{\"postID\":\"" + postID + "\"}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    comments = msg.d;
+                    var id = "#postID" + postID
+                    if (comments != undefined) {
+                        //var tableRow = document.getElementById(id);
+                        //var tbl = document.createElement('table');
+                        //var tbdy = document.createElement('tbody');
+                        //var tr;
+                        for (var i = 0; i < comments.length; i++) {
+                            $(id).html("<td class='heading'>Comments:</td>");
+                            $(id).after("<tr class='comment'>" +
+                                "<td>" + comments[i].FirstName + " " + comments[i].LastName + "</td>" +
+                                "<td>" + comments[i].Comment + "</td>" +
+                                "<td>" + comments[i].DateTime + "</td>" +
+                                "<td>" + "<button class='commentButton'>Edit</button>" + "</td>" +
+                                "<td>" + "<button class='commentButton'>Delete</button>" + "</td>" +
+                                "</tr>");
+                            //tr = document.createElement('tr');
+                            //var td = document.createElement('td');
+                            //td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
+                            //tr.appendChild(td)
+                            //var td1 = document.createElement('td');
+                            //td1.appendChild(document.createTextNode(comments[i].Comment));
+                            //tr.appendChild(td1)
+                            //var td2 = document.createElement('td');
+                            //td2.appendChild(document.createTextNode(comments[i].DateTime));
+                            //tr.appendChild(td2)
+                            //tbdy.appendChild(tr);
+                        }
+                        //tbl.appendChild(tbdy);
+                        //tableRow.appendChild(tbl)
+                    }
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
+
+        function CreateVote(postid, like, dislike) {
+            var webMethod = "ProjectServices.asmx/CreateVote";
+            //var like = document.getElementById('thumbUp').value;
+            //var dislike = document.getElementById('thumbsDown').value;
+            var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    $(".likes").remove();
+                    $(".dislikes").remove();
+                    $(".left").remove();
+                    $(".right").remove();
+                    $(".postText").remove();
+                    $(".buttons").remove();
+                    $(".yourvote").remove();
+                    $(".commentButton").remove();
+                    $(".comment").remove();
+                    GetPost();
+                    //alert("You voted!");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
+
+        function GetPost() {
+            var postsArray;
+            var webMethod = "ProjectServices.asmx/GetPost";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                cache: false,
+                async: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d.length > 0) {
+                        //put posts from server in postsArray varibale for use in other functions
+                        postsArray = msg.d;
+                    }
+                },
+                error: function (e) {
+                    alert("failed to get posts from server");
+                }
+            });
+            var feed = document.getElementById("feed");
+            var rowNum = 2;
+            for (var i = 0; i < postsArray.length; i++) {
+                var row = feed.insertRow(rowNum);
+                var cell0 = row.insertCell(0);
+                var cell1 = row.insertCell(1);
+                var cell2 = row.insertCell(2);
+                var cell3 = row.insertCell(3);
+                var cell4 = row.insertCell(4);
+                var cell5 = row.insertCell(5);
+                var cell6 = row.insertCell(6);
+
+
+                if (postsArray[i].userId == 6) {
+                    cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
+                }
+                else {
+                    cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</span>";
+                }
+                cell1.innerHTML = "<span class='postText'>" + postsArray[i].post + "</span>";
+                cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
+                cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
+                cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
+                cell5.innerHTML = "<button class='commentButton'>Solved</button >"
+                cell6.innerHTML = "<button class='commentButton'>Archive</button>"
+
+                rowNum++;
+
+                var row2 = feed.insertRow(rowNum);
+                row2.id = "postID" + postsArray[i].postId;
+                GetComments(postsArray[i].postId);
+                rowNum++
+            }
+        }
+
+        function getWelcome() {
+            var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
+            //var name = sessionStorage.getItem(logOn.);
+            //var name = new ActiveXObject("WScript.Network").UserName;
+            document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
+        }
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--LINK TO PROJECT STYLE SHEET-->
@@ -54,7 +226,41 @@
         <a class="active" href="solutions.html">Solutions</a>
         <a href="#" onclick="LogOff()">Log Off</a>
     </div>
-    <h1 class="header">Solutions</h1>
+    <h1 class="header">Solved Problems</h1>
+    <h4>Posts that have been marked as solved.</h4>
     <hr />
+    <!--<table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">-->
+    <table id="feed">
+        <tr>
+            <td colspan="3"></td>
+            <td colspan="3">
+                <br />
+                <label for="filter">Filter By:</label>
+                <select id="filter" name="filter">
+                    <option id="newest">Newest to Oldest</option>
+                    <option id="popularity">Popularity</option>
+                    <optgroup label="Department">
+                        <option value="management">Management</option>
+                        <option value="finance">Finance</option>
+                        <option value="accounting">Accounting</option>
+                        <option value="hr">HR</option>
+                        <option value="sales">Sales</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="IT">IT</option>
+                        <option value="general">General</option>
+                    </optgroup>
+                </select>
+                <br /><br />
+        </tr>
+        <tr>
+            <td width="160" class="heading">Name</td>
+            <td width="480" class="heading">Post</td>
+            <td width="170" class="heading">Date</td>
+            <td width="85" class="heading">Likes</td>
+            <td width="85" class="heading">Dislikes</td>
+            <td width="120" class="heading"></td>
+            <td width="120" class="heading"></td>
+        </tr>
+    </table>
 </body>
 </html>
