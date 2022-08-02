@@ -701,13 +701,16 @@
 
             switch (filter) {
                 case "newest":
+                    clearFeed();
                     GetPost();
                     break;
                 case "popularity":
                     //call that function not yet written
-                    alert("function not yey written");
+                    clearFeed();
+                    alert("function not yet written");
                     break;
                 default:
+                    clearFeed();
                     FilterPosts();
                     break;
             }
