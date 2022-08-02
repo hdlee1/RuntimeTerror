@@ -153,9 +153,9 @@
             });
         }
 
-        function GetPost() {
+        function GetSolved() {
             var postsArray;
-            var webMethod = "ProjectServices.asmx/GetPost";
+            var webMethod = "ProjectServices.asmx/GetSolved";
             $.ajax({
                 type: "POST",
                 url: webMethod,
@@ -196,8 +196,8 @@
                 cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
                 cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
                 cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                cell5.innerHTML = "<button class='commentButton'>Solved</button >"
-                cell6.innerHTML = "<button class='commentButton'>Archive</button>"
+                cell5.innerHTML = ""
+                cell6.innerHTML = "<button style='height: 35px; width: 70px;' class='commentButton'>Archive</button>"
 
                 rowNum++;
 
@@ -219,7 +219,7 @@
     <!--LINK TO PROJECT STYLE SHEET-->
     <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
-<body>
+<body onload="GetSolved();">
     <div class="topnav">
         <!--<a href="manageHomePage.html">Home</a>-->
         <a href="managerFeed.html">Problems/Suggestions Feed</a>
@@ -258,8 +258,7 @@
             <td width="170" class="heading">Date</td>
             <td width="85" class="heading">Likes</td>
             <td width="85" class="heading">Dislikes</td>
-            <td width="120" class="heading"></td>
-            <td width="120" class="heading"></td>
+            <td width="20" class="heading"></td>
         </tr>
     </table>
 </body>
