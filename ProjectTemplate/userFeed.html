@@ -588,6 +588,7 @@
                 url: webMethod,
                 cache: false,
                 async: false,
+                //data: "{\"GetSolved\":\"true\"}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
@@ -630,8 +631,8 @@
                 cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
                 cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
                 cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
-                cell8.innerHTML = "<button class='commentButton'>Edit</button>"
-                cell9.innerHTML = "<button class='commentButton'>Delete</button>"
+                cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Edit</button>"
+                cell9.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Delete</button>"
 
                 rowNum++;
                 //var row = feed.insertRow(rowNum);
@@ -655,7 +656,7 @@
                 var row2 = feed.insertRow(rowNum);
                 row2.id = "postID" + postsArray[i].postId;
                 GetComments(postsArray[i].postId);
-                rowNum++
+                rowNum++;
 
                 var row3 = feed.insertRow(rowNum);
                 row3.classList.add("comment");
@@ -668,7 +669,7 @@
                     "<button class='commentButton' onclick='CloseComment(" + postsArray[i].postId + ");'> Cancel</button>" +
                     "</div>" +
                     "</div>";
-                rowNum++
+                rowNum++;
             }
         }
 
@@ -812,6 +813,8 @@
             <td width="100" class="heading">Your Vote</td>
             <td width="100" class="heading"></td>
             <td width="90" class="heading"></td>
+            <td width="75" class="heading"></td>
+            <td width="75" class="heading"></td>
         </tr>
     </table>
 </body>
