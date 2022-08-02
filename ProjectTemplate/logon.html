@@ -60,10 +60,10 @@
                                 sessionStorage.setItem("lnameLogon", data.lname);
                             }
                             if (data.successful && data.isManager == "0") {
-                                location.href = "../userHome.html";
+                                location.href = "../userFeed.html";
                             }
                             else if (data.successful && data.isManager == "1") {
-                                location.href = "../manageHomePage.html";
+                                location.href = "../managerFeed.html";
                             }
                             if (!data.successful) {
                                 //server replied false, so let the user know
