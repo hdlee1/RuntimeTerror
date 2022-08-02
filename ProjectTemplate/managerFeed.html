@@ -245,17 +245,11 @@
                 feed.deleteRow(i - 1);
             }
         }
-        // this should be called from a switch statement to get functionailty for all options in list but since it doesn't work as it should there is no switch
-        //does not get query and does not throw error.
-        //if select is changed table is cleared but no new posts loaded
+        // this should be called from a switch statement to get functionailty for all options in list 
         function FilterPosts() {
-            console.log("In FilterPost");
-            clearFeed();
             var filter = filterSelect.value;
             var webMethod = "ProjectServices.asmx/FilterPostsDepartment";
-            var parameters = "{\"filter\":\"" + encodeURI(filter) + "\"}";
-            console.log("Parameter in function: " + parameters);
-            console.log(typeof parameters);
+            var parameters = "{\"dep\":\"" + encodeURI(filter) + "\"}";
             $.ajax({
                 type: "POST",
                 url: webMethod,
@@ -263,13 +257,13 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
-                    if (msg.length > 0) {
+                    if (msg.d.length > 0) {
                         fpostsArray = msg.d;
-                        console.log("i hit sucsess");
-                        //clearFeed();
+                        clearFeed();
                         // repopulates table based on new querry
                         var rowNum = 2;
                         for (var i = 0; i < fpostsArray.length; i++) {
+                            
                             var row = feed.insertRow(rowNum);
                             var cell0 = row.insertCell(0);
                             var cell1 = row.insertCell(1);
@@ -287,7 +281,6 @@
                             cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
                             cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + fpostsArray[i].id + ");'>Add Comment</button>"
                             rowNum++;
-
                         }
                     }
                 },
