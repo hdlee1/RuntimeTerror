@@ -42,13 +42,6 @@
         //    alert("Log Off Successful");
         //}
 
-        function getWelcome() {
-            var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
-            //var name = sessionStorage.getItem(logOn.);
-            //var name = new ActiveXObject("WScript.Network").UserName;
-            document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
-        }
-
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--LINK TO PROJECT STYLE SHEET-->
@@ -56,12 +49,12 @@
 </head>
 <body>
     <div class="topnav">
-        <a href="manageHomePage.html">Home</a>
+        <!--<a href="manageHomePage.html">Home</a>-->
         <a href="managerFeed.html">Problems/Suggestions Feed</a>
         <a class="active" href="solutions.html">Solutions</a>
         <a href="#" onclick="LogOff()">Log Off</a>
     </div>
-    <h1 class="header">Solutions</h1></td>
+    <h1 class="header">Solutions</h1>
     <hr />
 </body>
 </html>

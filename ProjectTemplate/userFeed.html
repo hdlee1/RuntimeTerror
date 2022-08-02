@@ -434,7 +434,7 @@
     <meta http-equiv="Expires" content="-1">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>Manager Feed</title>
+    <title>Home</title>
     <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <style>
@@ -671,19 +671,28 @@
         function CloseComment(postID) {
             $("#comment" + postID).hide();
         }
+
+        function getWelcome() {
+            var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
+            //var name = sessionStorage.getItem(logOn.);
+            //var name = new ActiveXObject("WScript.Network").UserName;
+            document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
+        }
+
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--LINK TO PROJECT STYLE SHEET-->
     <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
-<body onload="GetPost()">
+<body onload="GetPost(); getWelcome();">
     <div class="topnav">
-        <a href="userHome.html">Home</a>
-        <a href="postProblem.html">Post Problem/Suggestion</a>
+        <!--<a href="userHome.html">Home</a>-->
         <a class="active" href="userFeed.html">Problems/Suggestions Feed</a>
+        <a href="postProblem.html">Post Problem/Suggestion</a>
         <a href="#" onclick="LogOff()">Log Off</a>
     </div>
-    <h1 class="header">Problems & Suggestions Feed</h1>
+    <h1 id="welcome"></h1>
+    <h2 class="header">Problems & Suggestions Feed</h2>
     <hr />
     <!--<table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">-->
     <table id="feed">
