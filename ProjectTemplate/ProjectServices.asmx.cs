@@ -564,6 +564,8 @@ namespace ProjectTemplate
 						postText = sqlDt.Rows[i]["Post"].ToString(),
 						department = sqlDt.Rows[i]["Department"].ToString(),
 						postDate = sqlDt.Rows[i]["DateTimes"].ToString(),
+						//likes = Convert.ToInt32(sqlDt.Rows[i]["isliketotal"]),
+						//dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
 						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
 						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
 						isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
@@ -579,7 +581,7 @@ namespace ProjectTemplate
 		}
 		// does not work need to figure out votes table and code for it
 		[WebMethod(EnableSession = true)]
-		public Post[] FilterPostsPopular(string filter)
+		public Post[] FilterPostsPopular()
 		{
 			if (Session["id"] != null)
 			{
@@ -587,12 +589,16 @@ namespace ProjectTemplate
 
 				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 				string sqlConnectString = getConString();
-				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected from posts p inner join users u on u.id = p.UserID order by DateTimes DESC";
+				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected " +
+                    "from posts p  inner join users u on u.id = p.UserID"  +
+					"from votes where PostID = p.PostID) as isliketotal, (select ifnull(sum(IsDislike),0) " +
+					"from votes where PostID = p.PostID) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') order by isliketotal desc";
+
 
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-				sqlCommand.Parameters.AddWithValue("@Department", HttpUtility.UrlDecode(filter));
+				//sqlCommand.Parameters.AddWithValue("@depValue", HttpUtility.UrlDecode(dep));
 
 				//gonna use this to fill a data table
 				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
@@ -613,6 +619,8 @@ namespace ProjectTemplate
 						postText = sqlDt.Rows[i]["Post"].ToString(),
 						department = sqlDt.Rows[i]["Department"].ToString(),
 						postDate = sqlDt.Rows[i]["DateTimes"].ToString(),
+						likes = Convert.ToInt32(sqlDt.Rows[i]["isliketotal"]),
+						dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
 						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
 						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
 						isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])

@@ -245,6 +245,23 @@
                 feed.deleteRow(i - 1);
             }
         }
+
+        function callFilter() {
+            var filter = filterSelect.value;
+
+            switch (filter) {
+                case "newest":
+                    GetPost();
+                    break;
+                case "popularity":
+                    //call that function not yet written
+                    alert("function not yey written");
+                    break;
+                default:
+                    FilterPosts();
+                    break;
+            }
+        }
         // this should be called from a switch statement to get functionailty for all options in list 
         function FilterPosts() {
             var filter = filterSelect.value;
@@ -263,7 +280,7 @@
                         // repopulates table based on new querry
                         var rowNum = 2;
                         for (var i = 0; i < fpostsArray.length; i++) {
-                            
+
                             var row = feed.insertRow(rowNum);
                             var cell0 = row.insertCell(0);
                             var cell1 = row.insertCell(1);
@@ -282,6 +299,15 @@
                             cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + fpostsArray[i].id + ");'>Add Comment</button>"
                             rowNum++;
                         }
+                    } else if (msg.d.length == 0) {
+                        clearFeed();
+                        // repopulates table based on new querry
+                        var rowNum = 2;
+                        var row = feed.insertRow(rowNum);
+                        var cell0 = row.insertCell(0);
+                        cell0.colSpan = "6";
+                        cell0.innerHTML = "<span><strong> There are no posts tagged with that department. Please choose another filter</strong></span>";
+                        
                     }
                 },
                 error: function (e) {
@@ -311,7 +337,7 @@
             <td colspan="3">
                 <br />
                 <label for="filterSelect">Filter By:</label>
-                <select id="filterSelect" name="filterSelect" onchange="FilterPosts()">
+                <select id="filterSelect" name="filterSelect" onchange="callFilter()">
                     <option value="newest">Newest to Oldest</option>
                     <option value="popularity">Popularity</option>
                     <optgroup label="Department">

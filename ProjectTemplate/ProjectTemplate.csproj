@@ -122,6 +122,7 @@
     <Content Include="postProblem.html" />
     <Content Include="ProjectServices.asmx" />
     <Content Include="projectStyleSheet.css" />
+    <Content Include="userFeed.html" />
     <Content Include="userHome.html" />
     <Content Include="Web.config" />
   </ItemGroup>
