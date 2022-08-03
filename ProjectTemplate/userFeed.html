@@ -580,6 +580,38 @@
             });
         }
 
+        function CreateVoteFilter(postid, like, dislike) {
+            var webMethod = "ProjectServices.asmx/CreateVote";
+            //var like = document.getElementById('thumbUp').value;
+            //var dislike = document.getElementById('thumbsDown').value;
+            var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    $(".likes").remove();
+                    $(".dislikes").remove();
+                    $(".left").remove();
+                    $(".right").remove();
+                    $(".postText").remove();
+                    $(".buttons").remove();
+                    $(".yourvote").remove();
+                    $(".commentButton").remove();
+                    $(".comment").remove();
+                    FilterPosts();
+                    //alert("You voted!");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
+
         function GetPost() {
             var postsArray;
             var webMethod = "ProjectServices.asmx/GetPost";
@@ -744,18 +776,18 @@
                             var cell6 = row.insertCell(6);
                             var cell7 = row.insertCell(7);
                             var cell8 = row.insertCell(8);
-                            var cell9 = row.insertCell(9);
+                            //var cell9 = row.insertCell(9);
 
                             cell0.innerHTML = "<span class='left'>" + fpostsArray[i].userName + "</span>";
                             cell1.innerHTML = "<span class='postText'>" + fpostsArray[i].postText + "</span>";
                             cell2.innerHTML = "<span class='right'> " + fpostsArray[i].postDate + "</span>";
                             cell3.innerHTML = "<span class='likes'>" + fpostsArray[i].likes + "</span>";
                             cell4.innerHTML = "<span class='dislikes'>" + fpostsArray[i].dislikes + "</span>";
-                            cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
+                            cell5.innerHTML = "<span class='buttons'> <input height='25' width='25' type='image' onclick='CreateVoteFilter(" + fpostsArray[i].id + ",1,0);' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' onclick='CreateVoteFilter(" + fpostsArray[i].id + ",0,1);' src='ThumbsDown.png' /> </span>";
                             cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + fpostsArray[i].id + ");'>Add Comment</button>"
-                            cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
-                            cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Edit</button>"
-                            cell9.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Delete</button>"
+                            //cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
+                            cell7.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Edit</button>"
+                            cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Delete</button>"
                             rowNum++;
                         }
                     } else if (msg.d.length == 0) {
