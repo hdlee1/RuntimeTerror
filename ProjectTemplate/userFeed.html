@@ -707,9 +707,8 @@
                     GetPost();
                     break;
                 case "popularity":
-                    //call that function not yet written
                     clearFeed();
-                    alert("function not yet written");
+                    FilterPostsPopular();
                     break;
                 default:
                     clearFeed();
@@ -717,7 +716,6 @@
                     break;
             }
         }
-        // this should be called from a switch statement to get functionailty for all options in list 
         function FilterPosts() {
             var filter = filterSelect.value;
             var webMethod = "ProjectServices.asmx/FilterPostsDepartment";
@@ -777,6 +775,47 @@
             });
         }
 
+        function FilterPostsPopular() {
+            var webMethod = "ProjectServices.asmx/FilterPostsPopular";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                cache: false,
+                async: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d.length > 0) {
+                        fpostsArray = msg.d;
+                        // repopulates table based on new querry
+                        var rowNum = 2;
+                        for (var i = 0; i < fpostsArray.length; i++) {
+
+                            var row = feed.insertRow(rowNum);
+                            var cell0 = row.insertCell(0);
+                            var cell1 = row.insertCell(1);
+                            var cell2 = row.insertCell(2);
+                            var cell3 = row.insertCell(3);
+                            var cell4 = row.insertCell(4);
+                            var cell5 = row.insertCell(5);
+                            var cell6 = row.insertCell(6);
+
+                            cell0.innerHTML = "<span class='left'>" + fpostsArray[i].userName + "</span>";
+                            cell1.innerHTML = "<span class='postText'>" + fpostsArray[i].postText + "</span>";
+                            cell2.innerHTML = "<span class='right'> " + fpostsArray[i].postDate + "</span>";
+                            cell3.innerHTML = "<span class='likes'>" + fpostsArray[i].likes + "</span>";
+                            cell4.innerHTML = "<span class='dislikes'>" + fpostsArray[i].dislikes + "</span>";
+                            cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
+                            cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + fpostsArray[i].id + ");'>Add Comment</button>"
+                            rowNum++;
+                        }
+                    }
+                },
+                error: function (e) {
+                    alert("failed to filter");
+                }
+            });
+        }
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--LINK TO PROJECT STYLE SHEET-->

@@ -604,6 +604,7 @@ namespace ProjectTemplate
 				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected, (select ifnull(sum(IsLike), 0) " +
 								   "from votes where PostID = p.postid) as isliketotal, (select ifnull(sum(IsDislike),0) " +
 								   "from votes where PostID = p.postid) as isdisliketotal from posts p inner join users u on u.id = p.UserID Where p.Department=@depValue and p.Solved = false order by DateTimes DESC";
+
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
@@ -643,7 +644,7 @@ namespace ProjectTemplate
 				return new Post[0];
 			}
 		}
-		// does not work need to figure out votes table and code for it
+
 		[WebMethod(EnableSession = true)]
 		public Post[] FilterPostsPopular()
 		{
@@ -654,15 +655,11 @@ namespace ProjectTemplate
 				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 				string sqlConnectString = getConString();
 				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected, (select ifnull(sum(IsLike), 0) " +
-								   "from votes where PostID = p.postid) as isliketotal, (select ifnull(sum(IsDislike),0) " +
-								   "from votes where PostID = p.postid) as isdisliketotal " +
-								   "from posts p inner join users u on u.id = p.UserID where p.Solved = false" + "order by isliketotal desc";
-
+				   "from votes where PostID = p.postid) as isliketotal, (select ifnull(sum(IsDislike),0) " +
+				   "from votes where PostID = p.postid) as isdisliketotal from posts p inner join users u on u.id = p.UserID Where p.Solved = false order by isliketotal DESC, isdisliketotal ASC";
 
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-				//sqlCommand.Parameters.AddWithValue("@depValue", HttpUtility.UrlDecode(dep));
 
 				//gonna use this to fill a data table
 				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
