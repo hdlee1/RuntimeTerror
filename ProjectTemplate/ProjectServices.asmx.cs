@@ -601,7 +601,9 @@ namespace ProjectTemplate
 				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 				string sqlConnectString = getConString();
 								
-				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected from posts p  inner join users u on u.id = p.UserID Where p.Department=@depValue order by DateTimes DESC";
+				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected, (select ifnull(sum(IsLike), 0) " +
+								   "from votes where PostID = p.postid) as isliketotal, (select ifnull(sum(IsDislike),0) " +
+								   "from votes where PostID = p.postid) as isdisliketotal from posts p inner join users u on u.id = p.UserID Where p.Department=@depValue and p.Solved = false order by DateTimes DESC";
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
@@ -626,9 +628,9 @@ namespace ProjectTemplate
 						postText = sqlDt.Rows[i]["Post"].ToString(),
 						department = sqlDt.Rows[i]["Department"].ToString(),
 						postDate = sqlDt.Rows[i]["DateTimes"].ToString(),
-						//likes = Convert.ToInt32(sqlDt.Rows[i]["isliketotal"]),
-						//dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
-						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
+                        likes = Convert.ToInt32(sqlDt.Rows[i]["isliketotal"]),
+                        dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
+                        hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
 						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
 						isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
 					});
@@ -651,10 +653,10 @@ namespace ProjectTemplate
 
 				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 				string sqlConnectString = getConString();
-				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected " +
-                    "from posts p  inner join users u on u.id = p.UserID"  +
-					"from votes where PostID = p.PostID) as isliketotal, (select ifnull(sum(IsDislike),0) " +
-					"from votes where PostID = p.PostID) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') order by isliketotal desc";
+				string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected, (select ifnull(sum(IsLike), 0) " +
+								   "from votes where PostID = p.postid) as isliketotal, (select ifnull(sum(IsDislike),0) " +
+								   "from votes where PostID = p.postid) as isdisliketotal " +
+								   "from posts p inner join users u on u.id = p.UserID where p.Solved = false" + "order by isliketotal desc";
 
 
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
