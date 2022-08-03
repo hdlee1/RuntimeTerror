@@ -612,6 +612,38 @@
             });
         }
 
+        function CreateVotePopularity(postid, like, dislike) {
+            var webMethod = "ProjectServices.asmx/CreateVote";
+            //var like = document.getElementById('thumbUp').value;
+            //var dislike = document.getElementById('thumbsDown').value;
+            var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    $(".likes").remove();
+                    $(".dislikes").remove();
+                    $(".left").remove();
+                    $(".right").remove();
+                    $(".postText").remove();
+                    $(".buttons").remove();
+                    $(".yourvote").remove();
+                    $(".commentButton").remove();
+                    $(".comment").remove();
+                    FilterPostsPopular();
+                    //alert("You voted!");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
+
         function GetPost() {
             var postsArray;
             var webMethod = "ProjectServices.asmx/GetPost";
@@ -837,7 +869,7 @@
                             cell2.innerHTML = "<span class='right'> " + fpostsArray[i].postDate + "</span>";
                             cell3.innerHTML = "<span class='likes'>" + fpostsArray[i].likes + "</span>";
                             cell4.innerHTML = "<span class='dislikes'>" + fpostsArray[i].dislikes + "</span>";
-                            cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
+                            cell5.innerHTML = "<span class='buttons'> <input height='25' width='25' type='image' onclick='CreateVotePopularity(" + fpostsArray[i].id + ",1,0);' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' onclick='CreateVotePopularity(" + fpostsArray[i].id + ",0,1);' src='ThumbsDown.png' /> </span>";
                             cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + fpostsArray[i].id + ");'>Add Comment</button>"
                             rowNum++;
                         }
