@@ -262,6 +262,73 @@ namespace ProjectTemplate
 			return true;
 		}
 
+		[WebMethod(EnableSession = true)]
+		public void DeletePost(int postID)
+		{
+			DeleteComments(postID);
+			string sqlconnectstring = getConString();
+			//the only thing fancy about this query is select last_insert_id() at the end.  all that
+			//does is tell mysql server to return the primary key of the last inserted row.
+			string sqlselect = "DELETE FROM `440sum20221`.`posts` WHERE PostID =" + postID + ";";
+
+			MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
+			MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
+
+			//this time, we're not using a data adapter to fill a data table.  We're just
+			//opening the connection, telling our command to "executescalar" which says basically
+			//execute the query and just hand me back the number the query returns (the ID, remember?).
+			//don't forget to close the connection!
+			sqlConnection.Open();
+			//we're using a try/catch so that if the query errors out we can handle it gracefully
+			//by closing the connection and moving on
+			try
+			{
+				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				//here, you could use this commentID for additional queries regarding
+				//the requested comment.  Really this is just an example to show you
+				//a query where you get the primary key of the inserted row back from
+				//the database!
+			}
+			catch (Exception e)
+			{
+			}
+			sqlConnection.Close();
+		}
+
+		[WebMethod(EnableSession = true)]
+		public void DeleteComments(int postID)
+		{
+			string sqlconnectstring = getConString();
+			//the only thing fancy about this query is select last_insert_id() at the end.  all that
+			//does is tell mysql server to return the primary key of the last inserted row.
+			string sqlselect = "DELETE FROM `440sum20221`.`comments` WHERE PostID = " + postID + ";";
+
+			MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
+			MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
+
+			//this time, we're not using a data adapter to fill a data table.  We're just
+			//opening the connection, telling our command to "executescalar" which says basically
+			//execute the query and just hand me back the number the query returns (the ID, remember?).
+			//don't forget to close the connection!
+			sqlConnection.Open();
+			//we're using a try/catch so that if the query errors out we can handle it gracefully
+			//by closing the connection and moving on
+			try
+			{
+				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				//here, you could use this commentID for additional queries regarding
+				//the requested comment.  Really this is just an example to show you
+				//a query where you get the primary key of the inserted row back from
+				//the database!
+			}
+			catch (Exception e)
+			{
+			}
+			sqlConnection.Close();
+		}
+
+
+
 		//EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
 		[WebMethod(EnableSession = true)]
 		public posts[] GetPost()

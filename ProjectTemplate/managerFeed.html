@@ -72,6 +72,57 @@
             });
         }
 
+        function DeletePost(postID) {
+            var webMethod = "ProjectServices.asmx/DeletePost";
+            var parameters = "{\"postID\":\"" + postID + "\"}";
+           
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                    return errorMessage;
+                }
+            });
+        }
+        function DeleteComment(postID) {
+            var webMethod = "ProjectServices.asmx/DeleteComment";
+            var parameters = "{\"postID\":\"" + postID + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    return true;
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                    return errorMessage;
+                }
+            });
+        }
+
+        function DeleteAlert(postID) {
+            let text; 
+            if (confirm("Are you sure you want to permanently delete this post?") == true) {
+                DeletePost(postID);
+                text = alert("Post has been deleted.");
+            } else {
+                text = alert("Deletion has been canceled.");
+            }
+        }
+
         function CreateSolvedPost(postID) {
             var webMethod = "ProjectServices.asmx/CreateSolvedPost";
             //var post = document.getElementById('datetime').value;
@@ -261,7 +312,8 @@
                 var cell3 = row.insertCell(3);
                 var cell4 = row.insertCell(4);
                 var cell5 = row.insertCell(5);
-                var cell6 = row.insertCell(6); 
+                var cell6 = row.insertCell(6);
+                var cell7 = row.insertCell(7);
 
 
                 if (postsArray[i].userId == 6) {
@@ -275,7 +327,8 @@
                 cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
                 cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
                 cell5.innerHTML = "<button style='height: 30px;' class='commentButton' onclick='CreateSolvedPost(" + postsArray[i].postId +")'>Solved</button >" 
-                cell6.innerHTML = "<button style='height: 30px;' class='commentButton' onclick='CreateArchivedPost(" + postsArray[i].postId +")'>Archive</button>"
+                cell6.innerHTML = "<button style='height: 30px;' class='commentButton' onclick='CreateArchivedPost(" + postsArray[i].postId + ")'>Archive</button>"
+                cell7.innerHTML = "<button style='height: 30px;' class='commentButton' onclick='DeleteAlert(" + postsArray[i].postId + ")'>Delete</button>" 
               
                 rowNum++;
               
@@ -334,6 +387,7 @@
                     if (msg.d.length > 0) {
                         fpostsArray = msg.d;
                         clearFeed();
+                        // repopulates table based on new querry
                         // repopulates table based on new querry
                         var rowNum = 2;
                         for (var i = 0; i < fpostsArray.length; i++) {
