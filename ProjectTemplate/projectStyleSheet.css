@@ -179,14 +179,38 @@ textarea {
 */
 
 /* Add a black background color to the top navigation */
-.topnav {
+.topnav, .topnav2  {
     background-color: black;
     overflow: hidden;
     width: 100%;
   }
   
-  /* Style the links inside the navigation bar */
-  .topnav a {
+/* Style the links inside the navigation bar */
+.topnav a {
+display: block;
+float: left;
+color: #f2f2f2;
+text-align: center;
+padding-top: 10px;
+padding-bottom: 10px;
+text-decoration: none;
+font-size: 14px;
+width: 33.333%;
+}
+  
+/* Change the color of links on hover */
+.topnav a:hover, .topnav2 a:hover {
+    background-color: rgb(229, 240, 245);
+    color: black;
+}
+  
+/* Add a color to the active/current link */
+.topnav a.active, .topnav2 a.active {
+    background-color: dodgerblue;
+    color: white;
+}
+
+.topnav2 a {
     display: block;
     float: left;
     color: #f2f2f2;
@@ -195,34 +219,38 @@ textarea {
     padding-bottom: 10px;
     text-decoration: none;
     font-size: 14px;
-    width: 33.333%;
-  }
-  
-  /* Change the color of links on hover */
-  .topnav a:hover {
-    background-color: rgb(229, 240, 245);
-    color: black;
-  }
-  
-  /* Add a color to the active/current link */
-  .topnav a.active {
-    background-color: dodgerblue;
-    color: white;
-  }
+    width: 25%;
+}
 
 #feed {
     /*border: 2px groove black;*/
     border-collapse: collapse;
 }
 
+/*#feed tr:nth-child(even){
+    background-color: orange;
+}*/
+
 .left, .likes, .dislikes {
     float: left;
+}
+
+.mainHeading {
+    font-weight: bold;
+    font-size: 18px;
+    background-color: lightsteelblue;
 }
 
 .heading {
     font-weight: bold;
     font-size: 18px;
+    background-color: gainsboro;
 }
+
+.comment {
+    background-color: gainsboro;
+}
+
 .commentButton {
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -240,4 +268,8 @@ button:focus,
 button:active {
     cursor: pointer;
     background-color: #ecf0f1;
+}
+
+.filter {
+    padding-bottom: 10px;
 }

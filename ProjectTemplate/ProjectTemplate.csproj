@@ -112,6 +112,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="archived.html" />
     <Content Include="createAccount.html" />
     <Content Include="Global.asax" />
     <Content Include="images\ThumbsDown.png" />
@@ -135,7 +136,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="posts.cs" />
-    <Compile Include="Post.cs" />
     <Compile Include="ProjectServices.asmx.cs">
       <DependentUpon>ProjectServices.asmx</DependentUpon>
       <SubType>Component</SubType>

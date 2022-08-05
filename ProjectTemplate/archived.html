@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -6,7 +6,7 @@
     <meta http-equiv="Expires" content="-1">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>Manager Solutions</title>
+    <title>Archived Posts</title>
     <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <style>
@@ -98,32 +98,10 @@
             });
         }
 
-        function CreateArchivedPost(postID) {
-            var webMethod = "ProjectServices.asmx/CreateArchivedPost";
-            //var post = document.getElementById('datetime').value;
-            var parameters = "{\"postID\":\"" + postID + "\"}";
-            //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
 
-            $.ajax({
-                type: "POST",
-                url: webMethod,
-                data: parameters,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (msg) {
-                    location.reload();
-                },
-                error: function (xhr, status, error) {
-                    var errorMessage = xhr.status + ': ' + xhr.statusText;
-                    alert('Error - ' + errorMessage);
-                    return errorMessage;
-                }
-            });
-        }
-
-        function GetSolved() {
+        function GetArchived() {
             var postsArray;
-            var webMethod = "ProjectServices.asmx/GetSolved";
+            var webMethod = "ProjectServices.asmx/GetArchived";
             $.ajax({
                 type: "POST",
                 url: webMethod,
@@ -150,9 +128,6 @@
                 var cell2 = row.insertCell(2);
                 var cell3 = row.insertCell(3);
                 var cell4 = row.insertCell(4);
-                var cell5 = row.insertCell(5);
-                var cell6 = row.insertCell(6);
-
 
                 if (postsArray[i].userId == 6) {
                     cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
@@ -164,8 +139,6 @@
                 cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
                 cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
                 cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                cell5.innerHTML = ""
-                cell6.innerHTML = "<button style='height: 35px; width: 70px;' class='commentButton' onclick='CreateArchivedPost(" + postsArray[i].postId +")'>Archive</button>"
 
                 rowNum++;
 
@@ -187,23 +160,23 @@
     <!--LINK TO PROJECT STYLE SHEET-->
     <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
-<body onload="GetSolved();">
+<body onload="GetArchived();">
     <div class="topnav2">
         <!--<a href="manageHomePage.html">Home</a>-->
         <a href="managerFeed.html">Problems/Suggestions Feed</a>
-        <a class="active" href="solutions.html">Solutions</a>
-        <a href="archived.html">Archived</a>
+        <a href="solutions.html">Solutions</a>
+        <a class="active" href="archived.html">Archived</a>
         <a href="#" onclick="LogOff()">Log Off</a>
     </div>
-    <h1 class="header">Solved Problems</h1>
-    <h4>These are posts that have been marked as solved.</h4>
+    <h1 class="header">Archived Posts</h1>
+    <h4>These are posts that are either outdated or don't have relevance to the workplace.</h4>
     <hr />
     <!--<table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">-->
     <table id="feed">
         <tr>
             <td colspan="3"></td>
             <td class="filter" colspan="3"><strong>Filtered Newest to Oldest</strong></td>
-</tr>
+        </tr>
         <tr>
             <td width="160" class="heading">Name</td>
             <td width="480" class="heading">Post</td>

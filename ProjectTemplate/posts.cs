@@ -10,7 +10,6 @@ namespace ProjectTemplate
         public int postId;
         public int userId;
         public string post;
-
         public string date;
         public string firstName;
         public string lastName;
@@ -22,5 +21,6 @@ namespace ProjectTemplate
         public bool isSolved;
         public bool isRejected;
         public string department;
+        public bool isArchived;
     }
 }
