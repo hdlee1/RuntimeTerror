@@ -62,10 +62,6 @@
                     comments = msg.d;
                     var id = "#postID" + postID
                     if (comments != undefined) {
-                        //var tableRow = document.getElementById(id);
-                        //var tbl = document.createElement('table');
-                        //var tbdy = document.createElement('tbody');
-                        //var tr;
                         for (var i = 0; i < comments.length; i++) {
                             $(id).html("<td class='heading'>Comments:</td>");
                             $(id).after("<tr class='comment'>" +
@@ -75,20 +71,7 @@
                                 "<td>" + "<button class='commentButton'>Edit</button>" + "</td>" +
                                 "<td>" + "<button class='commentButton'>Delete</button>" + "</td>" +
                                 "</tr>");
-                            //tr = document.createElement('tr');
-                            //var td = document.createElement('td');
-                            //td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
-                            //tr.appendChild(td)
-                            //var td1 = document.createElement('td');
-                            //td1.appendChild(document.createTextNode(comments[i].Comment));
-                            //tr.appendChild(td1)
-                            //var td2 = document.createElement('td');
-                            //td2.appendChild(document.createTextNode(comments[i].DateTime));
-                            //tr.appendChild(td2)
-                            //tbdy.appendChild(tr);
                         }
-                        //tbl.appendChild(tbdy);
-                        //tableRow.appendChild(tbl)
                     }
                 },
                 error: function (xhr, status, error) {
@@ -100,9 +83,7 @@
 
         function CreateArchivedPost(postID) {
             var webMethod = "ProjectServices.asmx/CreateArchivedPost";
-            //var post = document.getElementById('datetime').value;
             var parameters = "{\"postID\":\"" + postID + "\"}";
-            //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
 
             $.ajax({
                 type: "POST",
@@ -172,14 +153,12 @@
                 var row2 = feed.insertRow(rowNum);
                 row2.id = "postID" + postsArray[i].postId;
                 GetComments(postsArray[i].postId);
-                rowNum++
+                rowNum++;
             }
         }
 
         function getWelcome() {
             var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
-            //var name = sessionStorage.getItem(logOn.);
-            //var name = new ActiveXObject("WScript.Network").UserName;
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
     </script>
@@ -189,7 +168,6 @@
 </head>
 <body onload="GetSolved();">
     <div class="topnav2">
-        <!--<a href="manageHomePage.html">Home</a>-->
         <a href="managerFeed.html">Problems/Suggestions Feed</a>
         <a class="active" href="solutions.html">Solutions</a>
         <a href="archived.html">Archived</a>
@@ -198,12 +176,11 @@
     <h1 class="header">Solved Problems</h1>
     <h4>These are posts that have been marked as solved.</h4>
     <hr />
-    <!--<table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">-->
     <table id="feed">
         <tr>
             <td colspan="3"></td>
             <td class="filter" colspan="3"><strong>Filtered Newest to Oldest</strong></td>
-</tr>
+        </tr>
         <tr>
             <td width="160" class="heading">Name</td>
             <td width="480" class="heading">Post</td>

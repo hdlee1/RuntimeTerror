@@ -92,51 +92,6 @@ namespace ProjectTemplate
 			return JsonConvert.SerializeObject(result);
 		}
 
-		//[WebMethod(EnableSession = true)] //NOTICE: gotta enable session on each individual method
-		//public string LogOnAnonymous()
-		//{
-		//	//we return this flag to tell them if they logged in or not
-		//	bool success = false;
-		//	string isManager = "false";
-
-		//	//our connection string comes from our web.config file like we talked about earlier
-		//	//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-		//	string sqlConnectString = getConString();
-		//	//here's our query.  A basic select with nothing fancy.  Note the parameters that begin with @
-		//	//NOTICE: we added admin to what we pull, so that we can store it along with the id in the session
-		//	string sqlSelect = "SELECT id, ismanager FROM users WHERE id=6";
-
-		//	//set up our connection object to be ready to use our connection string
-		//	MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-		//	//set up our command object to use our connection, and our query
-		//	MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-		//	//a data adapter acts like a bridge between our command object and 
-		//	//the data we are trying to get back and put in a table object
-		//	MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-		//	//here's the table we want to fill with the results from our query
-		//	DataTable sqlDt = new DataTable();
-		//	//here we go filling it!
-		//	sqlDa.Fill(sqlDt);
-		//	//check to see if any rows were returned.  If they were, it means it's 
-		//	//a legit account
-		//	if (sqlDt.Rows.Count > 0)
-		//	{
-		//		//if we found an account, store the id and admin status in the session
-		//		//so we can check those values later on other method calls to see if they 
-		//		//are 1) logged in at all, and 2) and admin or not
-		//		Session["id"] = sqlDt.Rows[0]["id"];
-		//		Session["ismanager"] = sqlDt.Rows[0]["ismanager"];
-		//		isManager = sqlDt.Rows[0]["ismanager"].ToString();
-		//		success = true;
-		//	}
-		//	var result = new logOnResult();
-		//	result.successful = success;
-		//	result.isManager = isManager;
-		//	//return the result!
-		//	return JsonConvert.SerializeObject(result);
-		//}
-
 		[WebMethod(EnableSession = true)]
 		public void CreateAccount(string uid, string pass, string firstName, string lastName, string isManager)
 		{
@@ -164,7 +119,7 @@ namespace ProjectTemplate
 			//by closing the connection and moving on
 			try
 			{
-				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				sqlCommand.ExecuteScalar();
 				//here, you could use this accountID for additional queries regarding
 				//the requested account.  Really this is just an example to show you
 				//a query where you get the primary key of the inserted row back from
@@ -202,7 +157,7 @@ namespace ProjectTemplate
 			//by closing the connection and moving on
 			try
 			{
-				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				sqlCommand.ExecuteScalar();
 				//here, you could use this accountID for additional queries regarding
 				//the requested account.  Really this is just an example to show you
 				//a query where you get the primary key of the inserted row back from
@@ -240,7 +195,7 @@ namespace ProjectTemplate
 			//by closing the connection and moving on
 			try
 			{
-				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				sqlCommand.ExecuteScalar();
 				//here, you could use this accountID for additional queries regarding
 				//the requested account.  Really this is just an example to show you
 				//a query where you get the primary key of the inserted row back from
@@ -283,7 +238,7 @@ namespace ProjectTemplate
 			//by closing the connection and moving on
 			try
 			{
-				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				sqlCommand.ExecuteScalar();
 				//here, you could use this commentID for additional queries regarding
 				//the requested comment.  Really this is just an example to show you
 				//a query where you get the primary key of the inserted row back from
@@ -315,7 +270,7 @@ namespace ProjectTemplate
 			//by closing the connection and moving on
 			try
 			{
-				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				sqlCommand.ExecuteScalar();
 				//here, you could use this commentID for additional queries regarding
 				//the requested comment.  Really this is just an example to show you
 				//a query where you get the primary key of the inserted row back from
@@ -456,53 +411,6 @@ namespace ProjectTemplate
 			}
 		}
 
-		//      [WebMethod(EnableSession = true)]
-		//public Post[] GetPosts()
-		//{
-		//	if (Session["id"] != null)
-		//	{
-		//		DataTable sqlDt = new DataTable("posts");
-
-		//		//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-		//		string sqlConnectString = getConString();
-		//		string sqlSelect = "Select p.PostID, p.UserID, CONCAT(u.fname, ' ', u.lname) as UserName, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected from posts p inner join users u on u.id = p.UserID order by DateTimes DESC";
-
-		//		MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-		//		MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-		//		//gonna use this to fill a data table
-		//		MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-		//		//filling the data table
-		//		sqlDa.Fill(sqlDt);
-
-		//loop through each row in the dataset, creating instances
-		//of our container class Post.  Fill each post with
-		//data from the rows, then dump them in a list.
-		//List<Post> posts = new List<Post>();
-		//for (int i = 0; i < sqlDt.Rows.Count; i++)
-		//{
-		//	posts.Add(new Post
-		//	{
-		//		id = Convert.ToInt32(sqlDt.Rows[i]["PostId"]),
-		//		uid = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
-		//		userName = sqlDt.Rows[i]["UserName"].ToString(),
-		//		postText = sqlDt.Rows[i]["Post"].ToString(),
-		//		department = sqlDt.Rows[i]["Department"].ToString(),
-		//		postDate = sqlDt.Rows[i]["DateTimes"].ToString(),
-		//		hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
-		//		isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
-		//				isRejected = Convert.ToBoolean(sqlDt.Rows[i]["Rejected"])
-		//			});
-		//		}
-		//		//convert the list of posts to an array and return!
-		//		return posts.ToArray();
-		//	}
-		//	else
-		//	{
-		//		return new Post[0];
-		//	}
-		//}
-
 		[WebMethod(EnableSession = true)]
 		public Comments[] GetComments(int postID)
 		{
@@ -510,7 +418,6 @@ namespace ProjectTemplate
 			{
 				DataTable sqlDt = new DataTable("posts");
 
-				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 				string sqlConnectString = getConString();
 				string sqlSelect = "SELECT c.`CommentID`,c.`UserID`,c.`PostID`,c.`Comment`,c.`DateTime`,u.fname,u.lname FROM `440sum20221`.`comments` c INNER JOIN users u on u.id = c.UserID  WHERE c.PostID = " + postID + ";";
 
@@ -561,7 +468,6 @@ namespace ProjectTemplate
 			MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
 
 			sqlCommand.Parameters.AddWithValue("@UserID", HttpUtility.UrlDecode(Session["id"].ToString()));
-			//sqlCommand.Parameters.AddWithValue("@uid", HttpUtility.UrlDecode(Session["uid"].ToString()));
 			sqlCommand.Parameters.AddWithValue("@PostID", postID);
 			sqlCommand.Parameters.AddWithValue("@Comment", HttpUtility.UrlDecode(comment));
 			sqlCommand.Parameters.AddWithValue("@DateTime", DateTime.Now);
@@ -575,7 +481,7 @@ namespace ProjectTemplate
 			//by closing the connection and moving on
 			try
 			{
-				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				sqlCommand.ExecuteScalar();
 				//here, you could use this commentID for additional queries regarding
 				//the requested comment.  Really this is just an example to show you
 				//a query where you get the primary key of the inserted row back from
@@ -608,7 +514,7 @@ namespace ProjectTemplate
 			//by closing the connection and moving on
 			try
 			{
-				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				sqlCommand.ExecuteScalar();
 				//here, you could use this commentID for additional queries regarding
 				//the requested comment.  Really this is just an example to show you
 				//a query where you get the primary key of the inserted row back from
@@ -666,7 +572,6 @@ namespace ProjectTemplate
 				var id = Session["id"].ToString();
 				DataTable sqlDt = new DataTable("posts");
 
-				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 				string sqlConnectString = getConString();
 								
 				string sqlSelect = "Select p.PostID, p.UserID, u.fname, u.lname, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected, (select ifnull(sum(IsLike), 0) " +
@@ -695,7 +600,6 @@ namespace ProjectTemplate
 						userId = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
 						firstName = sqlDt.Rows[i]["fname"].ToString(),
 						lastName = sqlDt.Rows[i]["lname"].ToString(),
-						//userName = sqlDt.Rows[i]["UserName"].ToString(),
 						post = sqlDt.Rows[i]["Post"].ToString(),
 						department = sqlDt.Rows[i]["Department"].ToString(),
 						date = Convert.ToDateTime(sqlDt.Rows[i]["DateTimes"]).ToString("MM/dd/yyyy hh:mm tt"),
@@ -724,7 +628,6 @@ namespace ProjectTemplate
 				var id = Session["id"].ToString();
 				DataTable sqlDt = new DataTable("posts");
 
-				//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 				string sqlConnectString = getConString();
 				string sqlSelect = "Select p.PostID, p.UserID, u.fname, u.lname, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Rejected, (select ifnull(sum(IsLike), 0) " +
 				   "from votes where PostID = p.postid) as isliketotal, (select ifnull(sum(IsDislike),0) " +
@@ -750,7 +653,6 @@ namespace ProjectTemplate
 						userId = Convert.ToInt32(sqlDt.Rows[i]["UserID"]),
 						firstName = sqlDt.Rows[i]["fname"].ToString(),
 						lastName = sqlDt.Rows[i]["lname"].ToString(),
-						//userName = sqlDt.Rows[i]["UserName"].ToString(),
 						post = sqlDt.Rows[i]["Post"].ToString(),
 						department = sqlDt.Rows[i]["Department"].ToString(),
 						date = Convert.ToDateTime(sqlDt.Rows[i]["DateTimes"]).ToString("MM/dd/yyyy hh:mm tt"),
@@ -858,7 +760,7 @@ namespace ProjectTemplate
 						isArchived = Convert.ToBoolean(sqlDt.Rows[i]["Archived"])
 					});
 				}
-				//convert the list of postss to an array and return!
+				//convert the list of posts to an array and return!
 				return archivedPosts.ToArray();
 			}
 			else

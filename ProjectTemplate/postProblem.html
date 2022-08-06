@@ -57,7 +57,7 @@
                 }
             });
         }
-        //This in theory should work with Log Off Function once created in ProjectServices.asmx
+
         //logs the user off both at the client and at the server
         function LogOff() {
             var webMethod = "ProjectServices.asmx/LogOff";
@@ -81,16 +81,8 @@
             });
         }
 
-        //this is a temporary log off function to show functionality
-        //function logOff() {
-        //    location.href = "logon.html";
-        //    alert("Log Off Successful");
-        //}
-
         function getWelcome() {
             var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
-            //var name = sessionStorage.getItem(logOn.);
-            //var name = new ActiveXObject("WScript.Network").UserName;
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
 
@@ -101,7 +93,6 @@
 </head>
 <body>
     <div class="topnav">
-        <!--<a href="userHome.html">Home</a>-->
         <a href="userFeed.html">Problems/Suggestions Feed</a>
         <a class="active" href="postProblem.html">Post Problem/Suggestion</a>
         <a href="#" onclick="LogOff()">Log Off</a>

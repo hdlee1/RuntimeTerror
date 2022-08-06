@@ -45,9 +45,7 @@
         function CreateComment(postID) {
             var webMethod = "ProjectServices.asmx/CreateComment";
             var comment = document.getElementById('postCommentSection' + postID).value;
-            //var post = document.getElementById('datetime').value;
             var parameters = "{\"comment\":\"" + encodeURI(comment) + "\",\"postID\":\"" + postID + "\"}";
-            //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
 
             $.ajax({
                 type: "POST",
@@ -80,10 +78,6 @@
                     comments = msg.d;
                     var id = "#postID" + postID
                     if (comments != null) {
-                        //var tableRow = document.getElementById(id);
-                        //var tbl = document.createElement('table');
-                        //var tbdy = document.createElement('tbody');
-                        //var tr;
                         for (var i = 0; i < comments.length; i++) {
                             $(id).html("<td></td><td colspan='6' class='heading'>Comments:</td>");
                             $(id).after("<tr><td></td>" +
@@ -94,20 +88,7 @@
                                 "<td class='comment'>" + "<button class='commentButton'>Edit</button>" + "</td>" +
                                 "<td class='comment'>" + "<button class='commentButton'>Delete</button>" + "</td>" +
                                 "</tr>");
-                            //tr = document.createElement('tr');
-                            //var td = document.createElement('td');
-                            //td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
-                            //tr.appendChild(td)
-                            //var td1 = document.createElement('td');
-                            //td1.appendChild(document.createTextNode(comments[i].Comment));
-                            //tr.appendChild(td1)
-                            //var td2 = document.createElement('td');
-                            //td2.appendChild(document.createTextNode(comments[i].DateTime));
-                            //tr.appendChild(td2)
-                            //tbdy.appendChild(tr);
                         }
-                        //tbl.appendChild(tbdy);
-                        //tableRow.appendChild(tbl)
                     }
                 },
                 error: function (xhr, status, error) {
@@ -119,8 +100,6 @@
 
         function CreateVote(postid, like, dislike) {
             var webMethod = "ProjectServices.asmx/CreateVote";
-            //var like = document.getElementById('thumbUp').value;
-            //var dislike = document.getElementById('thumbsDown').value;
             var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
 
             $.ajax({
@@ -141,7 +120,6 @@
                     $(".comment").remove();
                     $(".heading").remove();
                     GetPost();
-                    //alert("You voted!");
                 },
                 error: function (xhr, status, error) {
                     var errorMessage = xhr.status + ': ' + xhr.statusText;
@@ -152,8 +130,6 @@
 
         function CreateVoteFilter(postid, like, dislike) {
             var webMethod = "ProjectServices.asmx/CreateVote";
-            //var like = document.getElementById('thumbUp').value;
-            //var dislike = document.getElementById('thumbsDown').value;
             var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
 
             $.ajax({
@@ -174,7 +150,6 @@
                     $(".comment").remove();
                     $(".heading").remove();
                     FilterPosts();
-                    //alert("You voted!");
                 },
                 error: function (xhr, status, error) {
                     var errorMessage = xhr.status + ': ' + xhr.statusText;
@@ -185,8 +160,6 @@
 
         function CreateVotePopularity(postid, like, dislike) {
             var webMethod = "ProjectServices.asmx/CreateVote";
-            //var like = document.getElementById('thumbUp').value;
-            //var dislike = document.getElementById('thumbsDown').value;
             var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
 
             $.ajax({
@@ -207,7 +180,6 @@
                     $(".comment").remove();
                     $(".heading").remove();
                     FilterPostsPopular();
-                    //alert("You voted!");
                 },
                 error: function (xhr, status, error) {
                     var errorMessage = xhr.status + ': ' + xhr.statusText;
@@ -224,7 +196,6 @@
                 url: webMethod,
                 cache: false,
                 async: false,
-                //data: "{\"GetSolved\":\"true\"}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
@@ -247,8 +218,6 @@
                             var cell8 = row.insertCell(8);
                             var cell9 = row.insertCell(9);
 
-
-
                             if (postsArray[i].userId == 6) {
                                 cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
                             }
@@ -266,23 +235,6 @@
                             cell9.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Delete</button>"
 
                             rowNum++;
-                            //var row = feed.insertRow(rowNum);
-                            //var cell0 = row.insertCell(0);
-                            //var cell1 = row.insertCell(1);
-                            //var cell2 = row.insertCell(2);
-                            //var cell3 = row.insertCell(3);
-                            //var cell4 = row.insertCell(4);
-                            //var cell5 = row.insertCell(5);
-                            //var cell6 = row.insertCell(6);
-
-                            //cell0.innerHTML = "<span class='left'>" + postsArray[i].userName + "</span>";
-                            //cell1.innerHTML = "<span class='postText'>" + postsArray[i].postText + "</span>";
-                            //cell2.innerHTML = "<span class='right'> " + postsArray[i].postDate + "</span>";
-                            //cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
-                            //cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-                            //cell5.innerHTML = "<input height='25' width='25' type='image' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' src='ThumbsDown.png' />";
-                            //cell6.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].id + ");'>Add Comment</button>"
-                            //rowNum++;
 
                             var row2 = feed.insertRow(rowNum);
                             row2.id = "postID" + postsArray[i].postId;
@@ -290,7 +242,6 @@
                             rowNum++;
 
                             var row3 = feed.insertRow(rowNum);
-                            //row3.classList.add("comment");
                             var cell0 = row3.insertCell(0);
                             var cell1 = row3.insertCell(1);
                             cell1.innerHTML = "<div id='comment" + postsArray[i].postId + "' style='display: none;'>" +
@@ -320,8 +271,6 @@
 
         function getWelcome() {
             var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
-            //var name = sessionStorage.getItem(logOn.);
-            //var name = new ActiveXObject("WScript.Network").UserName;
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
 
@@ -388,7 +337,6 @@
                             else {
                                 cell0.innerHTML = "<span class='left'>" + fpostsArray[i].firstName + " " + fpostsArray[i].lastName + "</span>";
                             }
-                            /*cell0.innerHTML = "<span class='left'>" + fpostsArray[i].userName + "</span>";*/
                             cell1.innerHTML = "<span class='postText'>" + fpostsArray[i].post + "</span>";
                             cell2.innerHTML = "<span class='right'> " + fpostsArray[i].date + "</span>";
                             cell3.innerHTML = "<span class='likes'>" + fpostsArray[i].likes + "</span>";
@@ -396,7 +344,6 @@
                             cell5.innerHTML = "<span class= 'yourvote'>" + fpostsArray[i].yourvote + "</span>";
                             cell6.innerHTML = "<span class='buttons'> <input height='25' width='25' type='image' onclick='CreateVoteFilter(" + fpostsArray[i].postId + ",1,0);' src='ThumbsUp.png' /> &nbsp;&nbsp; <input height='25' width='25' type='image' onclick='CreateVoteFilter(" + fpostsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
                             cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + fpostsArray[i].postId + ");'>Add Comment</button>"
-                            //cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
                             cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Edit</button>"
                             cell9.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Delete</button>"
                             rowNum++;
@@ -450,7 +397,6 @@
                             else {
                                 cell0.innerHTML = "<span class='left'>" + fpostsArray[i].firstName + " " + fpostsArray[i].lastName + "</span>";
                             }
-                            //cell0.innerHTML = "<span class='left'>" + fpostsArray[i].userName + "</span>";
                             cell1.innerHTML = "<span class='postText'>" + fpostsArray[i].post + "</span>";
                             cell2.innerHTML = "<span class='right'> " + fpostsArray[i].date + "</span>";
                             cell3.innerHTML = "<span class='likes'>" + fpostsArray[i].likes + "</span>";
@@ -474,7 +420,6 @@
 </head>
 <body onload="GetPost(); getWelcome();">
     <div class="topnav">
-        <!--<a href="userHome.html">Home</a>-->
         <a class="active" href="userFeed.html">Problems/Suggestions Feed</a>
         <a href="postProblem.html">Post Problem/Suggestion</a>
         <a href="#" onclick="LogOff()">Log Off</a>
@@ -482,7 +427,6 @@
     <h1 id="welcome"></h1>
     <h2 class="header">Problems & Suggestions Feed</h2>
     <hr />
-    <!--<table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">-->
     <table id="filter">
         <tr>
             <td colspan="3">
