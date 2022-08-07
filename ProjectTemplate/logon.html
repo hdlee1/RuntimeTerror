@@ -58,6 +58,7 @@
                             if (data.successful) {
                                 sessionStorage.setItem("fnameLogon", data.fname);
                                 sessionStorage.setItem("lnameLogon", data.lname);
+                                sessionStorage.setItem('id', data.id);
                             }
                             if (data.successful && data.isManager == "0") {
                                 location.href = "../userFeed.html";

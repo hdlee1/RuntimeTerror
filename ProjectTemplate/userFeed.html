@@ -85,7 +85,8 @@
                                 "<td class='comment'>" + comments[i].Comment + "</td>" +
                                 "<td class='comment'>" + comments[i].DateTime + "</td>" +
                                 "<td class='comment' colspan='2'>" + comments[i].FirstName + " " + comments[i].LastName + "</td>" +                               
-                                "<td class='comment'>" + "<button class='commentButton'>Edit</button>" + "</td>" +
+                                "<td class='comment'>" + "<button class='commentButton' onclick='EditComment(\"" + comments[i].CommentID + "\,\"" + comments[i].Comment + ")'>Edit</button>" + "</td>" +
+                                //"<td class='comment'>" + "<button class='commentButton' onclick='EditComment(" + comments[i].CommentID + ")'>Edit</button>" + "</td>" +
                                 "<td class='comment'>" + "<button class='commentButton'>Delete</button>" + "</td>" +
                                 "</tr>");
                         }
@@ -231,7 +232,7 @@
                             cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
                             cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
                             cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
-                            cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Edit</button>"
+                            cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Edit</button>" //EditPost would be called here
                             cell9.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Delete</button>"
 
                             rowNum++;
@@ -413,15 +414,40 @@
                 }
             });
         }
+        
+        function EditComment(commentID, oldComment) {
+            var userID = sessionStorage.getItem("id");
+            var text = prompt("Edit your comment:", oldComment);
+            if (text != null) {
+                newComment = text;
+            } 
+            var webMethod = "ProjectServices.asmx/EditComment";
+            var parameters = "{\"commentID\":\"" + encodeURI(commentID) + "\", \"newCommentText\":\"" + encodeURI(newComment) + "\", \"uid\":\"" + encodeURI(userID) + "\"}";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    //location.reload();
+                },
+                error: function (e) {
+                    alert("You cannot edit this comment");
+                }
+            });
+        }
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--LINK TO PROJECT STYLE SHEET-->
     <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
 <body onload="GetPost(); getWelcome();">
+    <!--When soultions page is linked class will need to be changed to topnav2-->
     <div class="topnav">
         <a class="active" href="userFeed.html">Problems/Suggestions Feed</a>
         <a href="postProblem.html">Post Problem/Suggestion</a>
+        <!--<a href="solutions.html">Solutions</a>-->
         <a href="#" onclick="LogOff()">Log Off</a>
     </div>
     <h1 id="welcome"></h1>
