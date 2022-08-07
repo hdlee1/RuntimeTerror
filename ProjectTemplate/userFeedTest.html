@@ -1,0 +1,602 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Home</title>
+    <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+                /*        border-collapse: separate; border-spacing: 0 15px;
+        */ tbody > tr > :nth-child(2) {
+                    width: 30%;
+                }
+
+                tbody > tr > :nth-child(1) {
+                    width: 75%
+                }
+
+                th {
+                    text-align: justify;
+                }
+
+                tr {
+                }
+
+                p {
+                    margin: 0;
+                    display: inline-block;
+                }
+
+                button {
+                    display: block;
+                    width: 100%;
+                }
+
+                #options, #commentOptions {
+                    border: 1px solid black;
+                    border-radius: 15px;
+                    padding: 10px;
+                    display: inline-block;
+                    position: absolute;
+                }
+    </style>
+
+    <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
+    <script type="text/javascript">
+        var comments;
+        var posts;
+        function LogOff() {
+            var webMethod = "ProjectServices.asmx/LogOff";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d) {
+                        //we logged off, so go back to logon page,
+                        location.href = "logon.html";
+                    }
+                    else {
+                    }
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
+
+        function getWelcome() {
+            var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
+            document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
+        }
+        function CreateComment(postID) {
+            var webMethod = "ProjectServices.asmx/CreateComment";
+            var comment = document.getElementById('postCommentSection'+postID).value;
+            //var post = document.getElementById('datetime').value;
+            var parameters = "{\"comment\":\"" + encodeURI(comment) + "\",\"postID\":\"" + postID + "\"}";
+            //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                    return errorMessage;
+                }
+            });
+        }
+
+        function DeletePost(postID) {
+            var webMethod = "ProjectServices.asmx/DeletePost";
+            var parameters = "{\"postID\":\"" + postID + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                    return errorMessage;
+                }
+            });
+        }
+        function DeleteCommentsByCommentID(commentID) {
+            var webMethod = "ProjectServices.asmx/DeleteCommentsByCommentID";
+            var parameters = "{\"commentID\":\"" + commentID + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                    return errorMessage;
+                }
+            });
+        }
+
+        function DeleteAlert(postID) {
+            let text;
+            if (confirm("Are you sure you want to permanently delete this post?") == true) {
+                DeletePost(postID);
+                text = alert("Post has been deleted.");
+            } else {
+                text = alert("Deletion has been canceled.");
+            }
+        }
+
+        function DeleteCommentAlert(commentID) {
+            let text;
+            if (confirm("Are you sure you want to permanently delete this comment?") == true) {
+                DeleteCommentsByCommentID(commentID);
+                text = alert("Comment has been deleted.");
+            } else {
+                text = alert("Deletion has been canceled.");
+            }
+        }
+
+        function CreateSolvedPost(postID) {
+            var webMethod = "ProjectServices.asmx/CreateSolvedPost";
+            //var post = document.getElementById('datetime').value;
+            var parameters = "{\"postID\":\"" + postID + "\"}";
+            //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                    return errorMessage;
+                }
+            });
+        }
+
+        function CreateArchivedPost(postID) {
+            var webMethod = "ProjectServices.asmx/CreateArchivedPost";
+            //var post = document.getElementById('datetime').value;
+            var parameters = "{\"postID\":\"" + postID + "\"}";
+            //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                    return errorMessage;
+                }
+            });
+        }
+
+        function GetComments(postID) {
+            var webMethod = "ProjectServices.asmx/GetComments";
+            var parameters = "{\"postID\":\"" + postID + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: "ProjectServices.asmx/GetComments",
+                data: "{\"postID\":\"" + postID + "\"}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    comments = msg.d;
+                    var id = "#postID" + postID
+                    if (comments != undefined) {
+                        //var tableRow = document.getElementById(id);
+                        //var tbl = document.createElement('table');
+                        //var tbdy = document.createElement('tbody');
+                        //var tr;
+                        for (var i = 0; i < comments.length; i++) {
+                            $(id).html( "<td>" +
+                                            "<p style='font-size: 18px; font-weight: bolder; margin-left: 5vw;'>Comments:</p>" +
+                                        "</td>" +
+                                       "</tr >");
+                            $(id).after("<tr>"+
+                                            "<td>"+
+                                                "<div style='border-left: 3px solid gray; margin-left: 5vw; padding: 5px; display: inline-block;'>"+
+                                                    "<p style='font-weight: bolder;'>" + comments[i].FirstName + " " + comments[i].LastName+"</p>" +
+                                                    "<p style='margin-left: 10px;'>" + comments[i].DateTime+"</p>" +
+                                                    "<div>" + comments[i].Comment+"</div>" +
+                                                "</div>" +
+                                                "<a style='display: inline; width: 100%; height: 100%; cursor: pointer; margin-left: 20px;' onclick='ViewCommentOption(" + comments[i].CommentID+");'>"+
+                                                    "<svg xmlns='http://www.w3.org/2000/svg' version='1.0' width='25px' height='25px' viewBox='0 0 1536.000000 1536.000000' preserveAspectRatio='xMidYMid meet'>"+
+                                                        "<g transform='translate(0.000000,1536.000000) scale(0.100000,-0.100000)' fill='#000000' stroke='none'>"+
+                                                            "<path d='M6540 15346 c0 -13 -41 -26 -85 -26 -29 0 -158 -39 -285 -86 -77 -28 -283 -141 -300 -163 -3 -4 -23 -20 -45 -37 -171 -126 -345 -340 -432 -534 -79 -174 -105 -260 -138 -455 -37 -220 2 -524 96 -750 122 -296 314 -530 573 -699 101 -67 248 -136 346 -165 41 -13 89 -27 105 -32 29 -10 65 -16 220 -38 91 -13 213 -13 295 0 36 5 92 14 125 19 33 5 74 13 90 19 17 5 64 19 105 32 98 29 245 98 346 165 312 204 531 507 634 879 23 85 50 285 50 380 0 164 -47 400 -111 550 -83 198 -166 330 -293 466 -45 48 -80 79 -214 191 -56 46 -228 141 -312 172 -127 47 -256 86 -285 86 -44 0 -85 13 -85 26 0 11 -37 14 -200 14 -163 0 -200 -3 -200 -14z'/>" +
+                                                            "<path d='M6570 10089 c-25 -5 -74 -14 -110 -19 -61 -9 -206 -51 -275 -80 -398 -168 -667 -437 -835 -835 -29 -69 -71 -215 -80 -275 -5 -36 -14 -89 -20 -119 -5 -29 -10 -102 -10 -161 0 -59 5 -132 10 -161 6 -30 15 -83 20 -119 9 -60 51 -206 80 -275 168 -398 437 -667 835 -835 69 -29 215 -71 275 -80 36 -5 89 -14 119 -20 29 -5 102 -10 161 -10 59 0 132 5 161 10 30 6 83 15 119 20 60 9 206 51 275 80 398 168 667 437 835 835 29 69 71 215 80 275 5 36 14 89 20 119 5 29 10 102 10 161 0 59 -5 132 -10 161 -6 30 -15 83 -20 119 -9 60 -51 206 -80 275 -168 398 -437 667 -835 835 -69 29 -215 71 -275 80 -36 5 -89 14 -119 20 -64 12 -268 11 -331 -1z'/>" +
+                                                            "<path d='M6595 4840 c-27 -4 -75 -11 -105 -15 -30 -4 -75 -13 -100 -20 -25 -7 -79 -23 -120 -36 -231 -68 -501 -248 -662 -441 -136 -163 -206 -286 -292 -515 -40 -108 -76 -328 -76 -469 0 -164 48 -400 111 -549 64 -151 111 -237 192 -345 55 -74 168 -193 229 -242 23 -18 55 -45 72 -59 62 -52 235 -150 326 -183 227 -84 385 -116 570 -116 185 0 343 32 570 116 312 115 636 421 777 734 75 166 109 275 137 451 33 200 9 452 -64 669 -131 392 -411 708 -780 882 -119 57 -278 106 -415 128 -89 15 -305 21 -370 10z'/>" +
+                                                        "</g>"+
+                                                    "</svg>"+
+                                                "</a>" +
+                                "<div id='commentOptions" + comments[i].CommentID + "' style='display: none;'>" +
+                                    (comments[i].UserID == comments[i].ActiveUserID ?
+                                        "<button class='commentButton'>Edit</button>" +
+                                        "<button onclick='DeleteCommentAlert(" + comments[i].CommentID + ")'>Delete</button>" : "") +
+                                                "</div>" +
+                                            "</td>"+
+                                        "</tr>");
+                            //tr = document.createElement('tr');
+                            //var td = document.createElement('td');
+                            //td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
+                            //tr.appendChild(td)
+                            //var td1 = document.createElement('td');
+                            //td1.appendChild(document.createTextNode(comments[i].Comment));
+                            //tr.appendChild(td1)
+                            //var td2 = document.createElement('td');
+                            //td2.appendChild(document.createTextNode(comments[i].DateTime));
+                            //tr.appendChild(td2)
+                            //tbdy.appendChild(tr);
+                        }
+                        //tbl.appendChild(tbdy);
+                        //tableRow.appendChild(tbl)
+                    }
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
+
+        function CreateVote(postid, like, dislike) {
+            var webMethod = "ProjectServices.asmx/CreateVote";
+            //var like = document.getElementById('thumbUp').value;
+            //var dislike = document.getElementById('thumbsDown').value;
+            var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    $(".likes").remove();
+                    $(".dislikes").remove();
+                    $(".left").remove();
+                    $(".right").remove();
+                    $(".postText").remove();
+                    $(".buttons").remove();
+                    $(".yourvote").remove();
+                    $(".commentButton").remove();
+                    $(".comment").remove();
+                    GetPost();
+                    //alert("You voted!");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
+
+        function CreateVoteFilter(postid, like, dislike) {
+            var webMethod = "ProjectServices.asmx/CreateVote";
+            //var like = document.getElementById('thumbUp').value;
+            //var dislike = document.getElementById('thumbsDown').value;
+            var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    $(".likes").remove();
+                    $(".dislikes").remove();
+                    $(".left").remove();
+                    $(".right").remove();
+                    $(".postText").remove();
+                    $(".buttons").remove();
+                    $(".yourvote").remove();
+                    $(".commentButton").remove();
+                    $(".comment").remove();
+                    FilterPosts();
+                    //alert("You voted!");
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
+                }
+            });
+        }
+
+        function GetPost() {
+            var postsArray;
+            var webMethod = "ProjectServices.asmx/GetPost";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                cache: false,
+                async: false,
+                //data: "{\"GetSolved\":\"true\"}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d.length > 0) {
+                        //put posts from server in postsArray varibale for use in other functions
+                        postsArray = msg.d;
+                    }
+                },
+                error: function (e) {
+                    alert("failed to get posts from server");
+                }
+            });
+            var feed = document.getElementById("postTable");
+            var rowNum = 0;
+            for (var i = 0; i < postsArray.length; i++) {
+                var row = postTable.insertRow(rowNum);
+                var cell0 = row.insertCell(0);
+                var cell1 = row.insertCell(1);
+
+
+                cell0.innerHTML = "<div style='padding: 10px;'>" +
+                                    "<div style='display: inline-block;'>" +
+                                        "<p style='font-size: 22px; font-weight: bolder;'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</p>" +
+                                        "<p style='margin-left: 10px;'>" + postsArray[i].date + "</p>" +
+                                        "<div>" + postsArray[i].post + "</div>" +
+                                    "</div>" +
+                    "</div>";
+                cell0.style.width = "75%;"
+
+                cell1.innerHTML = "<div style='display: inline-block;'>" +
+                                    "<label style='display: block;'>Likes</label>" +
+                                    "<label>" + postsArray[i].likes + "</label>" +
+                                  "</div>" +
+                                  "<div style='display:inline-block; margin-left: 5px;'>" +
+                                    "<label style='display: block;'>Dislikes</label>" +
+                                    "<label>" + postsArray[i].dislikes + "</label>" +
+                                  "</div>"+
+                                  "<div style='display: inline-block; margin-left: 1vw;'>" +
+                                    "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>"+
+                                  "</div>" +
+                                  "<a style='display: inline; width: 100 %; height: 100 %; cursor: pointer;' onclick='ViewOption(" + postsArray[i].postId+");'>" +
+                                                  "<svg xmlns='http://www.w3.org/2000/svg' version='1.0' width='25px' height='25px' viewBox='0 0 1536.000000 1536.000000' preserveAspectRatio='xMidYMid meet'>" +
+                                                      "<g transform='translate(0.000000, 1536.000000) scale(0.100000, -0.100000)' fill='#000000' stroke='none'>" +
+                                                          "<path d ='M6540 15346 c0 -13 -41 -26 -85 -26 -29 0 -158 -39 -285 -86 -77 -28 -283 -141 -300 -163 -3 -4 -23 -20 -45 -37 -171 -126 -345 -340 -432 -534 -79 -174 -105 -260 -138 -455 -37 -220 2 -524 96 -750 122 -296 314 -530 573 -699 101 -67 248 -136 346 -165 41 -13 89 -27 105 -32 29 -10 65 -16 220 -38 91 -13 213 -13 295 0 36 5 92 14 125 19 33 5 74 13 90 19 17 5 64 19 105 32 98 29 245 98 346 165 312 204 531 507 634 879 23 85 50 285 50 380 0 164 -47 400 -111 550 -83 198 -166 330 -293 466 -45 48 -80 79 -214 191 -56 46 -228 141 -312 172 -127 47 -256 86 -285 86 -44 0 -85 13 -85 26 0 11 -37 14 -200 14 -163 0 -200 -3 -200 -14z'/>" +
+                                                          "<path d='M6570 10089 c-25 -5 -74 -14 -110 -19 -61 -9 -206 -51 -275 -80 -398 -168 -667 -437 -835 -835 -29 -69 -71 -215 -80 -275 -5 -36 -14 -89 -20 -119 -5 -29 -10 -102 -10 -161 0 -59 5 -132 10 -161 6 -30 15 -83 20 -119 9 -60 51 -206 80 -275 168 -398 437 -667 835 -835 69 -29 215 -71 275 -80 36 -5 89 -14 119 -20 29 -5 102 -10 161 -10 59 0 132 5 161 10 30 6 83 15 119 20 60 9 206 51 275 80 398 168 667 437 835 835 29 69 71 215 80 275 5 36 14 89 20 119 5 29 10 102 10 161 0 59 -5 132 -10 161 -6 30 -15 83 -20 119 -9 60 -51 206 -80 275 -168 398 -437 667 -835 835 -69 29 -215 71 -275 80 -36 5 -89 14 -119 20 -64 12 -268 11 -331 -1z'/>" +
+                                                          "<path d='M6595 4840 c-27 -4 -75 -11 -105 -15 -30 -4 -75 -13 -100 -20 -25 -7 -79 -23 -120 -36 -231 -68 -501 -248 -662 -441 -136 -163 -206 -286 -292 -515 -40 -108 -76 -328 -76 -469 0 -164 48 -400 111 -549 64 -151 111 -237 192 -345 55 -74 168 -193 229 -242 23 -18 55 -45 72 -59 62 -52 235 -150 326 -183 227 -84 385 -116 570 -116 185 0 343 32 570 116 312 115 636 421 777 734 75 166 109 275 137 451 33 200 9 452 -64 669 -131 392 -411 708 -780 882 -119 57 -278 106 -415 128 -89 15 -305 21 -370 10z'/>" +
+                                                      "</g>" +
+                                                  "</svg>" +
+                                                "</a>" +
+                                  "<div id='options" + postsArray[i].postId+"' style='display: none;'>" +
+                                    "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>" +
+                                    (postsArray[i].userId == postsArray[i].activeUserID ?
+                                    "<button class='commentButton'>Edit</button>" +
+                                    "<button onclick='DeleteCommentAlert(" + postsArray[i].postId + ")'>Delete</button>" : "") +
+                                      ""
+                                  "</div>"
+                rowNum++;
+
+                var row2 = feed.insertRow(rowNum);
+                row2.id = "postID" + postsArray[i].postId;
+                GetComments(postsArray[i].postId);
+                rowNum++
+
+                var row3 = feed.insertRow(rowNum);
+                var cell0 = row3.insertCell(0);
+                cell0.innerHTML = "<div id='comment" + postsArray[i].postId + "' style='display: none; margin-left:5vw'>" +
+                    "<textarea id='postCommentSection" + postsArray[i].postId + "' style='border-radius: 15px; padding:5px;' rows = '3' cols = '40' ></textarea>" +
+                    "<div style='display: inline-block;width:20%;vertical-align:top;margin-left:10px;'>" +
+                    "<button class='commentButton' style ='margin-bottom: 5px;' onclick='CreateComment(" + postsArray[i].postId + ")'> Submit</button>" +
+                    "<button class='commentButton' onclick='CloseComment(" + postsArray[i].postId + ");'> Cancel</button>" +
+                    "</div>" +
+                    "</div>";
+                rowNum++;
+            }
+        }
+
+        function getWelcome() {
+            var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
+            //var name = sessionStorage.getItem(logOn.);
+            //var name = new ActiveXObject("WScript.Network").UserName;
+            document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
+        }
+
+        function clearFeed() {
+            var feed = document.getElementById("feed");
+            // this clears the feed table from the onload or other filtered search
+            for (var i = feed.rows.length; i > 2; i--) {
+                feed.deleteRow(i - 1);
+            }
+        }
+
+        function callFilter() {
+            var filter = filterSelect.value;
+
+            switch (filter) {
+                case "newest":
+                    clearFeed();
+                    GetPost();
+                    break;
+                case "popularity":
+                    clearFeed();
+                    FilterPostsPopular();
+                    break;
+                default:
+                    clearFeed();
+                    FilterPosts();
+                    break;
+            }
+        }
+
+        function FilterPosts() {
+            var filter = filterSelect.value;
+            var webMethod = "ProjectServices.asmx/FilterPostsDepartment";
+            var parameters = "{\"dep\":\"" + encodeURI(filter) + "\"}";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d.length > 0) {
+                        fpostsArray = msg.d;
+                        clearFeed();
+                        // repopulates table based on new querry
+                        // repopulates table based on new querry
+                        var rowNum = 2;
+                        for (var i = 0; i < fpostsArray.length; i++) {
+
+                            var row = feed.insertRow(rowNum);
+                            var cell0 = row.insertCell(0);
+                            var cell1 = row.insertCell(1);
+                            var cell2 = row.insertCell(2);
+                            var cell3 = row.insertCell(3);
+                            var cell4 = row.insertCell(4);
+                            var cell5 = row.insertCell(5);
+
+                            if (fpostsArray[i].userId == 6) {
+                                cell0.innerHTML = "<span class='left'>" + fpostsArray[i].firstName + "</span>";
+                            }
+                            else {
+                                cell0.innerHTML = "<span class='left'>" + fpostsArray[i].firstName + " " + fpostsArray[i].lastName + "</span>";
+                            }
+                            //cell0.innerHTML = "<span class='left'>" + fpostsArray[i].userName + "</span>";
+                            cell1.innerHTML = "<span class='postText'>" + fpostsArray[i].post + "</span>";
+                            cell2.innerHTML = "<span class='right'> " + fpostsArray[i].date + "</span>";
+                            cell3.innerHTML = "<span class='likes'>" + fpostsArray[i].likes + "</span>";
+                            cell4.innerHTML = "<span class='dislikes'>" + fpostsArray[i].dislikes + "</span>";
+                            cell5.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + fpostsArray[i].postId + ");'>Add Comment</button>"
+                            rowNum++;
+                        }
+                    } else if (msg.d.length == 0) {
+                        clearFeed();
+                        // repopulates table based on new querry
+                        var rowNum = 2;
+                        var row = feed.insertRow(rowNum);
+                        var cell0 = row.insertCell(0);
+                        cell0.colSpan = "6";
+                        cell0.innerHTML = "<span><strong> There are no posts tagged with that department. Please choose another filter</strong></span>";
+
+                    }
+                },
+                error: function (e) {
+                    alert("failed to filter");
+                }
+            });
+        }
+
+        function FilterPostsPopular() {
+            var webMethod = "ProjectServices.asmx/FilterPostsPopular";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                cache: false,
+                async: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d.length > 0) {
+                        fpostsArray = msg.d;
+                        // repopulates table based on new querry
+                        var rowNum = 0;
+                        var postTable = document.getElementById("postTable");
+                        for (var i = 0; i < fpostsArray.length; i++) {
+                            var row = postTable.insertRow(rowNum);
+                            row.style.border = "2px solid black";
+                            var cell0 = row.insertCell(0);
+                            var cell1 = row.insertCell(1);
+
+
+                            cell0.innerHTML = "<div>" +
+                                "<div style='display: inline - block;'>" +
+                                "<p style='font - size: 22px; font - weight: bolder;'>" + fpostsArray[i].firstName + " " + fpostsArray[i].lastName + "</p>" +
+                                "<p style='margin - left: 10px;'>" + fpostsArray[i].date + "</p>" +
+                                "<div>" + fpostsArray[i].post + "</div>" +
+                                "</div>" +
+                                "</div>"
+                            cell1.innerHTML = "<span class='postText'>" + fpostsArray[i].post + "</span>";
+                            rowNum++;
+                        }
+                    }
+                },
+                error: function (e) {
+                    alert("failed to filter");
+                }
+            });
+        }
+        function ViewOption(postID) {
+            var optionBtn = document.getElementById("options"+ postID);
+            if (optionBtn.style.display == "none") {
+                optionBtn.style.display = "inline-block"
+            } else {
+                optionBtn.style.display = "none"
+            }
+        }
+        function ViewCommentOption(commentID) {
+            var optionBtn = document.getElementById("commentOptions" + commentID);
+            if (optionBtn.style.display == "none") {
+                optionBtn.style.display = "inline-block"
+            } else {
+                optionBtn.style.display = "none"
+            }
+        }
+        function DisplayTextbox(postID) {
+            $("#comment" + postID).show();
+        }
+        function CloseComment(postID) {
+            $("#comment" + postID).hide();
+        }
+    </script>
+    <!--END OF YOUR OWN JAVASCRIPT-->
+    <!--LINK TO PROJECT STYLE SHEET-->
+    <link rel="stylesheet" href="projectStyleSheet.css" />
+</head>
+<body onload="GetPost(); getWelcome();">
+    <div class="topnav2">
+        <!--<a href="manageHomePage.html">Home</a>-->
+        <a class="active" href="managerFeed.html">Problems/Suggestions Feed</a>
+        <a href="solutions.html">Solutions</a>
+        <a href="archived.html">Archived</a>
+        <a href="#" onclick="LogOff()">Log Off</a>
+    </div>
+    <h1 id="welcome"></h1>
+    <h2 class="header">Problems & Suggestions Feed</h2>
+    <hr />
+    <!--<table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">-->
+    <table id="postTable" style="margin: 0 auto; width: 75%; border-collapse: collapse; ">
+        <tbody>
+        </tbody>
+    </table>
+</body>
+</html>
