@@ -22,5 +22,6 @@ namespace ProjectTemplate
         public bool isRejected;
         public string department;
         public bool isArchived;
+        public int activeUserID;
     }
 }

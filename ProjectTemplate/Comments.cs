@@ -14,5 +14,6 @@ namespace ProjectTemplate
         public int PostID;
         public string Comment;
         public string DateTime;
+        public int ActiveUserID;
     }
 }
