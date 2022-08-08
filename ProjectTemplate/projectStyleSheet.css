@@ -273,3 +273,7 @@ button:active {
 .filter {
     padding-bottom: 10px;
 }
+
+.nameTag {
+    color: dodgerblue;
+}
