@@ -972,14 +972,31 @@
             var cell0 = row.insertCell(0);
             var cell1 = row.insertCell(1);
 
-
-            cell0.innerHTML = "<div style='padding: 10px;'>" +
-                "<div style='display: inline-block;'>" +
-                "<p style='font-size: 22px; font-weight: bolder;'>" + postsArray.firstName + " " + postsArray.lastName + "</p>" +
-                "<p style='margin-left: 10px;'>" + postsArray.date + "</p>" +
-                "<div>" + postsArray.post + "</div>" +
-                "</div>" +
-                "</div>";
+            if (postsArray.userId == 6) {
+                cell0.innerHTML = cell0.innerHTML = "<div style='padding: 10px;'>" +
+                    "<div style='display: inline-block;'>" +
+                    "<p style='font-size: 22px; font-weight: bolder;'>" + postsArray.firstName + "</p>" +
+                    "<p style='margin-left: 10px;'>" + postsArray.date + "</p>" +
+                    "<div>" + postsArray.post + "</div>" +
+                    "</div>" +
+                    "</div>";
+            }
+            else {
+                cell0.innerHTML = "<div style='padding: 10px;'>" +
+                    "<div style='display: inline-block;'>" +
+                    "<p style='font-size: 22px; font-weight: bolder;'>" + postsArray.firstName + " " + postsArray.lastName + "</p>" +
+                    "<p style='margin-left: 10px;'>" + postsArray.date + "</p>" +
+                    "<div>" + postsArray.post + "</div>" +
+                    "</div>" +
+                    "</div>";
+            }
+            //cell0.innerHTML = "<div style='padding: 10px;'>" +
+            //    "<div style='display: inline-block;'>" +
+            //    "<p style='font-size: 22px; font-weight: bolder;'>" + postsArray.firstName + " " + postsArray.lastName + "</p>" +
+            //    "<p style='margin-left: 10px;'>" + postsArray.date + "</p>" +
+            //    "<div>" + postsArray.post + "</div>" +
+            //    "</div>" +
+            //    "</div>";
             cell0.style.width = "75%;"
 
             cell1.innerHTML = "<div style='display: inline-block;'>" +

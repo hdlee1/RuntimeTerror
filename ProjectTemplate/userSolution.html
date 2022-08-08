@@ -126,13 +126,31 @@
                 var cell0 = row.insertCell(0);
                 var cell1 = row.insertCell(1);
 
-                cell0.innerHTML = "<div style='padding: 10px;'>" +
-                    "<div style='display: inline-block;'>" +
-                    "<p style='font-size: 22px; font-weight: bolder;'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</p>" +
-                    "<p style='margin-left: 10px;'>" + postsArray[i].date + "</p>" +
-                    "<div>" + postsArray[i].post + "</div>" +
-                    "</div>" +
-                    "</div>";
+                if (postsArray[i].userId == 6) {
+                    cell0.innerHTML = cell0.innerHTML = "<div style='padding: 10px;'>" +
+                        "<div style='display: inline-block;'>" +
+                        "<p style='font-size: 22px; font-weight: bolder;'>" + postsArray[i].firstName + "</p>" +
+                        "<p style='margin-left: 10px;'>" + postsArray[i].date + "</p>" +
+                        "<div>" + postsArray[i].post + "</div>" +
+                        "</div>" +
+                        "</div>";
+                }
+                else {
+                    cell0.innerHTML = "<div style='padding: 10px;'>" +
+                        "<div style='display: inline-block;'>" +
+                        "<p style='font-size: 22px; font-weight: bolder;'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</p>" +
+                        "<p style='margin-left: 10px;'>" + postsArray[i].date + "</p>" +
+                        "<div>" + postsArray[i].post + "</div>" +
+                        "</div>" +
+                        "</div>";
+                }
+                //cell0.innerHTML = "<div style='padding: 10px;'>" +
+                //    "<div style='display: inline-block;'>" +
+                //    "<p style='font-size: 22px; font-weight: bolder;'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</p>" +
+                //    "<p style='margin-left: 10px;'>" + postsArray[i].date + "</p>" +
+                //    "<div>" + postsArray[i].post + "</div>" +
+                //    "</div>" +
+                //    "</div>";
                 cell0.style.width = "75%;"
 
                 cell1.innerHTML = "<div style='display: inline-block;'>" +
@@ -234,7 +252,7 @@
         <a class="active" href="userSolution.html">Solutions</a>
         <a href="#" onclick="LogOff()">Log Off</a>
     </div>
-    <h2 class="header">Solutions</h2>
+    <h1 class="header">Solutions</h1>
     <h2 class="subTitle">We value your feedback, the following problems and suggestions have been marked a resolved.</h2>
     <hr />
     <!--<table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">-->
