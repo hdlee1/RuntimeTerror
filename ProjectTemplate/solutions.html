@@ -1,220 +1,3 @@
-<!--<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="-1">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>Manager Solutions</title>-->
-<!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<style>
-    .comment td {
-        background-color: gainsboro;
-        border: inset;
-        border-color: black;
-    }
-</style>-->
-<!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
-<!--<script type="text/javascript">
-    var comments;
-    var posts;
-    function LogOff() {
-        var webMethod = "ProjectServices.asmx/LogOff";
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                if (msg.d) {
-                    //we logged off, so go back to logon page,
-                    location.href = "logon.html";
-                }
-                else {
-                }
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                alert('Error - ' + errorMessage);
-            }
-        });
-    }
-
-    function getWelcome() {
-        var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
-        document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
-    }
-
-    function GetComments(postID) {
-        var webMethod = "ProjectServices.asmx/GetComments";
-        var parameters = "{\"postID\":\"" + postID + "\"}";
-
-        $.ajax({
-            type: "POST",
-            url: "ProjectServices.asmx/GetComments",
-            data: "{\"postID\":\"" + postID + "\"}",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                comments = msg.d;
-                var id = "#postID" + postID
-                if (comments != undefined) {
-                    //var tableRow = document.getElementById(id);
-                    //var tbl = document.createElement('table');
-                    //var tbdy = document.createElement('tbody');
-                    //var tr;
-                    for (var i = 0; i < comments.length; i++) {
-                        $(id).html("<td class='heading'>Comments:</td>");
-                        $(id).after("<tr class='comment'>" +
-                            "<td>" + comments[i].FirstName + " " + comments[i].LastName + "</td>" +
-                            "<td>" + comments[i].Comment + "</td>" +
-                            "<td>" + comments[i].DateTime + "</td>" +
-                            "<td>" + "<button class='commentButton'>Edit</button>" + "</td>" +
-                            "<td>" + "<button class='commentButton'>Delete</button>" + "</td>" +
-                            "</tr>");
-                        //tr = document.createElement('tr');
-                        //var td = document.createElement('td');
-                        //td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
-                        //tr.appendChild(td)
-                        //var td1 = document.createElement('td');
-                        //td1.appendChild(document.createTextNode(comments[i].Comment));
-                        //tr.appendChild(td1)
-                        //var td2 = document.createElement('td');
-                        //td2.appendChild(document.createTextNode(comments[i].DateTime));
-                        //tr.appendChild(td2)
-                        //tbdy.appendChild(tr);
-                    }
-                    //tbl.appendChild(tbdy);
-                    //tableRow.appendChild(tbl)
-                }
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                alert('Error - ' + errorMessage);
-            }
-        });
-    }
-
-    function CreateArchivedPost(postID) {
-        var webMethod = "ProjectServices.asmx/CreateArchivedPost";
-        //var post = document.getElementById('datetime').value;
-        var parameters = "{\"postID\":\"" + postID + "\"}";
-        //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
-
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            data: parameters,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                location.reload();
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                alert('Error - ' + errorMessage);
-                return errorMessage;
-            }
-        });
-    }
-
-    function GetSolved() {
-        var postsArray;
-        var webMethod = "ProjectServices.asmx/GetSolved";
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            cache: false,
-            async: false,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                if (msg.d.length > 0) {
-                    //put posts from server in postsArray varibale for use in other functions
-                    postsArray = msg.d;
-                }
-            },
-            error: function (e) {
-                alert("failed to get posts from server");
-            }
-        });
-        var feed = document.getElementById("feed");
-        var rowNum = 2;
-        for (var i = 0; i < postsArray.length; i++) {
-            var row = feed.insertRow(rowNum);
-            var cell0 = row.insertCell(0);
-            var cell1 = row.insertCell(1);
-            var cell2 = row.insertCell(2);
-            var cell3 = row.insertCell(3);
-            var cell4 = row.insertCell(4);
-            var cell5 = row.insertCell(5);
-            var cell6 = row.insertCell(6);
-
-
-            if (postsArray[i].userId == 6) {
-                cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
-            }
-            else {
-                cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</span>";
-            }
-            cell1.innerHTML = "<span class='postText'>" + postsArray[i].post + "</span>";
-            cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
-            cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
-            cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-            cell5.innerHTML = ""
-            cell6.innerHTML = "<button style='height: 35px; width: 70px;' class='commentButton' onclick='CreateArchivedPost(" + postsArray[i].postId +")'>Archive</button>"
-
-            rowNum++;
-
-            var row2 = feed.insertRow(rowNum);
-            row2.id = "postID" + postsArray[i].postId;
-            GetComments(postsArray[i].postId);
-            rowNum++
-        }
-    }
-
-    function getWelcome() {
-        var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
-        //var name = sessionStorage.getItem(logOn.);
-        //var name = new ActiveXObject("WScript.Network").UserName;
-        document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
-    }
-</script>-->
-<!--END OF YOUR OWN JAVASCRIPT-->
-<!--LINK TO PROJECT STYLE SHEET-->
-<!--<link rel="stylesheet" href="projectStyleSheet.css" />
-</head>
-<body onload="GetSolved();">
-    <div class="topnav2">-->
-<!--<a href="manageHomePage.html">Home</a>-->
-<!--<a href="managerFeed.html">Problems/Suggestions Feed</a>
-    <a class="active" href="solutions.html">Solutions</a>
-    <a href="archived.html">Archived</a>
-    <a href="#" onclick="LogOff()">Log Off</a>
-</div>
-<h1 class="header">Solved Problems</h1>
-<h4>These are posts that have been marked as solved.</h4>
-<hr />-->
-<!--<table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">-->
-<!--<table id="feed">
-        <tr>
-            <td colspan="3"></td>
-            <td class="filter" colspan="3"><strong>Filtered Newest to Oldest</strong></td>
-        </tr>
-        <tr>
-            <td width="160" class="heading">Name</td>
-            <td width="480" class="heading">Post</td>
-            <td width="170" class="heading">Date</td>
-            <td width="85" class="heading">Likes</td>
-            <td width="85" class="heading">Dislikes</td>
-            <td width="20" class="heading"></td>
-        </tr>
-    </table>
-</body>
-</html>-->
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -228,7 +11,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <style>
         /*        border-collapse: separate; border-spacing: 0 15px;
-        */ tbody > tr > :nth-child(2) {
+        */ 
+        tbody > tr > :nth-child(2) {
             width: 30%;
         }
 
@@ -291,6 +75,29 @@
         function getWelcome() {
             var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
+        }
+
+        function EditComment(commentID, oldComment) {
+            var userID = sessionStorage.getItem("id");
+            var text = prompt("Edit your comment:", oldComment);
+            if (text != null) {
+                newComment = text;
+            }
+            var webMethod = "ProjectServices.asmx/EditComment";
+            var parameters = "{\"commentID\":\"" + encodeURI(commentID) + "\", \"newCommentText\":\"" + encodeURI(newComment) + "\", \"uid\":\"" + encodeURI(userID) + "\"}";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (e) {
+                    alert("You cannot edit this comment");
+                }
+            });
         }
 
         function CreateArchivedPost(postID) {
@@ -406,13 +213,7 @@
                         "</div>" +
                         "</div>";
                 }
-                //cell0.innerHTML = "<div style='padding: 10px;'>" +
-                //    "<div style='display: inline-block;'>" +
-                //    "<p style='font-size: 22px; font-weight: bolder;'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</p>" +
-                //    "<p style='margin-left: 10px;'>" + postsArray[i].date + "</p>" +
-                //    "<div>" + postsArray[i].post + "</div>" +
-                //    "</div>" +
-                //    "</div>";
+           
                 cell0.style.width = "75%;"
 
                 cell1.innerHTML = "<div style='display: inline-block;'>" +
@@ -458,8 +259,6 @@
 
         function getWelcome() {
             var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
-            //var name = sessionStorage.getItem(logOn.);
-            //var name = new ActiveXObject("WScript.Network").UserName;
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
         function GetComments(postID) {
@@ -476,10 +275,6 @@
                     comments = msg.d;
                     var id = "#postID" + postID
                     if (comments != undefined) {
-                        //var tableRow = document.getElementById(id);
-                        //var tbl = document.createElement('table');
-                        //var tbdy = document.createElement('tbody');
-                        //var tr;
                         for (var i = 0; i < comments.length; i++) {
                             $(id).html("<td>" +
                                 "<p style='font-size: 18px; font-weight: bolder; margin-left: 5vw;'>Comments:</p>" +
@@ -503,25 +298,14 @@
                                 "</a>" +
                                 "<div id='commentOptions" + comments[i].CommentID + "' style='display: none;'>" +
                                 (comments[i].UserID == comments[i].ActiveUserID ?
-                                    "<button>Edit</button>" +
-                                "<button onclick='DeleteCommentAlert(" + comments[i].PostID + ")'>Delete</button>" : "") +
+                                "<button onclick='EditComment(" + comments[i].CommentID + ",\"" + comments[i].Comment + "\")'>Edit</button>" +
+                                "<button onclick='DeleteCommentAlert(" + comments[i].CommentID + ")'>Delete</button>" : "") +
                                 "</div>"+
                                 "</td>" +
                                 "</tr>");
-                            //tr = document.createElement('tr');
-                            //var td = document.createElement('td');
-                            //td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
-                            //tr.appendChild(td)
-                            //var td1 = document.createElement('td');
-                            //td1.appendChild(document.createTextNode(comments[i].Comment));
-                            //tr.appendChild(td1)
-                            //var td2 = document.createElement('td');
-                            //td2.appendChild(document.createTextNode(comments[i].DateTime));
-                            //tr.appendChild(td2)
-                            //tbdy.appendChild(tr);
+                       
                         }
-                        //tbl.appendChild(tbdy);
-                        //tableRow.appendChild(tbl)
+                       
                     }
                 },
                 error: function (xhr, status, error) {
@@ -565,13 +349,10 @@
             $("#comment" + postID).hide();
         }
     </script>
-    <!--END OF YOUR OWN JAVASCRIPT-->
-    <!--LINK TO PROJECT STYLE SHEET-->
     <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
 <body onload="GetSolved();">
     <div class="topnav2">
-        <!--<a href="manageHomePage.html">Home</a>-->
         <a href="managerFeed.html">Problems/Suggestions Feed</a>
         <a class="active" href="solutions.html">Solutions</a>
         <a href="archived.html">Archived</a>
@@ -579,7 +360,6 @@
     </div>
     <h1 class="header">Solutions</h1>
     <hr />
-    <!--<table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">-->
     <table id="postTable" style="margin: 0 auto; width: 75%; border-collapse: collapse; ">
         <tbody>
         </tbody>

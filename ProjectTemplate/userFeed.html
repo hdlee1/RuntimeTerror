@@ -823,7 +823,7 @@
                                 "</a>" +
                                 "<div id='commentOptions" + comments[i].CommentID + "' style='display: none;'>" +
                                 (comments[i].UserID == comments[i].ActiveUserID ?
-                                    "<button class='commentButton' onclick='EditComment(\"" + comments[i].CommentID + "\",\"" + comments[i].Comment + "\")'>Edit</button>" +
+                                    "<button onclick='EditComment(\"" + comments[i].CommentID + "\",\"" + comments[i].Comment + "\")'>Edit</button>" +
                                     "<button onclick='DeleteCommentAlert(" + comments[i].CommentID + ")'>Delete</button>" : "") +
                                 "</div>" +
                                 "</td>" +
@@ -1052,8 +1052,8 @@
                 "<div id='options" + postsArray.postId + "' style='display: none;'>" +
                 "<button onclick='DisplayTextbox(" + postsArray.postId + ");'>Add Comment</button>" +
                 (postsArray.userId == postsArray.activeUserID ?
-                    "<button class='commentButton'  onclick='EditPost(\"" + postsArray.postId + "\",\"" + postsArray.post + "\")'>Edit</button>Edit</button>" +
-                    "<button onclick='DeleteCommentAlert(" + postsArray.postId + ")'>Delete</button>" : "") +
+                    "<button onclick='EditPost(\"" + postsArray.postId + "\",\"" + postsArray.post + "\")'>Edit</button>" +
+                    "<button onclick='DeleteAlert(" + postsArray.postId + ")'>Delete</button>" : "") +
                 ""
             "</div>"
             rowNum++;
