@@ -123,8 +123,6 @@
     <Content Include="ProjectServices.asmx" />
     <Content Include="projectStyleSheet.css" />
     <Content Include="solutions.html" />
-    <Content Include="solutionTest.html" />
-    <Content Include="TestingPost.html" />
     <Content Include="userFeed.html" />
     <Content Include="Web.config" />
   </ItemGroup>
