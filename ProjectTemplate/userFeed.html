@@ -85,8 +85,7 @@
                                 "<td class='comment'>" + comments[i].Comment + "</td>" +
                                 "<td class='comment'>" + comments[i].DateTime + "</td>" +
                                 "<td class='comment' colspan='2'>" + comments[i].FirstName + " " + comments[i].LastName + "</td>" +                               
-                                "<td class='comment'>" + "<button class='commentButton' onclick='EditComment(\"" + comments[i].CommentID + "\,\"" + comments[i].Comment + ")'>Edit</button>" + "</td>" +
-                                //"<td class='comment'>" + "<button class='commentButton' onclick='EditComment(" + comments[i].CommentID + ")'>Edit</button>" + "</td>" +
+                                "<td class='comment'>" + "<button class='commentButton' onclick='EditComment(\"" + comments[i].CommentID + "\",\"" + comments[i].Comment + "\")'>Edit</button>" + "</td>" +
                                 "<td class='comment'>" + "<button class='commentButton'>Delete</button>" + "</td>" +
                                 "</tr>");
                         }
@@ -231,9 +230,9 @@
                             cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
                             cell5.innerHTML = "<span class= 'yourvote'>" + postsArray[i].yourvote + "</span>";
                             cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
-                            cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
-                            cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Edit</button>" //EditPost would be called here
-                            cell9.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Delete</button>"
+                            cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>";
+                            cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton' onclick='EditPost(\"" + postsArray[i].postId + "\",\"" + postsArray[i].post + "\")'>Edit</button>";
+                            cell9.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Delete</button>";
 
                             rowNum++;
 
@@ -430,10 +429,33 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
-                    //location.reload();
+                    location.reload();
                 },
                 error: function (e) {
                     alert("You cannot edit this comment");
+                }
+            });
+        }
+
+        function EditPost(postID, oldPost) {
+            var userID = sessionStorage.getItem("id");
+            var text = prompt("Edit your post:", oldPost);
+            if (text != null) {
+                newPost = text;
+            }
+            var webMethod = "ProjectServices.asmx/EditPost";
+            var parameters = "{\"postID\":\"" + encodeURI(postID) + "\", \"newPostText\":\"" + encodeURI(newPost) + "\", \"uid\":\"" + encodeURI(userID) + "\"}";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (e) {
+                    alert("You cannot edit this post");
                 }
             });
         }
