@@ -41,6 +41,7 @@ namespace ProjectTemplate
 			string isManager = "false";
 			string fname = "";
 			string lname = "";
+			string id = "";
 
 			//our connection string comes from our web.config file like we talked about earlier
 			//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
@@ -80,12 +81,14 @@ namespace ProjectTemplate
 				success = true;
 				fname = sqlDt.Rows[0]["fname"].ToString();
 				lname = sqlDt.Rows[0]["lname"].ToString();
+				id = sqlDt.Rows[0]["id"].ToString();
 			}
 			var result = new logOnResult();
 			result.successful = success;
 			result.isManager = isManager;
 			result.fname = fname;
 			result.lname = lname;
+			result.id = id;
 
 
 			//return the result!
@@ -320,12 +323,12 @@ namespace ProjectTemplate
 		[WebMethod(EnableSession = true)]
 		public posts[] GetPost()
 		{
-			//check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
+			//check out the return type.  It's an array of posts objects.  You can look at our custom posts class in this solution to see that it's 
 			//just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
 			//sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
 			//Keeps everything simple.
 
-            //WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+            //WE ONLY SHARE POSTS WITH LOGGED IN USERS!
             if (Session["id"] != null)
             {
 				var id = Session["id"].ToString();
@@ -346,7 +349,7 @@ namespace ProjectTemplate
                 sqlDa.Fill(sqlDt);
 
                 //loop through each row in the dataset, creating instances
-                //of our container class Account.  Fill each acciount with
+                //of our container class posts.  Fill each posts with
                 //data from the rows, then dump them in a list.
                 List<posts> posts = new List<posts>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
@@ -371,7 +374,7 @@ namespace ProjectTemplate
 						activeUserID = Convert.ToInt32(Session["id"].ToString())
 					});
                 }
-                //convert the list of postss to an array and return!
+                //convert the list of posts to an array and return!
                 return posts.ToArray();
             }
             else
@@ -385,12 +388,12 @@ namespace ProjectTemplate
 		[WebMethod(EnableSession = true)]
 		public posts[] GetSolved()
 		{
-			//check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
+			//check out the return type.  It's an array of posts objects.  You can look at our custom posts class in this solution to see that it's 
 			//just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
 			//sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
 			//Keeps everything simple.
 
-			//WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+			//WE ONLY SHARE POSTS WITH LOGGED IN USERS!
 			if (Session["id"] != null)
 			{
 				var id = Session["id"].ToString();
@@ -411,7 +414,7 @@ namespace ProjectTemplate
 				sqlDa.Fill(sqlDt);
 
 				//loop through each row in the dataset, creating instances
-				//of our container class Account.  Fill each acciount with
+				//of our container class posts.  Fill each solvedPosts with
 				//data from the rows, then dump them in a list.
 				List<posts> solvedPosts = new List<posts>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
@@ -623,7 +626,7 @@ namespace ProjectTemplate
 				sqlDa.Fill(sqlDt);
 
 				//loop through each row in the dataset, creating instances
-				//of our container class Post.  Fill each post with
+				//of our container class posts.  Fill each fposts with
 				//data from the rows, then dump them in a list.
 				List<posts> fposts = new List<posts>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
@@ -676,7 +679,7 @@ namespace ProjectTemplate
 				sqlDa.Fill(sqlDt);
 
 				//loop through each row in the dataset, creating instances
-				//of our container class Post.  Fill each post with
+				//of our container class posts.  Fill each fposts with
 				//data from the rows, then dump them in a list.
 				List<posts> fposts = new List<posts>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
@@ -711,8 +714,6 @@ namespace ProjectTemplate
 		public void CreateArchivedPost(int postID)
 		{
 			string sqlconnectstring = getConString();
-			//the only thing fancy about this query is select last_insert_id() at the end.  all that
-			//does is tell mysql server to return the primary key of the last inserted row.
 			string sqlselect = "UPDATE `440sum20221`.`posts` SET `Archived` = true WHERE `PostID` = " + postID + ";";
 
 			MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
@@ -744,12 +745,12 @@ namespace ProjectTemplate
 		[WebMethod(EnableSession = true)]
 		public posts[] GetArchived()
 		{
-			//check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
+			//check out the return type.  It's an array of posts objects.  You can look at our custom posts class in this solution to see that it's 
 			//just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
 			//sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
 			//Keeps everything simple.
 
-			//WE ONLY SHARE ACCOUNTS WITH LOGGED IN USERS!
+			//WE ONLY SHARE POSTS WITH LOGGED IN USERS!
 			if (Session["id"] != null)
 			{
 				var id = Session["id"].ToString();
@@ -770,7 +771,7 @@ namespace ProjectTemplate
 				sqlDa.Fill(sqlDt);
 
 				//loop through each row in the dataset, creating instances
-				//of our container class Account.  Fill each acciount with
+				//of our container class Account.  Fill each archivedPosts with
 				//data from the rows, then dump them in a list.
 				List<posts> archivedPosts = new List<posts>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
@@ -801,6 +802,78 @@ namespace ProjectTemplate
 			{
 				//if they're not logged in, return an empty array
 				return new posts[0];
+			}
+		}
+        [WebMethod(EnableSession = true)]
+		public void EditPost(string postID, string newPostText, string uid)
+        {
+			if (Session["id"] != null)
+			{
+				string sqlconnectstring = getConString();
+				string sqlselect = "UPDATE posts SET Post=@postText WHERE PostID=@pid and UserID=@uidValue";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@postText", HttpUtility.UrlDecode(newPostText));
+				sqlCommand.Parameters.AddWithValue("@pid", HttpUtility.UrlDecode(postID));
+				sqlCommand.Parameters.AddWithValue("@uidValue", HttpUtility.UrlDecode(uid));
+
+				//this time, we're not using a data adapter to fill a data table.  We're just
+				//opening the connection, telling our command to "executescalar" which says basically
+				//execute the query and just hand me back the number the query returns (the ID, remember?).
+				//don't forget to close the connection!
+				sqlConnection.Open();
+				//we're using a try/catch so that if the query errors out we can handle it gracefully
+				//by closing the connection and moving on
+				try
+				{
+					sqlCommand.ExecuteScalar();
+					//here, you could use this commentID for additional queries regarding
+					//the requested comment.  Really this is just an example to show you
+					//a query where you get the primary key of the inserted row back from
+					//the database!
+				}
+				catch (Exception e)
+				{
+				}
+				sqlConnection.Close();
+			}
+		}
+		[WebMethod(EnableSession = true)]
+		public void EditComment(string commentID, string newCommentText, string uid)
+		{
+			if (Session["id"] != null)
+			{
+				string sqlconnectstring = getConString();
+				string sqlselect = "UPDATE comments SET Comment=@commentText WHERE CommentID=@cid and UserID=@uidValue";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@commentText", HttpUtility.UrlDecode(newCommentText));
+				sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(commentID));
+				sqlCommand.Parameters.AddWithValue("@uidValue", HttpUtility.UrlDecode(uid));
+
+				//this time, we're not using a data adapter to fill a data table.  We're just
+				//opening the connection, telling our command to "executescalar" which says basically
+				//execute the query and just hand me back the number the query returns (the ID, remember?).
+				//don't forget to close the connection!
+				sqlConnection.Open();
+				//we're using a try/catch so that if the query errors out we can handle it gracefully
+				//by closing the connection and moving on
+				try
+				{
+					sqlCommand.ExecuteScalar();
+					//here, you could use this commentID for additional queries regarding
+					//the requested comment.  Really this is just an example to show you
+					//a query where you get the primary key of the inserted row back from
+					//the database!
+				}
+				catch (Exception e)
+				{
+				}
+				sqlConnection.Close();
 			}
 		}
 	}

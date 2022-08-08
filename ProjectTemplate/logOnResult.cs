@@ -10,6 +10,6 @@ namespace ProjectTemplate
         public string isManager {get; set;}
         public string fname { get; set; }
         public string lname { get; set; }
-
+        public string id { get; set; }
     }
 }

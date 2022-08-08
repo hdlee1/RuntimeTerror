@@ -91,7 +91,7 @@
                             "<td class='comment'>" + comments[i].DateTime + "</td>" +
                             "<td class='comment' colspan='2'>" + comments[i].FirstName + " " + comments[i].LastName + "</td>" +
                             (comments[i].UserID == comments[i].ActiveUserID ?
-                                "<td class='comment'>" + "<button class='commentButton'>Edit</button></td>" +
+                                "<td class='comment'>" + "<button class='commentButton' onclick='EditComment(\"" + comments[i].CommentID + "\",\"" + comments[i].Comment + "\")'>Edit</button></td>" +
                                 "<td class='comment'>" + "<button class='commentButton'>Delete</button></td>" : "")+
                             "</tr>");
                         //tr = document.createElement('tr');
@@ -263,7 +263,7 @@
                         cell6.innerHTML = "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray[i].postId + ",0,1);' src='ThumbsDown.png' /> </span>";
                         cell7.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + postsArray[i].postId + ");'>Add Comment</button>"
                         if (postsArray[i].userId == postsArray[i].activeUserID) {
-                            cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Edit</button>"
+                            cell8.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton' onclick='EditPost(\"" + postsArray[i].postId + "\",\"" + postsArray[i].post + "\")'>Edit</button>Edit</button>"
                             cell9.innerHTML = "<button style='height: 42px; width: 83px;' class='commentButton'>Delete</button>"
                         }
 
@@ -469,10 +469,57 @@
             }
         });
     }
-</script>-->
-<!--END OF YOUR OWN JAVASCRIPT-->
-<!--LINK TO PROJECT STYLE SHEET-->
-<!--<link rel="stylesheet" href="projectStyleSheet.css" />
+
+        
+        function EditComment(commentID, oldComment) {
+            var userID = sessionStorage.getItem("id");
+            var text = prompt("Edit your comment:", oldComment);
+            if (text != null) {
+                newComment = text;
+            } 
+            var webMethod = "ProjectServices.asmx/EditComment";
+            var parameters = "{\"commentID\":\"" + encodeURI(commentID) + "\", \"newCommentText\":\"" + encodeURI(newComment) + "\", \"uid\":\"" + encodeURI(userID) + "\"}";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (e) {
+                    alert("You cannot edit this comment");
+                }
+            });
+        }
+
+        function EditPost(postID, oldPost) {
+            var userID = sessionStorage.getItem("id");
+            var text = prompt("Edit your post:", oldPost);
+            if (text != null) {
+                newPost = text;
+            }
+            var webMethod = "ProjectServices.asmx/EditPost";
+            var parameters = "{\"postID\":\"" + encodeURI(postID) + "\", \"newPostText\":\"" + encodeURI(newPost) + "\", \"uid\":\"" + encodeURI(userID) + "\"}";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (e) {
+                    alert("You cannot edit this post");
+                }
+            });
+        }
+    </script>
+    <!--END OF YOUR OWN JAVASCRIPT-->
+    <!--LINK TO PROJECT STYLE SHEET-->
+    <!--<link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
 <body onload="GetPost(); getWelcome();">
     <div class="topnav">-->
@@ -776,7 +823,7 @@
                                 "</a>" +
                                 "<div id='commentOptions" + comments[i].CommentID + "' style='display: none;'>" +
                                 (comments[i].UserID == comments[i].ActiveUserID ?
-                                    "<button class='commentButton'>Edit</button>" +
+                                    "<button class='commentButton' onclick='EditComment(\"" + comments[i].CommentID + "\",\"" + comments[i].Comment + "\")'>Edit</button>" +
                                     "<button onclick='DeleteCommentAlert(" + comments[i].CommentID + ")'>Delete</button>" : "") +
                                 "</div>" +
                                 "</td>" +
@@ -1022,7 +1069,7 @@
                 "<div id='options" + postsArray.postId + "' style='display: none;'>" +
                 "<button class='commentButton' onclick='DisplayTextbox(" + postsArray.postId + ");'>Add Comment</button>" +
                 (postsArray.userId == postsArray.activeUserID ?
-                    "<button class='commentButton'>Edit</button>" +
+                    "<button class='commentButton'  onclick='EditPost(\"" + postsArray[i].postId + "\",\"" + postsArray[i].post + "\")'>Edit</button>Edit</button>" +
                     "<button onclick='DeleteCommentAlert(" + postsArray.postId + ")'>Delete</button>" : "") +
                 ""
             "</div>"
@@ -1092,6 +1139,52 @@
         }
         function CloseComment(postID) {
             $("#comment" + postID).hide();
+        }
+
+        function EditComment(commentID, oldComment) {
+            var userID = sessionStorage.getItem("id");
+            var text = prompt("Edit your comment:", oldComment);
+            if (text != null) {
+                newComment = text;
+            }
+            var webMethod = "ProjectServices.asmx/EditComment";
+            var parameters = "{\"commentID\":\"" + encodeURI(commentID) + "\", \"newCommentText\":\"" + encodeURI(newComment) + "\", \"uid\":\"" + encodeURI(userID) + "\"}";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (e) {
+                    alert("You cannot edit this comment");
+                }
+            });
+        }
+
+        function EditPost(postID, oldPost) {
+            var userID = sessionStorage.getItem("id");
+            var text = prompt("Edit your post:", oldPost);
+            if (text != null) {
+                newPost = text;
+            }
+            var webMethod = "ProjectServices.asmx/EditPost";
+            var parameters = "{\"postID\":\"" + encodeURI(postID) + "\", \"newPostText\":\"" + encodeURI(newPost) + "\", \"uid\":\"" + encodeURI(userID) + "\"}";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    location.reload();
+                },
+                error: function (e) {
+                    alert("You cannot edit this post");
+                }
+            });
         }
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->

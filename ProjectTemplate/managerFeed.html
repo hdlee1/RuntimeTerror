@@ -172,49 +172,32 @@
         var webMethod = "ProjectServices.asmx/GetComments";
         var parameters = "{\"postID\":\"" + postID + "\"}";
 
-        $.ajax({
-            type: "POST",
-            url: "ProjectServices.asmx/GetComments",
-            data: "{\"postID\":\"" + postID + "\"}",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                comments = msg.d;
-                var id = "#postID" + postID
-                if (comments != undefined) {
-                    //var tableRow = document.getElementById(id);
-                    //var tbl = document.createElement('table');
-                    //var tbdy = document.createElement('tbody');
-                    //var tr;
-                    for (var i = 0; i < comments.length; i++) {
-                        $(id).html( "<td class='heading'>Comments:</td>");
-                        $(id).after("<tr class='comment'>" +
-                            "<td>" + comments[i].FirstName + " " + comments[i].LastName + "</td>" +
-                            "<td>" + comments[i].Comment + "</td>" +
-                            "<td>" + comments[i].DateTime + "</td>" +
-                            "</tr>");
-                        //tr = document.createElement('tr');
-                        //var td = document.createElement('td');
-                        //td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
-                        //tr.appendChild(td)
-                        //var td1 = document.createElement('td');
-                        //td1.appendChild(document.createTextNode(comments[i].Comment));
-                        //tr.appendChild(td1)
-                        //var td2 = document.createElement('td');
-                        //td2.appendChild(document.createTextNode(comments[i].DateTime));
-                        //tr.appendChild(td2)
-                        //tbdy.appendChild(tr);
+            $.ajax({
+                type: "POST",
+                url: "ProjectServices.asmx/GetComments",
+                data: "{\"postID\":\"" + postID + "\"}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    comments = msg.d;
+                    var id = "#postID" + postID
+                    if (comments != undefined) {
+                        for (var i = 0; i < comments.length; i++) {
+                            $(id).html( "<td class='heading'>Comments:</td>");
+                            $(id).after("<tr class='comment'>" +
+                                "<td>" + comments[i].FirstName + " " + comments[i].LastName + "</td>" +
+                                "<td>" + comments[i].Comment + "</td>" +
+                                "<td>" + comments[i].DateTime + "</td>" + 
+                                "</tr>");
+                        }
                     }
-                    //tbl.appendChild(tbdy);
-                    //tableRow.appendChild(tbl)
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = xhr.status + ': ' + xhr.statusText;
+                    alert('Error - ' + errorMessage);
                 }
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                alert('Error - ' + errorMessage);
-            }
-        });
-    }
+            });
+        }
 
     function CreateVote(postid, like, dislike) {
         var webMethod = "ProjectServices.asmx/CreateVote";
