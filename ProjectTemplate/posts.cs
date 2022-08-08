@@ -19,7 +19,6 @@ namespace ProjectTemplate
         public bool hasComments;
         public string yourvote;
         public bool isSolved;
-        public bool isRejected;
         public string department;
         public bool isArchived;
         public int activeUserID;

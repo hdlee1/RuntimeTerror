@@ -921,16 +921,18 @@
                     if (msg.d.length > 0) {
                         //put posts from server in postsArray varibale for use in other functions
                         postsArray = msg.d;
+                        clearPostTable();
+                        rowNum = 0;
+                        var postTable = document.getElementById("postTable");
+                        for (var i = 0; i < postsArray.length; i++) {
+                            CreatePost(postTable, postsArray[i]);
+                        }
                     }
                 },
                 error: function (e) {
                     alert("failed to get posts from server");
                 }
             }); 
-            var postTable = document.getElementById("postTable");
-            for (var i = 0; i < postsArray.length; i++) {
-                CreatePost(postTable, postsArray[i]);
-            }
         }
 
         function getWelcome() {
@@ -953,15 +955,12 @@
 
             switch (filter) {
                 case "newest":
-                    clearPostTable();
                     GetPost();
                     break;
                 case "popularity":
-                    clearPostTable();
                     FilterPostsPopular();
                     break;
                 default:
-                    clearPostTable();
                     FilterPosts();
                     break;
             }
@@ -978,12 +977,12 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
+                    var postTable = document.getElementById("postTable");
                     if (msg.d.length > 0) {
                         fpostsArray = msg.d;
                         clearPostTable();
                         // repopulates table based on new querry
                         // repopulates table based on new querry
-                        var postTable = document.getElementById("postTable");
                         rowNum = 0;
                         for (var i = 0; i < fpostsArray.length; i++) {
                             CreatePost(postTable, fpostsArray[i]);
@@ -995,7 +994,7 @@
                         var row = postTable.insertRow(rowNum);
                         var cell0 = row.insertCell(0);
                         cell0.colSpan = "6";
-                        cell0.innerHTML = "<span><strong> There are no posts tagged with that department. Please choose another filter</strong></span>";
+                        cell0.innerHTML = "<span><strong> There are no posts tagged with that department. Please choose another filter.</strong></span>";
 
                     }
                 },
@@ -1053,7 +1052,7 @@
                 "<div id='options" + postsArray.postId + "' style='display: none;'>" +
                 "<button onclick='DisplayTextbox(" + postsArray.postId + ");'>Add Comment</button>" +
                 (postsArray.userId == postsArray.activeUserID ?
-                    "<button class='commentButton'  onclick='EditPost(\"" + postsArray[i].postId + "\",\"" + postsArray[i].post + "\")'>Edit</button>Edit</button>" +
+                    "<button class='commentButton'  onclick='EditPost(\"" + postsArray.postId + "\",\"" + postsArray.post + "\")'>Edit</button>Edit</button>" +
                     "<button onclick='DeleteCommentAlert(" + postsArray.postId + ")'>Delete</button>" : "") +
                 ""
             "</div>"

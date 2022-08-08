@@ -864,17 +864,17 @@
                     if (msg.d.length > 0) {
                         //put posts from server in postsArray varibale for use in other functions
                         postsArray = msg.d;
+                        var postTable = document.getElementById("postTable");
+                        rowNum = 0;
+                        for (var i = 0; i < postsArray.length; i++) {
+                            CreatePost(postTable, postsArray[i])
+                        }
                     }
                 },
                 error: function (e) {
                     alert("failed to get posts from server");
                 }
-            });
-            var postTable = document.getElementById("postTable");
-            rowNum = 0;
-            for (var i = 0; i < postsArray.length; i++) {
-                CreatePost(postTable, postsArray[i])
-            }
+            });            
         }
 
         function CreatePost(postTable, postsArray) {
@@ -1002,7 +1002,7 @@
                         var row = postTable.insertRow(rowNum);
                         var cell0 = row.insertCell(0);
                         cell0.colSpan = "6";
-                        cell0.innerHTML = "<span><strong> There are no posts tagged with that department. Please choose another filter</strong></span>";
+                        cell0.innerHTML = "<span><strong> There are no posts tagged with that department. Please choose another filter.</strong></span>";
 
                     }
                 },
