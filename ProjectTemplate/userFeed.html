@@ -776,7 +776,7 @@
                                 "</a>" +
                                 "<div id='commentOptions" + comments[i].CommentID + "' style='display: none;'>" +
                                 (comments[i].UserID == comments[i].ActiveUserID ?
-                                    "<button class='commentButton'>Edit</button>" +
+                                    "<button>Edit</button>" +
                                     "<button onclick='DeleteCommentAlert(" + comments[i].CommentID + ")'>Delete</button>" : "") +
                                 "</div>" +
                                 "</td>" +
@@ -816,17 +816,8 @@
                 data: parameters,
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                success: function (msg) {
-                    $(".likes").remove();
-                    $(".dislikes").remove();
-                    $(".left").remove();
-                    $(".right").remove();
-                    $(".postText").remove();
-                    $(".buttons").remove();
-                    $(".yourvote").remove();
-                    $(".commentButton").remove();
-                    $(".comment").remove();
-                    GetPost();
+                success: function (msg) {   
+                    location.reload();
                     //alert("You voted!");
                 },
                 error: function (xhr, status, error) {
@@ -990,22 +981,15 @@
                     "</div>" +
                     "</div>";
             }
-            //cell0.innerHTML = "<div style='padding: 10px;'>" +
-            //    "<div style='display: inline-block;'>" +
-            //    "<p style='font-size: 22px; font-weight: bolder;'>" + postsArray.firstName + " " + postsArray.lastName + "</p>" +
-            //    "<p style='margin-left: 10px;'>" + postsArray.date + "</p>" +
-            //    "<div>" + postsArray.post + "</div>" +
-            //    "</div>" +
-            //    "</div>";
             cell0.style.width = "75%;"
 
             cell1.innerHTML = "<div style='display: inline-block;'>" +
                 "<label style='display: block;'>Likes</label>" +
-                "<label>" + postsArray.likes + "</label>" +
+                "<label style='" + (postsArray.yourvote === "Like" ? "color: lightgreen;" : "") + "'>" + postsArray.likes + "</label>" +
                 "</div>" +
                 "<div style='display:inline-block; margin-left: 5px;'>" +
                 "<label style='display: block;'>Dislikes</label>" +
-                "<label>" + postsArray.dislikes + "</label>" +
+                "<label style='" + (postsArray.yourvote === "Dislike" ? "color: red;" : "") + "'>" + postsArray.dislikes + "</label>" +
                 "</div>" +
                 "<div style='display: inline-block; margin-left: 1vw;'>" +
                 "<span class='buttons'> <input id='thumbsUp' height='25' width='25' type='image' onclick='CreateVote(" + postsArray.postId + ",1,0);' src='ThumbsUp.png' />" + "&nbsp;&nbsp; <input id='thumbsDown' height='25' width='25' type='image' onclick='CreateVote(" + postsArray.postId + ",0,1);' src='ThumbsDown.png' /> </span>" +
@@ -1020,9 +1004,9 @@
                 "</svg>" +
                 "</a>" +
                 "<div id='options" + postsArray.postId + "' style='display: none;'>" +
-                "<button class='commentButton' onclick='DisplayTextbox(" + postsArray.postId + ");'>Add Comment</button>" +
+                "<button onclick='DisplayTextbox(" + postsArray.postId + ");'>Add Comment</button>" +
                 (postsArray.userId == postsArray.activeUserID ?
-                    "<button class='commentButton'>Edit</button>" +
+                    "<button>Edit</button>" +
                     "<button onclick='DeleteCommentAlert(" + postsArray.postId + ")'>Delete</button>" : "") +
                 ""
             "</div>"
@@ -1093,6 +1077,8 @@
         function CloseComment(postID) {
             $("#comment" + postID).hide();
         }
+
+
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--LINK TO PROJECT STYLE SHEET-->
