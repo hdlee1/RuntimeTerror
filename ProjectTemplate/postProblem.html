@@ -55,7 +55,6 @@
             });
         }
 
-        //logs the user off both at the client and at the server
         function LogOff() {
             var webMethod = "ProjectServices.asmx/LogOff";
             $.ajax({
@@ -65,7 +64,7 @@
                 dataType: "json",
                 success: function (msg) {
                     if (msg.d) {
-                        //we logged off, so go back to logon page,
+                        
                         location.href = "logon.html";
                     }
                     else {

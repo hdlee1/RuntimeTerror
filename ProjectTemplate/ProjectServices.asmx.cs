@@ -4,7 +4,7 @@ using System.Web.Services;
 using System.Data;
 using Newtonsoft.Json;
 using MySqlConnector;
-//needed to get List objects
+
 using System.Collections.Generic;
 
 namespace ProjectTemplate
@@ -16,65 +16,46 @@ namespace ProjectTemplate
 
 	public class ProjectServices : System.Web.Services.WebService
 	{
-		////////////////////////////////////////////////////////////////////////
-		///replace the values of these variables with your database credentials
-		////////////////////////////////////////////////////////////////////////
+		
 		private string dbID = "440sum20221";
 		private string dbPass = "440sum20221";
 		private string dbName = "440sum20221";
-		////////////////////////////////////////////////////////////////////////
 
-		////////////////////////////////////////////////////////////////////////
-		///call this method anywhere that you need the connection string!
-		////////////////////////////////////////////////////////////////////////
 		private string getConString()
 		{
 			return "SERVER=107.180.1.16; PORT=3306; DATABASE=" + dbName + "; UID=" + dbID + "; PASSWORD=" + dbPass;
 		}
-		////////////////////////////////////////////////////////////////////////
+		
 
-		[WebMethod(EnableSession = true)] //NOTICE: gotta enable session on each individual method
+		[WebMethod(EnableSession = true)] 
 		public string LogOn(string uid, string pass)
 		{
-			//we return this flag to tell them if they logged in or not
+			
 			bool success = false;
 			string isManager = "false";
 			string fname = "";
 			string lname = "";
 			string id = "";
 
-			//our connection string comes from our web.config file like we talked about earlier
-			//string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 			string sqlConnectString = getConString();
-			//here's our query.  A basic select with nothing fancy.  Note the parameters that begin with @
-			//NOTICE: we added admin to what we pull, so that we can store it along with the id in the session
+			
 			string sqlSelect = "SELECT id, ismanager, fname, lname FROM users WHERE email=@idValue and password=@passValue";
 
-			//set up our connection object to be ready to use our connection string
 			MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-			//set up our command object to use our connection, and our query
 			MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-			//tell our command to replace the @parameters with real values
-			//we decode them because they came to us via the web so they were encoded
-			//for transmission (funky characters escaped, mostly)
 			sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(uid));
 			sqlCommand.Parameters.AddWithValue("@passValue", HttpUtility.UrlDecode(pass));
 
-			//a data adapter acts like a bridge between our command object and 
-			//the data we are trying to get back and put in a table object
+			
 			MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-			//here's the table we want to fill with the results from our query
 			DataTable sqlDt = new DataTable();
-			//here we go filling it!
+			
 			sqlDa.Fill(sqlDt);
-			//check to see if any rows were returned.  If they were, it means it's 
-			//a legit post
+			
 			if (sqlDt.Rows.Count > 0)
 			{
-				//if we found an posts, store the id and admin status in the session
-				//so we can check those values later on other method calls to see if they 
-				//are 1) logged in at all, and 2) and admin or not
+			
 				Session["id"] = sqlDt.Rows[0]["id"];
 				Session["ismanager"] = sqlDt.Rows[0]["ismanager"];
 				isManager = sqlDt.Rows[0]["ismanager"].ToString();
@@ -99,8 +80,7 @@ namespace ProjectTemplate
 		public void CreateAccount(string uid, string pass, string firstName, string lastName, string isManager)
 		{
 			string sqlConnectString = getConString();
-			//the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
-			//does is tell mySql server to return the primary key of the last inserted row.
+			
 			string sqlSelect = "insert into users (email, password, fname, lname, ismanager) " +
 				"values(@idValue, @passValue, @fnameValue, @lnameValue, @isManagerValue); SELECT LAST_INSERT_ID();";
 
@@ -113,20 +93,13 @@ namespace ProjectTemplate
 			sqlCommand.Parameters.AddWithValue("@lnameValue", HttpUtility.UrlDecode(lastName));
 			sqlCommand.Parameters.AddWithValue("@isManagerValue", HttpUtility.UrlDecode(isManager));
 
-			//this time, we're not using a data adapter to fill a data table.  We're just
-			//opening the connection, telling our command to "executescalar" which says basically
-			//execute the query and just hand me back the number the query returns (the ID, remember?).
-			//don't forget to close the connection!
+			
 			sqlConnection.Open();
-			//we're using a try/catch so that if the query errors out we can handle it gracefully
-			//by closing the connection and moving on
+			
 			try
 			{
 				sqlCommand.ExecuteScalar();
-				//here, you could use this accountID for additional queries regarding
-				//the requested account.  Really this is just an example to show you
-				//a query where you get the primary key of the inserted row back from
-				//the database!
+			
 			}
 			catch (Exception e)
 			{
@@ -138,8 +111,7 @@ namespace ProjectTemplate
 		public void CreatePost(string post, string department)
 		{
 			string sqlconnectstring = getConString();
-			//the only thing fancy about this query is select last_insert_id() at the end.  all that
-			//does is tell mysql server to return the primary key of the last inserted row.
+			
 			string sqlselect = "insert into posts(UserID,Post,Department,DateTimes)" +
 							   "values(@id,@post,@department,@datetime); select last_insert_id();";
 
@@ -151,20 +123,13 @@ namespace ProjectTemplate
 			sqlCommand.Parameters.AddWithValue("@department", HttpUtility.UrlDecode(department));
 			sqlCommand.Parameters.AddWithValue("@datetime", DateTime.Now);
 
-			//this time, we're not using a data adapter to fill a data table.  We're just
-			//opening the connection, telling our command to "executescalar" which says basically
-			//execute the query and just hand me back the number the query returns (the ID, remember?).
-			//don't forget to close the connection!
+			
 			sqlConnection.Open();
-			//we're using a try/catch so that if the query errors out we can handle it gracefully
-			//by closing the connection and moving on
+			
 			try
 			{
 				sqlCommand.ExecuteScalar();
-				//here, you could use this accountID for additional queries regarding
-				//the requested account.  Really this is just an example to show you
-				//a query where you get the primary key of the inserted row back from
-				//the database!
+				
 			}
 			catch (Exception e)
 			{
@@ -176,8 +141,7 @@ namespace ProjectTemplate
 		public void CreatePostAnonymously(string post, string department)
 		{
 			string sqlconnectstring = getConString();
-			//the only thing fancy about this query is select last_insert_id() at the end.  all that
-			//does is tell mysql server to return the primary key of the last inserted row.
+			
 			string sqlselect = "insert into posts(UserID,Post,Department,DateTimes)" +
 							   "values(@id,@post,@department,@datetime); select last_insert_id();";
 
@@ -189,20 +153,13 @@ namespace ProjectTemplate
 			sqlCommand.Parameters.AddWithValue("@department", HttpUtility.UrlDecode(department));
 			sqlCommand.Parameters.AddWithValue("@datetime", DateTime.Now);
 
-			//this time, we're not using a data adapter to fill a data table.  We're just
-			//opening the connection, telling our command to "executescalar" which says basically
-			//execute the query and just hand me back the number the query returns (the ID, remember?).
-			//don't forget to close the connection!
+			
 			sqlConnection.Open();
-			//we're using a try/catch so that if the query errors out we can handle it gracefully
-			//by closing the connection and moving on
+			
 			try
 			{
 				sqlCommand.ExecuteScalar();
-				//here, you could use this accountID for additional queries regarding
-				//the requested account.  Really this is just an example to show you
-				//a query where you get the primary key of the inserted row back from
-				//the database!
+				
 			}
 			catch (Exception e)
 			{
@@ -213,9 +170,7 @@ namespace ProjectTemplate
 		[WebMethod(EnableSession = true)]
 		public bool LogOff()
 		{
-			//if they log off, then we remove the session.  That way, if they access
-			//again later they have to log back on in order for their ID to be back
-			//in the session!
+			
 			Session.Abandon();
 			return true;
 		}
@@ -225,27 +180,19 @@ namespace ProjectTemplate
 		{
 			DeleteCommentsByPostID(postID);
 			string sqlconnectstring = getConString();
-			//the only thing fancy about this query is select last_insert_id() at the end.  all that
-			//does is tell mysql server to return the primary key of the last inserted row.
+			
 			string sqlselect = "DELETE FROM `440sum20221`.`posts` WHERE PostID =" + postID + ";";
 
 			MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
 			MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
 
-			//this time, we're not using a data adapter to fill a data table.  We're just
-			//opening the connection, telling our command to "executescalar" which says basically
-			//execute the query and just hand me back the number the query returns (the ID, remember?).
-			//don't forget to close the connection!
+			
 			sqlConnection.Open();
-			//we're using a try/catch so that if the query errors out we can handle it gracefully
-			//by closing the connection and moving on
+			
 			try
 			{
 				sqlCommand.ExecuteScalar();
-				//here, you could use this commentID for additional queries regarding
-				//the requested comment.  Really this is just an example to show you
-				//a query where you get the primary key of the inserted row back from
-				//the database!
+				
 			}
 			catch (Exception e)
 			{
@@ -257,27 +204,19 @@ namespace ProjectTemplate
 		public void DeleteCommentsByPostID(int postID)
 		{
 			string sqlconnectstring = getConString();
-			//the only thing fancy about this query is select last_insert_id() at the end.  all that
-			//does is tell mysql server to return the primary key of the last inserted row.
+			
 			string sqlselect = "DELETE FROM `440sum20221`.`comments` WHERE PostID = " + postID + ";";
 
 			MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
 			MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
 
-			//this time, we're not using a data adapter to fill a data table.  We're just
-			//opening the connection, telling our command to "executescalar" which says basically
-			//execute the query and just hand me back the number the query returns (the ID, remember?).
-			//don't forget to close the connection!
+			
 			sqlConnection.Open();
-			//we're using a try/catch so that if the query errors out we can handle it gracefully
-			//by closing the connection and moving on
+			
 			try
 			{
 				sqlCommand.ExecuteScalar();
-				//here, you could use this commentID for additional queries regarding
-				//the requested comment.  Really this is just an example to show you
-				//a query where you get the primary key of the inserted row back from
-				//the database!
+				
 			}
 			catch (Exception e)
 			{
@@ -289,27 +228,19 @@ namespace ProjectTemplate
 		public void DeleteCommentsByCommentID(int commentID)
 		{
 			string sqlconnectstring = getConString();
-			//the only thing fancy about this query is select last_insert_id() at the end.  all that
-			//does is tell mysql server to return the primary key of the last inserted row.
+			
 			string sqlselect = "DELETE FROM `440sum20221`.`comments` WHERE CommentID = " + commentID + ";";
 
 			MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
 			MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
 
-			//this time, we're not using a data adapter to fill a data table.  We're just
-			//opening the connection, telling our command to "executescalar" which says basically
-			//execute the query and just hand me back the number the query returns (the ID, remember?).
-			//don't forget to close the connection!
+			
 			sqlConnection.Open();
-			//we're using a try/catch so that if the query errors out we can handle it gracefully
-			//by closing the connection and moving on
+			
 			try
 			{
 				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
-				//here, you could use this commentID for additional queries regarding
-				//the requested comment.  Really this is just an example to show you
-				//a query where you get the primary key of the inserted row back from
-				//the database!
+				
 			}
 			catch (Exception e)
 			{
@@ -319,16 +250,10 @@ namespace ProjectTemplate
 
 
 
-		//EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
 		[WebMethod(EnableSession = true)]
 		public posts[] GetPost()
 		{
-			//check out the return type.  It's an array of posts objects.  You can look at our custom posts class in this solution to see that it's 
-			//just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
-			//sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
-			//Keeps everything simple.
-
-            //WE ONLY SHARE POSTS WITH LOGGED IN USERS!
+			
             if (Session["id"] != null)
             {
 				var id = Session["id"].ToString();
@@ -343,14 +268,11 @@ namespace ProjectTemplate
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-                //gonna use this to fill a data table
+                
                 MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-                //filling the data table
                 sqlDa.Fill(sqlDt);
 
-                //loop through each row in the dataset, creating instances
-                //of our container class posts.  Fill each posts with
-                //data from the rows, then dump them in a list.
+              
                 List<posts> posts = new List<posts>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
 				{
@@ -372,26 +294,18 @@ namespace ProjectTemplate
 						activeUserID = Convert.ToInt32(Session["id"].ToString())
 					});
                 }
-                //convert the list of posts to an array and return!
                 return posts.ToArray();
             }
             else
             {
-                //if they're not logged in, return an empty array
                 return new posts[0];
             }
         }
 
-		//EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
 		[WebMethod(EnableSession = true)]
 		public posts[] GetSolved()
 		{
-			//check out the return type.  It's an array of posts objects.  You can look at our custom posts class in this solution to see that it's 
-			//just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
-			//sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
-			//Keeps everything simple.
-
-			//WE ONLY SHARE POSTS WITH LOGGED IN USERS!
+			
 			if (Session["id"] != null)
 			{
 				var id = Session["id"].ToString();
@@ -406,14 +320,10 @@ namespace ProjectTemplate
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-				//gonna use this to fill a data table
 				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-				//filling the data table
 				sqlDa.Fill(sqlDt);
 
-				//loop through each row in the dataset, creating instances
-				//of our container class posts.  Fill each solvedPosts with
-				//data from the rows, then dump them in a list.
+				
 				List<posts> solvedPosts = new List<posts>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
 				{
@@ -434,12 +344,10 @@ namespace ProjectTemplate
 						isArchived = Convert.ToBoolean(sqlDt.Rows[i]["Archived"])
 					});
 				}
-				//convert the list of postss to an array and return!
 				return solvedPosts.ToArray();
 			}
 			else
 			{
-				//if they're not logged in, return an empty array
 				return new posts[0];
 			}
 		}
@@ -457,14 +365,10 @@ namespace ProjectTemplate
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-				//gonna use this to fill a data table
 				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-				//filling the data table
 				sqlDa.Fill(sqlDt);
 
-				//loop through each row in the dataset, creating instances
-				//of our container class Post.  Fill each post with
-				//data from the rows, then dump them in a list.
+			
 				List<Comments> comments = new List<Comments>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
 				{
@@ -480,7 +384,6 @@ namespace ProjectTemplate
 						ActiveUserID = Convert.ToInt32(Session["id"].ToString())
 					}); ;
 				}
-				//convert the list of posts to an array and return!
 				return comments.ToArray();
 			}
 			else
@@ -493,8 +396,7 @@ namespace ProjectTemplate
 		public void CreateComment(string comment, int postID)
 		{
 			string sqlconnectstring = getConString();
-			//the only thing fancy about this query is select last_insert_id() at the end.  all that
-			//does is tell mysql server to return the primary key of the last inserted row.
+			
 			string sqlselect = "insert into comments(UserID,PostID,Comment,Datetime)" +
 							   "values(@UserID,@PostID,@Comment,@DateTime); select last_insert_id();";
 
@@ -506,20 +408,13 @@ namespace ProjectTemplate
 			sqlCommand.Parameters.AddWithValue("@Comment", HttpUtility.UrlDecode(comment));
 			sqlCommand.Parameters.AddWithValue("@DateTime", DateTime.Now);
 
-			//this time, we're not using a data adapter to fill a data table.  We're just
-			//opening the connection, telling our command to "executescalar" which says basically
-			//execute the query and just hand me back the number the query returns (the ID, remember?).
-			//don't forget to close the connection!
+			
 			sqlConnection.Open();
-			//we're using a try/catch so that if the query errors out we can handle it gracefully
-			//by closing the connection and moving on
+			
 			try
 			{
 				sqlCommand.ExecuteScalar();
-				//here, you could use this commentID for additional queries regarding
-				//the requested comment.  Really this is just an example to show you
-				//a query where you get the primary key of the inserted row back from
-				//the database!
+				
 			}
 			catch (Exception e)
 			{
@@ -531,28 +426,20 @@ namespace ProjectTemplate
 		public void CreateSolvedPost(int postID)
 		{
 			string sqlconnectstring = getConString();
-			//the only thing fancy about this query is select last_insert_id() at the end.  all that
-			//does is tell mysql server to return the primary key of the last inserted row.
+			
 			string sqlselect = "UPDATE `440sum20221`.`posts` SET `Solved` = true WHERE `PostID` = " + postID + ";";
 
 			MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
 			MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
 
 
-			//this time, we're not using a data adapter to fill a data table.  We're just
-			//opening the connection, telling our command to "executescalar" which says basically
-			//execute the query and just hand me back the number the query returns (the ID, remember?).
-			//don't forget to close the connection!
+			
 			sqlConnection.Open();
-			//we're using a try/catch so that if the query errors out we can handle it gracefully
-			//by closing the connection and moving on
+			
 			try
 			{
 				sqlCommand.ExecuteScalar();
-				//here, you could use this commentID for additional queries regarding
-				//the requested comment.  Really this is just an example to show you
-				//a query where you get the primary key of the inserted row back from
-				//the database!
+				
 			}
 			catch (Exception e)
 			{
@@ -565,8 +452,7 @@ namespace ProjectTemplate
         {
 			var id = Session["id"].ToString();
 			string sqlconnectstring = getConString();
-			//the only thing fancy about this query is select last_insert_id() at the end.  all that
-			//does is tell mysql server to return the primary key of the last inserted row.
+			
 			string sqlselect = "create_vote";
 
 			MySqlConnection sqlConnection = new MySqlConnection(sqlconnectstring);
@@ -577,20 +463,13 @@ namespace ProjectTemplate
             sqlCommand.Parameters.Add("useridnum", MySqlDbType.Int32).Value = id;
             sqlCommand.Parameters.Add("upvote", MySqlDbType.Bool).Value = like;
             sqlCommand.Parameters.Add("downvote", MySqlDbType.Bool).Value = dislike;
-			//this time, we're not using a data adapter to fill a data table.  We're just
-			//opening the connection, telling our command to "executescalar" which says basically
-			//execute the query and just hand me back the number the query returns (the ID, remember?).
-			//don't forget to close the connection!
+			
 			sqlConnection.Open();
-			//we're using a try/catch so that if the query errors out we can handle it gracefully
-			//by closing the connection and moving on
+		
 			try
 			{
 				sqlCommand.ExecuteScalar();
-                //here, you could use this accountID for additional queries regarding
-                //the requested account.  Really this is just an example to show you
-                //a query where you get the primary key of the inserted row back from
-                //the database!
+                
             }
             catch (Exception e)
             {
@@ -617,14 +496,9 @@ namespace ProjectTemplate
 
 				sqlCommand.Parameters.AddWithValue("@depValue", HttpUtility.UrlDecode(dep));
 
-				//gonna use this to fill a data table
 				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-				//filling the data table
 				sqlDa.Fill(sqlDt);
 
-				//loop through each row in the dataset, creating instances
-				//of our container class posts.  Fill each fposts with
-				//data from the rows, then dump them in a list.
 				List<posts> fposts = new List<posts>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
 				{
@@ -644,7 +518,6 @@ namespace ProjectTemplate
 						isArchived = Convert.ToBoolean(sqlDt.Rows[i]["Archived"])
 					});
 				}
-				//convert the list of posts to an array and return!
 				return fposts.ToArray();
 			}
 			else
@@ -669,14 +542,10 @@ namespace ProjectTemplate
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-				//gonna use this to fill a data table
 				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-				//filling the data table
 				sqlDa.Fill(sqlDt);
 
-				//loop through each row in the dataset, creating instances
-				//of our container class posts.  Fill each fposts with
-				//data from the rows, then dump them in a list.
+				
 				List<posts> fposts = new List<posts>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
 				{
@@ -696,7 +565,6 @@ namespace ProjectTemplate
 						isArchived = Convert.ToBoolean(sqlDt.Rows[i]["Archived"])
 					});
 				}
-				//convert the list of posts to an array and return!
 				return fposts.ToArray();
 			}
 			else
@@ -715,20 +583,12 @@ namespace ProjectTemplate
 			MySqlCommand sqlCommand = new MySqlCommand(sqlselect, sqlConnection);
 
 
-			//this time, we're not using a data adapter to fill a data table.  We're just
-			//opening the connection, telling our command to "executescalar" which says basically
-			//execute the query and just hand me back the number the query returns (the ID, remember?).
-			//don't forget to close the connection!
 			sqlConnection.Open();
-			//we're using a try/catch so that if the query errors out we can handle it gracefully
-			//by closing the connection and moving on
+			
 			try
 			{
 				sqlCommand.ExecuteScalar();
-				//here, you could use this commentID for additional queries regarding
-				//the requested comment.  Really this is just an example to show you
-				//a query where you get the primary key of the inserted row back from
-				//the database!
+				
 			}
 			catch (Exception e)
 			{
@@ -736,16 +596,10 @@ namespace ProjectTemplate
 			sqlConnection.Close();
 		}
 
-		//EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
 		[WebMethod(EnableSession = true)]
 		public posts[] GetArchived()
 		{
-			//check out the return type.  It's an array of posts objects.  You can look at our custom posts class in this solution to see that it's 
-			//just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
-			//sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
-			//Keeps everything simple.
-
-			//WE ONLY SHARE POSTS WITH LOGGED IN USERS!
+			
 			if (Session["id"] != null)
 			{
 				var id = Session["id"].ToString();
@@ -760,14 +614,10 @@ namespace ProjectTemplate
 				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
 				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-				//gonna use this to fill a data table
 				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-				//filling the data table
 				sqlDa.Fill(sqlDt);
 
-				//loop through each row in the dataset, creating instances
-				//of our container class Account.  Fill each archivedPosts with
-				//data from the rows, then dump them in a list.
+			
 				List<posts> archivedPosts = new List<posts>();
 				for (int i = 0; i < sqlDt.Rows.Count; i++)
 				{
@@ -788,12 +638,10 @@ namespace ProjectTemplate
 						isArchived = Convert.ToBoolean(sqlDt.Rows[i]["Archived"])
 					});
 				}
-				//convert the list of posts to an array and return!
 				return archivedPosts.ToArray();
 			}
 			else
 			{
-				//if they're not logged in, return an empty array
 				return new posts[0];
 			}
 		}
@@ -812,20 +660,13 @@ namespace ProjectTemplate
 				sqlCommand.Parameters.AddWithValue("@pid", HttpUtility.UrlDecode(postID));
 				sqlCommand.Parameters.AddWithValue("@uidValue", HttpUtility.UrlDecode(uid));
 
-				//this time, we're not using a data adapter to fill a data table.  We're just
-				//opening the connection, telling our command to "executescalar" which says basically
-				//execute the query and just hand me back the number the query returns (the ID, remember?).
-				//don't forget to close the connection!
+			
 				sqlConnection.Open();
-				//we're using a try/catch so that if the query errors out we can handle it gracefully
-				//by closing the connection and moving on
+			
 				try
 				{
 					sqlCommand.ExecuteScalar();
-					//here, you could use this commentID for additional queries regarding
-					//the requested comment.  Really this is just an example to show you
-					//a query where you get the primary key of the inserted row back from
-					//the database!
+					
 				}
 				catch (Exception e)
 				{
@@ -848,20 +689,13 @@ namespace ProjectTemplate
 				sqlCommand.Parameters.AddWithValue("@cid", HttpUtility.UrlDecode(commentID));
 				sqlCommand.Parameters.AddWithValue("@uidValue", HttpUtility.UrlDecode(uid));
 
-				//this time, we're not using a data adapter to fill a data table.  We're just
-				//opening the connection, telling our command to "executescalar" which says basically
-				//execute the query and just hand me back the number the query returns (the ID, remember?).
-				//don't forget to close the connection!
+			
 				sqlConnection.Open();
-				//we're using a try/catch so that if the query errors out we can handle it gracefully
-				//by closing the connection and moving on
+				
 				try
 				{
 					sqlCommand.ExecuteScalar();
-					//here, you could use this commentID for additional queries regarding
-					//the requested comment.  Really this is just an example to show you
-					//a query where you get the primary key of the inserted row back from
-					//the database!
+				
 				}
 				catch (Exception e)
 				{

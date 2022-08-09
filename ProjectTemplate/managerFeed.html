@@ -1,514 +1,3 @@
-<!--<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="-1">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>Home</title>-->
-<!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<style>
-    .comment td {
-        background-color: gainsboro;
-        border: inset;
-        border-color: black;
-    }
-
-</style>-->
-<!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
-<!--<script type="text/javascript">
-    var comments;
-    var posts;
-    function LogOff() {
-        var webMethod = "ProjectServices.asmx/LogOff";
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                if (msg.d) {
-                    //we logged off, so go back to logon page,
-                    location.href = "logon.html";
-                }
-                else {
-                }
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                alert('Error - ' + errorMessage);
-            }
-        });
-    }
-
-    function getWelcome() {
-        var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
-        document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
-    }
-    function CreateComment(postID) {
-        var webMethod = "ProjectServices.asmx/CreateComment";
-        var comment = document.getElementById('postCommentSection'+postID).value;
-        //var post = document.getElementById('datetime').value;
-        var parameters = "{\"comment\":\"" + encodeURI(comment) + "\",\"postID\":\"" + postID + "\"}";
-        //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
-
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            data: parameters,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                location.reload();
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                alert('Error - ' + errorMessage);
-                return errorMessage;
-            }
-        });
-    }
-
-    function DeletePost(postID) {
-        var webMethod = "ProjectServices.asmx/DeletePost";
-        var parameters = "{\"postID\":\"" + postID + "\"}";
-
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            data: parameters,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                location.reload();
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                alert('Error - ' + errorMessage);
-                return errorMessage;
-            }
-        });
-    }
-    function DeleteComment(postID) {
-        var webMethod = "ProjectServices.asmx/DeleteComment";
-        var parameters = "{\"postID\":\"" + postID + "\"}";
-
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            data: parameters,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                return true;
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                alert('Error - ' + errorMessage);
-                return errorMessage;
-            }
-        });
-    }
-
-    function DeleteAlert(postID) {
-        let text;
-        if (confirm("Are you sure you want to permanently delete this post?") == true) {
-            DeletePost(postID);
-            text = alert("Post has been deleted.");
-        } else {
-            text = alert("Deletion has been canceled.");
-        }
-    }
-
-    function CreateSolvedPost(postID) {
-        var webMethod = "ProjectServices.asmx/CreateSolvedPost";
-        //var post = document.getElementById('datetime').value;
-        var parameters = "{\"postID\":\"" + postID + "\"}";
-        //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
-
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            data: parameters,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                location.reload();
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                alert('Error - ' + errorMessage);
-                return errorMessage;
-            }
-        });
-    }
-
-    function CreateArchivedPost(postID) {
-        var webMethod = "ProjectServices.asmx/CreateArchivedPost";
-        //var post = document.getElementById('datetime').value;
-        var parameters = "{\"postID\":\"" + postID + "\"}";
-        //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
-
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            data: parameters,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                location.reload();
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                alert('Error - ' + errorMessage);
-                return errorMessage;
-            }
-        });
-    }
-
-    function GetComments(postID) {
-        var webMethod = "ProjectServices.asmx/GetComments";
-        var parameters = "{\"postID\":\"" + postID + "\"}";
-
-            $.ajax({
-                type: "POST",
-                url: "ProjectServices.asmx/GetComments",
-                data: "{\"postID\":\"" + postID + "\"}",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (msg) {
-                    comments = msg.d;
-                    var id = "#postID" + postID
-                    if (comments != undefined) {
-                        for (var i = 0; i < comments.length; i++) {
-                            $(id).html( "<td class='heading'>Comments:</td>");
-                            $(id).after("<tr class='comment'>" +
-                                "<td>" + comments[i].FirstName + " " + comments[i].LastName + "</td>" +
-                                "<td>" + comments[i].Comment + "</td>" +
-                                "<td>" + comments[i].DateTime + "</td>" + 
-                                "</tr>");
-                        }
-                    }
-                },
-                error: function (xhr, status, error) {
-                    var errorMessage = xhr.status + ': ' + xhr.statusText;
-                    alert('Error - ' + errorMessage);
-                }
-            });
-        }
-
-    function CreateVote(postid, like, dislike) {
-        var webMethod = "ProjectServices.asmx/CreateVote";
-        //var like = document.getElementById('thumbUp').value;
-        //var dislike = document.getElementById('thumbsDown').value;
-        var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
-
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            data: parameters,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                $(".likes").remove();
-                $(".dislikes").remove();
-                $(".left").remove();
-                $(".right").remove();
-                $(".postText").remove();
-                $(".buttons").remove();
-                $(".yourvote").remove();
-                $(".commentButton").remove();
-                $(".comment").remove();
-                GetPost();
-                //alert("You voted!");
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                alert('Error - ' + errorMessage);
-            }
-        });
-    }
-
-    function CreateVoteFilter(postid, like, dislike) {
-        var webMethod = "ProjectServices.asmx/CreateVote";
-        //var like = document.getElementById('thumbUp').value;
-        //var dislike = document.getElementById('thumbsDown').value;
-        var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
-
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            data: parameters,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                $(".likes").remove();
-                $(".dislikes").remove();
-                $(".left").remove();
-                $(".right").remove();
-                $(".postText").remove();
-                $(".buttons").remove();
-                $(".yourvote").remove();
-                $(".commentButton").remove();
-                $(".comment").remove();
-                FilterPosts();
-                //alert("You voted!");
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = xhr.status + ': ' + xhr.statusText;
-                alert('Error - ' + errorMessage);
-            }
-        });
-    }
-
-    function GetPost() {
-        var postsArray;
-        var webMethod = "ProjectServices.asmx/GetPost";
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            cache: false,
-            async: false,
-            //data: "{\"GetSolved\":\"true\"}",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                if (msg.d.length > 0) {
-                    //put posts from server in postsArray varibale for use in other functions
-                    postsArray = msg.d;
-                }
-            },
-            error: function (e) {
-                alert("failed to get posts from server");
-            }
-        });
-        var feed = document.getElementById("feed");
-        var rowNum = 2;
-        for (var i = 0; i < postsArray.length; i++) {
-            var row = feed.insertRow(rowNum);
-            var cell0 = row.insertCell(0);
-            var cell1 = row.insertCell(1);
-            var cell2 = row.insertCell(2);
-            var cell3 = row.insertCell(3);
-            var cell4 = row.insertCell(4);
-            var cell5 = row.insertCell(5);
-            var cell6 = row.insertCell(6);
-            var cell7 = row.insertCell(7);
-
-
-            if (postsArray[i].userId == 6) {
-                cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + "</span>";
-            }
-            else {
-                cell0.innerHTML = "<span class='left'>" + postsArray[i].firstName + " " + postsArray[i].lastName + "</span>";
-            }
-            cell1.innerHTML = "<span class='postText'>" + postsArray[i].post + "</span>";
-            cell2.innerHTML = "<span class='right'> " + postsArray[i].date + "</span>";
-            cell3.innerHTML = "<span class='likes'>" + postsArray[i].likes + "</span>";
-            cell4.innerHTML = "<span class='dislikes'>" + postsArray[i].dislikes + "</span>";
-            cell5.innerHTML = "<button style='height: 30px;' class='commentButton' onclick='CreateSolvedPost(" + postsArray[i].postId +")'>Solved</button >"
-            cell6.innerHTML = "<button style='height: 30px;' class='commentButton' onclick='CreateArchivedPost(" + postsArray[i].postId + ")'>Archive</button>"
-            cell7.innerHTML = "<button style='height: 30px;' class='commentButton' onclick='DeleteAlert(" + postsArray[i].postId + ")'>Delete</button>"
-
-            rowNum++;
-
-            var row2 = feed.insertRow(rowNum);
-            row2.id = "postID" + postsArray[i].postId;
-            GetComments(postsArray[i].postId);
-            rowNum++
-        }
-    }
-
-    function getWelcome() {
-        var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
-        //var name = sessionStorage.getItem(logOn.);
-        //var name = new ActiveXObject("WScript.Network").UserName;
-        document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
-    }
-
-    function clearFeed() {
-        var feed = document.getElementById("feed");
-        // this clears the feed table from the onload or other filtered search
-        for (var i = feed.rows.length; i > 2; i--) {
-            feed.deleteRow(i - 1);
-        }
-    }
-
-    function callFilter() {
-        var filter = filterSelect.value;
-
-        switch (filter) {
-            case "newest":
-                clearFeed();
-                GetPost();
-                break;
-            case "popularity":
-                clearFeed();
-                FilterPostsPopular();
-                break;
-            default:
-                clearFeed();
-                FilterPosts();
-                break;
-        }
-    }
-
-    function FilterPosts() {
-        var filter = filterSelect.value;
-        var webMethod = "ProjectServices.asmx/FilterPostsDepartment";
-        var parameters = "{\"dep\":\"" + encodeURI(filter) + "\"}";
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            data: parameters,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                if (msg.d.length > 0) {
-                    fpostsArray = msg.d;
-                    clearFeed();
-                    // repopulates table based on new querry
-                    // repopulates table based on new querry
-                    var rowNum = 2;
-                    for (var i = 0; i < fpostsArray.length; i++) {
-
-                        var row = feed.insertRow(rowNum);
-                        var cell0 = row.insertCell(0);
-                        var cell1 = row.insertCell(1);
-                        var cell2 = row.insertCell(2);
-                        var cell3 = row.insertCell(3);
-                        var cell4 = row.insertCell(4);
-                        var cell5 = row.insertCell(5);
-
-                        if (fpostsArray[i].userId == 6) {
-                            cell0.innerHTML = "<span class='left'>" + fpostsArray[i].firstName + "</span>";
-                        }
-                        else {
-                            cell0.innerHTML = "<span class='left'>" + fpostsArray[i].firstName + " " + fpostsArray[i].lastName + "</span>";
-                        }
-                        //cell0.innerHTML = "<span class='left'>" + fpostsArray[i].userName + "</span>";
-                        cell1.innerHTML = "<span class='postText'>" + fpostsArray[i].post + "</span>";
-                        cell2.innerHTML = "<span class='right'> " + fpostsArray[i].date + "</span>";
-                        cell3.innerHTML = "<span class='likes'>" + fpostsArray[i].likes + "</span>";
-                        cell4.innerHTML = "<span class='dislikes'>" + fpostsArray[i].dislikes + "</span>";
-                        cell5.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + fpostsArray[i].postId + ");'>Add Comment</button>"
-                        rowNum++;
-                    }
-                } else if (msg.d.length == 0) {
-                    clearFeed();
-                    // repopulates table based on new querry
-                    var rowNum = 2;
-                    var row = feed.insertRow(rowNum);
-                    var cell0 = row.insertCell(0);
-                    cell0.colSpan = "6";
-                    cell0.innerHTML = "<span><strong> There are no posts tagged with that department. Please choose another filter</strong></span>";
-
-                }
-            },
-            error: function (e) {
-                alert("failed to filter");
-            }
-        });
-    }
-
-    function FilterPostsPopular() {
-        var webMethod = "ProjectServices.asmx/FilterPostsPopular";
-        $.ajax({
-            type: "POST",
-            url: webMethod,
-            cache: false,
-            async: false,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-                if (msg.d.length > 0) {
-                    fpostsArray = msg.d;
-                    // repopulates table based on new querry
-                    var rowNum = 2;
-                    for (var i = 0; i < fpostsArray.length; i++) {
-
-                        var row = feed.insertRow(rowNum);
-                        var cell0 = row.insertCell(0);
-                        var cell1 = row.insertCell(1);
-                        var cell2 = row.insertCell(2);
-                        var cell3 = row.insertCell(3);
-                        var cell4 = row.insertCell(4);
-                        var cell5 = row.insertCell(5);
-
-                        if (fpostsArray[i].userId == 6) {
-                            cell0.innerHTML = "<span class='left'>" + fpostsArray[i].firstName + "</span>";
-                        }
-                        else {
-                            cell0.innerHTML = "<span class='left'>" + fpostsArray[i].firstName + " " + fpostsArray[i].lastName + "</span>";
-                        }
-                        //cell0.innerHTML = "<span class='left'>" + fpostsArray[i].userName + "</span>";
-                        cell1.innerHTML = "<span class='postText'>" + fpostsArray[i].post + "</span>";
-                        cell2.innerHTML = "<span class='right'> " + fpostsArray[i].date + "</span>";
-                        cell3.innerHTML = "<span class='likes'>" + fpostsArray[i].likes + "</span>";
-                        cell4.innerHTML = "<span class='dislikes'>" + fpostsArray[i].dislikes + "</span>";
-                        cell5.innerHTML = "<button class='commentButton' onclick='DisplayTextbox(" + fpostsArray[i].postId + ");'>Add Comment</button>"
-                        rowNum++;
-                    }
-                }
-            },
-            error: function (e) {
-                alert("failed to filter");
-            }
-        });
-    }
-</script>-->
-<!--END OF YOUR OWN JAVASCRIPT-->
-<!--LINK TO PROJECT STYLE SHEET-->
-<!--<link rel="stylesheet" href="projectStyleSheet.css" />
-</head>
-<body onload="GetPost(); getWelcome();">
-    <div class="topnav2">-->
-<!--<a href="manageHomePage.html">Home</a>-->
-<!--<a class="active" href="managerFeed.html">Problems/Suggestions Feed</a>
-    <a href="solutions.html">Solutions</a>
-    <a href="archived.html">Archived</a>
-    <a href="#" onclick="LogOff()">Log Off</a>
-</div>
-<h1 id="welcome"></h1>
-<h2 class="header">Problems & Suggestions Feed</h2>
-<hr />-->
-<!--<table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">-->
-<!--<table id="feed">
-        <tr>
-            <td colspan="3"></td>
-            <td colspan="3">
-                <br />
-                <label for="filterSelect">Filter By:</label>
-                <select id="filterSelect" name="filterSelect" onchange="callFilter()">
-                    <option value="newest">Newest to Oldest</option>
-                    <option value="popularity">Popularity</option>
-                    <optgroup label="Department">
-                        <option value="management">Management</option>
-                        <option value="finance">Finance</option>
-                        <option value="accounting">Accounting</option>
-                        <option value="hr">HR</option>
-                        <option value="sales">Sales</option>
-                        <option value="marketing">Marketing</option>
-                        <option value="IT">IT</option>
-                        <option value="general">General</option>
-                    </optgroup>
-                </select>
-                <br /><br />
-        </tr>
-        <tr>
-            <td width="160" class="heading">Name</td>
-            <td width="480" class="heading">Post</td>
-            <td width="170" class="heading">Date</td>
-            <td width="85" class="heading">Likes</td>
-            <td width="85" class="heading">Dislikes</td>
-            <td width="120" class="heading"></td>
-            <td width="120" class="heading"></td>
-        </tr>
-    </table>
-</body>
-</html>-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -518,11 +7,9 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>Home</title>
-    <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <style>
-                /*        border-collapse: separate; border-spacing: 0 15px;
-        */ tbody > tr > :nth-child(2) {
+        tbody > tr > :nth-child(2) {
                     width: 10%;
                 }
 
@@ -556,7 +43,6 @@
                 }
     </style>
 
-    <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
         var comments;
         var posts;
@@ -570,7 +56,6 @@
                 dataType: "json",
                 success: function (msg) {
                     if (msg.d) {
-                        //we logged off, so go back to logon page,
                         location.href = "logon.html";
                     }
                     else {
@@ -590,9 +75,9 @@
         function CreateComment(postID) {
             var webMethod = "ProjectServices.asmx/CreateComment";
             var comment = document.getElementById('postCommentSection' + postID).value;
-            //var post = document.getElementById('datetime').value;
+            
             var parameters = "{\"comment\":\"" + encodeURI(comment) + "\",\"postID\":\"" + postID + "\"}";
-            //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
+            
 
             $.ajax({
                 type: "POST",
@@ -674,9 +159,9 @@
 
         function CreateSolvedPost(postID) {
             var webMethod = "ProjectServices.asmx/CreateSolvedPost";
-            //var post = document.getElementById('datetime').value;
+            
             var parameters = "{\"postID\":\"" + postID + "\"}";
-            //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
+            
 
             $.ajax({
                 type: "POST",
@@ -697,9 +182,7 @@
 
         function CreateArchivedPost(postID) {
             var webMethod = "ProjectServices.asmx/CreateArchivedPost";
-            //var post = document.getElementById('datetime').value;
             var parameters = "{\"postID\":\"" + postID + "\"}";
-            //}"; //+ "\",\"datetime\":\"" + encodeURI(datetime) + "\"}";
 
             $.ajax({
                 type: "POST",
@@ -732,10 +215,7 @@
                     comments = msg.d;
                     var id = "#postID" + postID
                     if (comments != undefined) {
-                        //var tableRow = document.getElementById(id);
-                        //var tbl = document.createElement('table');
-                        //var tbdy = document.createElement('tbody');
-                        //var tr;
+                      
                         for (var i = 0; i < comments.length; i++) {
                             $(id).html("<td>" +
                                 "<p style='font-size: 18px; font-weight: bolder; margin-left: 5vw;'>Comments:</p>" +
@@ -762,20 +242,9 @@
                                 "</div>" +
                                 "</td>" +
                                 "</tr>");
-                            //tr = document.createElement('tr');
-                            //var td = document.createElement('td');
-                            //td.appendChild(document.createTextNode(comments[i].FirstName + comments[i].LastName));
-                            //tr.appendChild(td)
-                            //var td1 = document.createElement('td');
-                            //td1.appendChild(document.createTextNode(comments[i].Comment));
-                            //tr.appendChild(td1)
-                            //var td2 = document.createElement('td');
-                            //td2.appendChild(document.createTextNode(comments[i].DateTime));
-                            //tr.appendChild(td2)
-                            //tbdy.appendChild(tr);
+                           
                         }
-                        //tbl.appendChild(tbdy);
-                        //tableRow.appendChild(tbl)
+                        
                     }
                 },
                 error: function (xhr, status, error) {
@@ -787,8 +256,7 @@
 
         function CreateVote(postid, like, dislike) {
             var webMethod = "ProjectServices.asmx/CreateVote";
-            //var like = document.getElementById('thumbUp').value;
-            //var dislike = document.getElementById('thumbsDown').value;
+           
             var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
 
             $.ajax({
@@ -819,8 +287,7 @@
 
         function CreateVoteFilter(postid, like, dislike) {
             var webMethod = "ProjectServices.asmx/CreateVote";
-            //var like = document.getElementById('thumbUp').value;
-            //var dislike = document.getElementById('thumbsDown').value;
+          
             var parameters = "{\"postid\":\"" + encodeURI(postid) + "\", \"like\":\"" + encodeURI(like) + "\", \"dislike\":\"" + encodeURI(dislike) + "\"}";
 
             $.ajax({
@@ -840,7 +307,7 @@
                     $(".commentButton").remove();
                     $(".comment").remove();
                     FilterPosts();
-                    //alert("You voted!");
+                    
                 },
                 error: function (xhr, status, error) {
                     var errorMessage = xhr.status + ': ' + xhr.statusText;
@@ -857,12 +324,12 @@
                 url: webMethod,
                 cache: false,
                 async: false,
-                //data: "{\"GetSolved\":\"true\"}",
+                
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
                     if (msg.d.length > 0) {
-                        //put posts from server in postsArray varibale for use in other functions
+                        
                         postsArray = msg.d;
                         var postTable = document.getElementById("postTable");
                         rowNum = 0;
@@ -901,13 +368,7 @@
                     "</div>" +
                     "</div>";
             }
-            //cell0.innerHTML = "<div style='padding: 10px;'>" +
-            //    "<div style='display: inline-block;'>" +
-            //    "<p style='font-size: 22px; font-weight: bolder;'>" + postsArray.firstName + " " + postsArray.lastName + "</p>" +
-            //    "<p style='margin-left: 10px;'>" + postsArray.date + "</p>" +
-            //    "<div>" + postsArray.post + "</div>" +
-            //    "</div>" +
-            //    "</div>";
+           
             cell0.style.width = "75%;"
 
             cell1.innerHTML = "<div style='display: inline-block;'>" +
@@ -942,14 +403,13 @@
 
         function getWelcome() {
             var name = (sessionStorage.getItem("fnameLogon") + " " + sessionStorage.getItem("lnameLogon")).trim();
-            //var name = sessionStorage.getItem(logOn.);
-            //var name = new ActiveXObject("WScript.Network").UserName;
+            
             document.getElementById('welcome').innerHTML = "Welcome back, " + name + "!";
         }
 
         function clearPostTable() {
             var postTable = document.getElementById("postTable");
-            // this clears the feed table from the onload or other filtered search
+            
             for (var i = postTable.rows.length; i > 0; i--) {
                 postTable.deleteRow(i - 1);
             }
@@ -989,15 +449,14 @@
                     if (msg.d.length > 0) {
                         fpostsArray = msg.d;
                         clearPostTable();
-                        // repopulates table based on new querry
-                        // repopulates table based on new querry
+                      
                         rowNum = 0;
                         for (var i = 0; i < fpostsArray.length; i++) {
                             CreatePost(postTable, fpostsArray[i])
                         }
                     } else if (msg.d.length == 0) {
                         clearPostTable();
-                        // repopulates table based on new querry
+                  
                         rowNum = 0;
                         var row = postTable.insertRow(rowNum);
                         var cell0 = row.insertCell(0);
@@ -1024,7 +483,7 @@
                 success: function (msg) {
                     if (msg.d.length > 0) {
                         fpostsArray = msg.d;
-                        // repopulates table based on new querry
+                        
                         rowNum = 0;
                         var postTable = document.getElementById("postTable");
                         for (var i = 0; i < fpostsArray.length; i++) {
@@ -1054,13 +513,12 @@
             }
         }
     </script>
-    <!--END OF YOUR OWN JAVASCRIPT-->
-    <!--LINK TO PROJECT STYLE SHEET-->
+    
     <link rel="stylesheet" href="projectStyleSheet.css" />
 </head>
 <body onload="GetPost(); getWelcome();">
     <div class="topnav2">
-        <!--<a href="manageHomePage.html">Home</a>-->
+        
         <a class="active" href="managerFeed.html">Problems/Suggestions Feed</a>
         <a href="solutions.html">Solutions</a>
         <a href="archived.html">Archived</a>
@@ -1069,7 +527,6 @@
     <h1 id="welcome"></h1>
     <h2 class="header">Problems & Suggestions Feed</h2>
     <hr />
-    <!--<table id="feed" style="width:98%;margin-left:auto;margin-right:auto;">-->
     <table id="filter">
         <tr>
             <td colspan="3">
