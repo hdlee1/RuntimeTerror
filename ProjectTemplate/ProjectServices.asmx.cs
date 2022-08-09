@@ -336,7 +336,7 @@ namespace ProjectTemplate
 
 				string sqlConnectString = getConString();
                 string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, posts.Solved, posts.Department, users.fname, users.lname, users.email, " +
-								   "posts.Comments, posts.Archived, (select ifnull(sum(IsLike), 0) " +
+								   "posts.Archived, (select ifnull(sum(IsLike), 0) " +
                                    "from votes where PostID = posts.postid) as isliketotal, (select ifnull(sum(IsDislike),0) " +
                                    "from votes where PostID = posts.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = posts.postid and userid = " + id + ") as yourvote from posts inner join users on posts.UserID = users.id where posts.Solved = false and posts.Archived = false order by posts.DateTimes desc"; 
 
@@ -366,7 +366,6 @@ namespace ProjectTemplate
 						email = sqlDt.Rows[i]["email"].ToString(),
 						likes = Convert.ToInt32(sqlDt.Rows[i]["isliketotal"]),
 						dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
-						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
 						yourvote = sqlDt.Rows[i]["yourvote"].ToString(),
 						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
 						isArchived = Convert.ToBoolean(sqlDt.Rows[i]["Archived"]),
@@ -400,7 +399,7 @@ namespace ProjectTemplate
 
 				string sqlConnectString = getConString();
 				string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, posts.Solved, posts.Department, posts.Archived, users.fname, users.lname, users.email, " +
-								   "posts.Comments,(select ifnull(sum(IsLike), 0) " +
+								   "(select ifnull(sum(IsLike), 0) " +
 								   "from votes where PostID = posts.postid) as isliketotal, (select ifnull(sum(IsDislike),0) " +
 								   "from votes where PostID = posts.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = posts.postid and userid = " + id + ") as yourvote from posts inner join users on posts.UserID = users.id where posts.Solved = true and posts.Archived = false order by posts.DateTimes desc";
 
@@ -430,7 +429,6 @@ namespace ProjectTemplate
 						email = sqlDt.Rows[i]["email"].ToString(),
 						likes = Convert.ToInt32(sqlDt.Rows[i]["isliketotal"]),
 						dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
-						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
 						yourvote = sqlDt.Rows[i]["yourvote"].ToString(),
 						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
 						isArchived = Convert.ToBoolean(sqlDt.Rows[i]["Archived"])
@@ -610,7 +608,7 @@ namespace ProjectTemplate
 
 				string sqlConnectString = getConString();
 								
-				string sqlSelect = "Select p.PostID, p.UserID, u.fname, u.lname, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Archived, (select ifnull(sum(IsLike), 0) " +
+				string sqlSelect = "Select p.PostID, p.UserID, u.fname, u.lname, p.Post, p.Department, p.DateTimes, p.Solved, p.Archived, (select ifnull(sum(IsLike), 0) " +
 								   "from votes where PostID = p.postid) as isliketotal, (select ifnull(sum(IsDislike),0) " +
 								   "from votes where PostID = p.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = p.postid and userid = " + id + ") as yourvote from posts p inner join users u on u.id = p.UserID Where p.Department=@depValue and p.Solved = false and p.Archived = false order by DateTimes DESC";
 
@@ -642,7 +640,6 @@ namespace ProjectTemplate
 						yourvote = sqlDt.Rows[i]["yourvote"].ToString(),
 						likes = Convert.ToInt32(sqlDt.Rows[i]["isliketotal"]),
 						dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
-						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
 						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
 						isArchived = Convert.ToBoolean(sqlDt.Rows[i]["Archived"])
 					});
@@ -665,7 +662,7 @@ namespace ProjectTemplate
 				DataTable sqlDt = new DataTable("posts");
 
 				string sqlConnectString = getConString();
-				string sqlSelect = "Select p.PostID, p.UserID, u.fname, u.lname, p.Post, p.Department, p.DateTimes, p.Comments, p.Solved, p.Archived, (select ifnull(sum(IsLike), 0) " +
+				string sqlSelect = "Select p.PostID, p.UserID, u.fname, u.lname, p.Post, p.Department, p.DateTimes, p.Solved, p.Archived, (select ifnull(sum(IsLike), 0) " +
 				   "from votes where PostID = p.postid) as isliketotal, (select ifnull(sum(IsDislike),0) " +
 				   "from votes where PostID = p.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = p.postid and userid = " + id + ") as yourvote from posts p inner join users u on u.id = p.UserID Where p.Solved = false and p.Archived = false order by isliketotal DESC, isdisliketotal ASC";
 
@@ -695,7 +692,6 @@ namespace ProjectTemplate
 						yourvote = sqlDt.Rows[i]["yourvote"].ToString(),
 						likes = Convert.ToInt32(sqlDt.Rows[i]["isliketotal"]),
 						dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
-						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
 						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
 						isArchived = Convert.ToBoolean(sqlDt.Rows[i]["Archived"])
 					});
@@ -757,7 +753,7 @@ namespace ProjectTemplate
 
 				string sqlConnectString = getConString();
 				string sqlSelect = "select posts.PostID, posts.UserID, posts.Post, posts.DateTimes, posts.Solved, posts.Department, users.fname, users.lname, users.email, " +
-								   "posts.Comments, posts.Archived, (select ifnull(sum(IsLike), 0) " +
+								   "posts.Archived, (select ifnull(sum(IsLike), 0) " +
 								   "from votes where PostID = posts.postid) as isliketotal, (select ifnull(sum(IsDislike),0) " +
 								   "from votes where PostID = posts.postid) as isdisliketotal, (select IF(islike = 1, 'Like', 'Dislike') from votes where postid = posts.postid and userid = " + id + ") as yourvote from posts inner join users on posts.UserID = users.id where posts.Archived = true order by posts.DateTimes desc";
 
@@ -787,7 +783,6 @@ namespace ProjectTemplate
 						email = sqlDt.Rows[i]["email"].ToString(),
 						likes = Convert.ToInt32(sqlDt.Rows[i]["isliketotal"]),
 						dislikes = Convert.ToInt32(sqlDt.Rows[i]["isdisliketotal"]),
-						hasComments = Convert.ToBoolean(sqlDt.Rows[i]["Comments"]),
 						yourvote = sqlDt.Rows[i]["yourvote"].ToString(),
 						isSolved = Convert.ToBoolean(sqlDt.Rows[i]["Solved"]),
 						isArchived = Convert.ToBoolean(sqlDt.Rows[i]["Archived"])

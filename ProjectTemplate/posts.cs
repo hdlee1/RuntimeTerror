@@ -16,7 +16,6 @@ namespace ProjectTemplate
         public string email;
         public int likes;
         public int dislikes;
-        public bool hasComments;
         public string yourvote;
         public bool isSolved;
         public string department;
