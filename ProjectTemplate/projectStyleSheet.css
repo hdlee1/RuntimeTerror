@@ -166,13 +166,6 @@ textarea {
     font-family: 'Times New Roman', Times, serif;
     font-size: medium;
 }
-/*
-#departments {
-    font-family: 'Times New Roman', Times, serif;
-    font-size: medium;
-    font-weight: bold;
-}
-*/
 
 /* Add a black background color to the top navigation */
 .topnav, .topnav2  {
@@ -219,13 +212,9 @@ width: 33.333%;
 }
 
 #feed {
-    /*border: 2px groove black;*/
     border-collapse: collapse;
 }
 
-/*#feed tr:nth-child(even){
-    background-color: orange;
-}*/
 
 .left, .likes, .dislikes {
     float: left;
